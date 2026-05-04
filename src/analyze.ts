@@ -262,6 +262,21 @@ export function extractActual(srcPath: string): AnalyseResult {
               queue.push(target);
             }
           }
+
+          // Follow callback arguments for known async patterns.
+          const asyncShape = getCalleeAsyncShape(n);
+          if (asyncShape !== null) {
+            const argIndices = asyncShape.kind === "promise-chain" ? [0, 1] : [0];
+            for (const i of argIndices) {
+              const arg = n.arguments[i];
+              if (arg && (ts.isFunctionExpression(arg) || ts.isArrowFunction(arg))) {
+                if (!reached.has(arg)) {
+                  reached.add(arg);
+                  queue.push(arg);
+                }
+              }
+            }
+          }
         }
         ts.forEachChild(n, findCalls);
       }
@@ -295,7 +310,18 @@ export function extractActual(srcPath: string): AnalyseResult {
       return false;
     }
 
-    function inner(node: ts.Node) {
+    function inner(node: ts.Node, isRoot: boolean) {
+      // Stop at nested function boundaries that are not the root node being walked.
+      // Nested function/arrow expressions that are reachable via BFS will be walked
+      // separately (one call to walkSinksIn per reachable node). This prevents
+      // walking into callback arguments that the BFS intentionally did not follow
+      // (e.g. array iteration methods like .map/.forEach).
+      if (
+        !isRoot &&
+        (ts.isFunctionExpression(node) || ts.isArrowFunction(node) || ts.isFunctionDeclaration(node))
+      ) {
+        return;
+      }
       if (ts.isCallExpression(node)) {
         const prisma = isPrismaShapedCall(node);
         if (prisma) {
@@ -315,9 +341,9 @@ export function extractActual(srcPath: string): AnalyseResult {
       } else if (isProcessEnvAccess(node)) {
         recordSink(entry, "ENV", siteOf(node, sf, "process.env"));
       }
-      ts.forEachChild(node, inner);
+      ts.forEachChild(node, (child) => inner(child, false));
     }
-    inner(n);
+    inner(n, true);
   }
 
   // Per-source-file alias cache (built lazily)
@@ -358,6 +384,47 @@ function isServerToolCall(node: ts.CallExpression): boolean {
   const name = callee.name.text;
   // Match both the older server.tool() API and the current server.registerTool() API.
   return name === "tool" || name === "registerTool";
+}
+
+type AsyncShape = { kind: "promise-chain" } | { kind: "scheduler" } | null;
+
+/**
+ * If `call` is a promise-chain method (.then/.catch/.finally) or an async
+ * scheduling primitive (setTimeout, setInterval, setImmediate, queueMicrotask,
+ * process.nextTick), return the corresponding shape descriptor so the BFS can
+ * follow the callback arguments. Returns null for everything else (including
+ * array iteration methods like .map/.forEach which are intentionally excluded).
+ */
+function getCalleeAsyncShape(call: ts.CallExpression): AsyncShape {
+  const expr = call.expression;
+  // Promise chain: anything.then/.catch/.finally
+  if (ts.isPropertyAccessExpression(expr)) {
+    const name = expr.name.text;
+    if (name === "then" || name === "catch" || name === "finally") {
+      return { kind: "promise-chain" };
+    }
+    // process.nextTick
+    if (
+      name === "nextTick" &&
+      ts.isIdentifier(expr.expression) &&
+      expr.expression.text === "process"
+    ) {
+      return { kind: "scheduler" };
+    }
+  }
+  // Scheduler globals: setTimeout/setImmediate/setInterval/queueMicrotask
+  if (ts.isIdentifier(expr)) {
+    const name = expr.text;
+    if (
+      name === "setTimeout" ||
+      name === "setImmediate" ||
+      name === "setInterval" ||
+      name === "queueMicrotask"
+    ) {
+      return { kind: "scheduler" };
+    }
+  }
+  return null;
 }
 
 /**

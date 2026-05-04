@@ -323,3 +323,104 @@ server.tool("pc", { description: "x" }, async () => {
     await Deno.remove(tmp);
   }
 });
+
+Deno.test("extractActual: .then(callback) callback is reachable", async () => {
+  const src = `
+declare const server: { tool: (n: string, o: { description: string }, h: () => unknown) => void };
+declare function pgQuery(sql: string): Promise<unknown[]>;
+server.tool("then", { description: "x" }, async () => {
+  return pgQuery("SELECT 1").then(() => {
+    process.kill(1);
+  });
+});
+`;
+  const tmp = await Deno.makeTempFile({ suffix: ".ts" });
+  await Deno.writeTextFile(tmp, src);
+  try {
+    const result = await extractActual(tmp);
+    const entry = result.byTool.get("then");
+    assertEquals(entry?.actual.has("EXEC"), true);
+  } finally {
+    await Deno.remove(tmp);
+  }
+});
+
+Deno.test("extractActual: .catch(callback) callback is reachable", async () => {
+  const src = `
+declare const server: { tool: (n: string, o: { description: string }, h: () => unknown) => void };
+declare function pgQuery(sql: string): Promise<unknown[]>;
+server.tool("catch", { description: "x" }, async () => {
+  return pgQuery("SELECT 1").catch(() => {
+    process.kill(1);
+  });
+});
+`;
+  const tmp = await Deno.makeTempFile({ suffix: ".ts" });
+  await Deno.writeTextFile(tmp, src);
+  try {
+    const result = await extractActual(tmp);
+    const entry = result.byTool.get("catch");
+    assertEquals(entry?.actual.has("EXEC"), true);
+  } finally {
+    await Deno.remove(tmp);
+  }
+});
+
+Deno.test("extractActual: setTimeout callback is reachable", async () => {
+  const src = `
+declare const server: { tool: (n: string, o: { description: string }, h: () => unknown) => void };
+server.tool("timer", { description: "x" }, () => {
+  setTimeout(() => {
+    fetch("https://example.com");
+  }, 100);
+});
+`;
+  const tmp = await Deno.makeTempFile({ suffix: ".ts" });
+  await Deno.writeTextFile(tmp, src);
+  try {
+    const result = await extractActual(tmp);
+    const entry = result.byTool.get("timer");
+    assertEquals(entry?.actual.has("NETWORK"), true);
+  } finally {
+    await Deno.remove(tmp);
+  }
+});
+
+Deno.test("extractActual: queueMicrotask callback is reachable", async () => {
+  const src = `
+declare const server: { tool: (n: string, o: { description: string }, h: () => unknown) => void };
+server.tool("micro", { description: "x" }, () => {
+  queueMicrotask(() => {
+    process.kill(1);
+  });
+});
+`;
+  const tmp = await Deno.makeTempFile({ suffix: ".ts" });
+  await Deno.writeTextFile(tmp, src);
+  try {
+    const result = await extractActual(tmp);
+    const entry = result.byTool.get("micro");
+    assertEquals(entry?.actual.has("EXEC"), true);
+  } finally {
+    await Deno.remove(tmp);
+  }
+});
+
+Deno.test("extractActual: array .map callback NOT followed (intentional false-negative)", async () => {
+  const src = `
+declare const server: { tool: (n: string, o: { description: string }, h: (a: { items: unknown[] }) => unknown) => void };
+server.tool("noisy", { description: "x" }, ({ items }) => {
+  return items.map(() => fetch("https://example.com"));
+});
+`;
+  const tmp = await Deno.makeTempFile({ suffix: ".ts" });
+  await Deno.writeTextFile(tmp, src);
+  try {
+    const result = await extractActual(tmp);
+    const entry = result.byTool.get("noisy");
+    // Array methods NOT followed in v0.7. Documented limitation.
+    assertEquals(entry?.actual.has("NETWORK"), false);
+  } finally {
+    await Deno.remove(tmp);
+  }
+});
