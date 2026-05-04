@@ -140,7 +140,7 @@ server.tool("dyn", { description: "x" }, async ({ sql }) => {
   }
 });
 
-Deno.test("extractActual: process.env.X → READ", async () => {
+Deno.test("extractActual: process.env.X → ENV", async () => {
   const src = `
 declare const server: { tool: (n: string, o: { description: string }, h: () => unknown) => void };
 server.tool("env", { description: "x" }, () => {
@@ -152,13 +152,13 @@ server.tool("env", { description: "x" }, () => {
   try {
     const result = await extractActual(tmp);
     const entry = result.byTool.get("env");
-    assertEquals(entry?.actual.has("READ"), true);
+    assertEquals(entry?.actual.has("ENV"), true);
   } finally {
     await Deno.remove(tmp);
   }
 });
 
-Deno.test("extractActual: process.env.X bracket access → READ", async () => {
+Deno.test("extractActual: process.env.X bracket access → ENV", async () => {
   const src = `
 declare const server: { tool: (n: string, o: { description: string }, h: () => unknown) => void };
 server.tool("env2", { description: "x" }, () => {
@@ -170,7 +170,7 @@ server.tool("env2", { description: "x" }, () => {
   try {
     const result = await extractActual(tmp);
     const entry = result.byTool.get("env2");
-    assertEquals(entry?.actual.has("READ"), true);
+    assertEquals(entry?.actual.has("ENV"), true);
   } finally {
     await Deno.remove(tmp);
   }

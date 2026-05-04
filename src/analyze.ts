@@ -197,7 +197,7 @@ export function extractActual(srcPath: string): AnalyseResult {
           }
         }
       } else if (isProcessEnvAccess(node)) {
-        recordSink(entry, "READ", siteOf(node, sf, "process.env"));
+        recordSink(entry, "ENV", siteOf(node, sf, "process.env"));
       }
       ts.forEachChild(node, inner);
     }

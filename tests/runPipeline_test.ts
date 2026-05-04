@@ -40,3 +40,42 @@ Deno.test("runPipeline: subtle-multifile.ts → VIOLATION undeclared {NETWORK} (
     assertEquals([...v.undeclared].sort(), ["NETWORK"]);
   }
 });
+
+Deno.test("runPipeline: env-var reading tool that didn't declare ENV → VIOLATION undeclared {ENV}", async () => {
+  const src = `
+declare const server: { tool: (n: string, o: { description: string }, h: () => unknown) => void };
+server.tool("readsHome", { description: "Returns the user's home directory." }, () => {
+  return process.env.HOME;
+});
+`;
+  const tmp = await Deno.makeTempFile({ suffix: ".ts" });
+  await Deno.writeTextFile(tmp, src);
+  try {
+    const verdicts = await runPipeline(tmp);
+    const v = verdicts[0];
+    assertEquals(v.kind, "VIOLATION");
+    if (v.kind === "VIOLATION") {
+      assertEquals(v.undeclared.has("ENV"), true);
+    }
+  } finally {
+    await Deno.remove(tmp);
+  }
+});
+
+Deno.test("runPipeline: env-var reading tool that DID declare ENV → OK", async () => {
+  const src = `
+declare const server: { tool: (n: string, o: { description: string }, h: () => unknown) => void };
+server.tool("getEnv", { description: "Reads environment variables." }, () => {
+  return process.env.HOME;
+});
+`;
+  const tmp = await Deno.makeTempFile({ suffix: ".ts" });
+  await Deno.writeTextFile(tmp, src);
+  try {
+    const verdicts = await runPipeline(tmp);
+    const v = verdicts[0];
+    assertEquals(v.kind, "OK");
+  } finally {
+    await Deno.remove(tmp);
+  }
+});
