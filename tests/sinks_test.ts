@@ -37,9 +37,9 @@ Deno.test("SINKS does not classify pure compute", () => {
 });
 
 Deno.test("SINKS has expanded NETWORK entries (axios full surface)", () => {
-  assertEquals(SINKS.get("axios.default.put"), "NETWORK");
-  assertEquals(SINKS.get("axios.default.delete"), "NETWORK");
-  assertEquals(SINKS.get("axios.default.patch"), "NETWORK");
+  assertEquals(SINKS.get("axios.put"), "NETWORK");
+  assertEquals(SINKS.get("axios.delete"), "NETWORK");
+  assertEquals(SINKS.get("axios.patch"), "NETWORK");
 });
 
 Deno.test("SINKS has undici entries", () => {
@@ -49,4 +49,19 @@ Deno.test("SINKS has undici entries", () => {
 
 Deno.test("SINKS has ws WebSocket entry", () => {
   assertEquals(SINKS.get("ws.WebSocket"), "NETWORK");
+});
+
+Deno.test("SINKS has mongodb entries", () => {
+  assertEquals(SINKS.get("mongodb.MongoClient"), "NETWORK");
+  assertEquals(SINKS.get("mongoose.connect"), "NETWORK");
+});
+
+Deno.test("SINKS has nodemailer/redis/ioredis entries", () => {
+  assertEquals(SINKS.get("nodemailer.createTransport"), "NETWORK");
+  assertEquals(SINKS.get("redis.createClient"), "NETWORK");
+  assertEquals(SINKS.get("ioredis.default"), "NETWORK");
+});
+
+Deno.test("SINKS has node_fetch default entry", () => {
+  assertEquals(SINKS.get("node_fetch.default"), "NETWORK");
 });

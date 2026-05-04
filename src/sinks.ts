@@ -34,15 +34,17 @@ export const SINKS: ReadonlyMap<string, Leaf> = new Map<string, Leaf>([
   ["net.createConnection", "NETWORK"],
   ["net.connect", "NETWORK"],
   ["dgram.createSocket", "NETWORK"],
-  // axios full surface
-  ["axios.default.put", "NETWORK"],
-  ["axios.default.delete", "NETWORK"],
-  ["axios.default.patch", "NETWORK"],
-  ["axios.default.head", "NETWORK"],
-  ["axios.default.options", "NETWORK"],
-  ["axios.default.request", "NETWORK"],
-  ["axios.default.postForm", "NETWORK"],
-  ["axios.default.getUri", "NETWORK"],
+  // axios full surface (source-form keys — import-alias resolver maps `import axios from "axios"` → namespace `axios`)
+  ["axios.get", "NETWORK"],
+  ["axios.post", "NETWORK"],
+  ["axios.put", "NETWORK"],
+  ["axios.delete", "NETWORK"],
+  ["axios.patch", "NETWORK"],
+  ["axios.head", "NETWORK"],
+  ["axios.options", "NETWORK"],
+  ["axios.request", "NETWORK"],
+  ["axios.postForm", "NETWORK"],
+  ["axios.getUri", "NETWORK"],
   // undici (modern Node HTTP client)
   ["undici.fetch", "NETWORK"],
   ["undici.request", "NETWORK"],
@@ -51,6 +53,19 @@ export const SINKS: ReadonlyMap<string, Leaf> = new Map<string, Leaf>([
   // ws (WebSocket)
   ["ws.WebSocket", "NETWORK"],
   ["ws.WebSocketServer", "NETWORK"],
+  // node-fetch
+  ["node_fetch.default", "NETWORK"],
+  // mongodb / mongoose
+  ["mongodb.MongoClient", "NETWORK"],
+  ["mongodb.connect", "NETWORK"],
+  ["mongoose.connect", "NETWORK"],
+  ["mongoose.createConnection", "NETWORK"],
+  // nodemailer (creates SMTP client → opens connection on send)
+  ["nodemailer.createTransport", "NETWORK"],
+  // redis / ioredis
+  ["redis.createClient", "NETWORK"],
+  ["ioredis.default", "NETWORK"],
+  ["ioredis.Redis", "NETWORK"],
 
   // READ — Node --allow-fs-read
   ["fs.readFileSync", "READ"],
