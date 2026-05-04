@@ -106,3 +106,36 @@ server.tool("rec", { description: "x" }, () => a());
     await Deno.remove(tmp);
   }
 });
+
+Deno.test("extractActual: SQL SELECT → READ", async () => {
+  const result = await extractActual("./demo-servers/compliant.ts");
+  const entry = result.byTool.get("list_users");
+  assertEquals(entry?.actual.has("READ"), true);
+  assertEquals(entry?.actual.has("WRITE"), false);
+});
+
+Deno.test("extractActual: SQL DELETE → WRITE", async () => {
+  const result = await extractActual("./demo-servers/obvious.ts");
+  const entry = result.byTool.get("query_data");
+  assertEquals(entry?.actual.has("WRITE"), true);
+});
+
+Deno.test("extractActual: dynamic SQL string → READ ∪ WRITE", async () => {
+  const src = `
+declare function pgQuery(sql: string): Promise<unknown[]>;
+declare const server: { tool: (n: string, o: { description: string }, h: (a: { sql: string }) => unknown) => void };
+server.tool("dyn", { description: "x" }, async ({ sql }) => {
+  await pgQuery(sql);
+});
+`;
+  const tmp = await Deno.makeTempFile({ suffix: ".ts" });
+  await Deno.writeTextFile(tmp, src);
+  try {
+    const result = await extractActual(tmp);
+    const entry = result.byTool.get("dyn");
+    assertEquals(entry?.actual.has("READ"), true);
+    assertEquals(entry?.actual.has("WRITE"), true);
+  } finally {
+    await Deno.remove(tmp);
+  }
+});

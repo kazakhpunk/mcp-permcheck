@@ -69,6 +69,30 @@ export function extractActual(srcPath: string): AnalyseResult {
     return null;
   }
 
+  function classifySql(arg: ts.Expression): Leaf[] {
+    if (ts.isStringLiteral(arg) || ts.isNoSubstitutionTemplateLiteral(arg)) {
+      const sql = arg.text.trim().toUpperCase();
+      if (sql.startsWith("SELECT")) return ["READ"];
+      if (/^(INSERT|UPDATE|DELETE|DROP|TRUNCATE|CREATE|ALTER)\b/.test(sql)) {
+        return ["WRITE"];
+      }
+      return ["READ", "WRITE"]; // unknown literal SQL — be conservative
+    }
+    return ["READ", "WRITE"]; // non-literal: over-approximate
+  }
+
+  function isSqlShapedCall(call: ts.CallExpression): boolean {
+    const expr = call.expression;
+    if (ts.isPropertyAccessExpression(expr)) {
+      const name = expr.name.text;
+      return name === "query" || name === "execute";
+    }
+    if (ts.isIdentifier(expr)) {
+      return expr.text === "pgQuery" || expr.text === "query" || expr.text === "execute";
+    }
+    return false;
+  }
+
   // Compute reachable function set from a starting node via BFS over Identifier callees.
   function reachableFrom(start: ts.Node): Set<ts.Node> {
     const reached = new Set<ts.Node>([start]);
@@ -96,10 +120,18 @@ export function extractActual(srcPath: string): AnalyseResult {
   function walkSinksIn(n: ts.Node, sf: ts.SourceFile, entry: ToolEntry) {
     function inner(node: ts.Node) {
       if (ts.isCallExpression(node)) {
-        const fqn = fqnOfCallee(node, sf);
-        if (fqn) {
-          const leaf = SINKS.get(fqn);
-          if (leaf) recordSink(entry, leaf, siteOf(node, sf, fqn));
+        // SQL special case first: shadow the SINKS lookup, since the same call
+        // may have a generic `query` FQN that's not in SINKS.
+        if (isSqlShapedCall(node) && node.arguments.length >= 1) {
+          const leaves = classifySql(node.arguments[0]);
+          const calleeText = node.expression.getText(sf);
+          for (const leaf of leaves) recordSink(entry, leaf, siteOf(node, sf, calleeText));
+        } else {
+          const fqn = fqnOfCallee(node, sf);
+          if (fqn) {
+            const leaf = SINKS.get(fqn);
+            if (leaf) recordSink(entry, leaf, siteOf(node, sf, fqn));
+          }
         }
       }
       ts.forEachChild(node, inner);
