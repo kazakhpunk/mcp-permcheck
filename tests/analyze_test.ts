@@ -29,7 +29,7 @@ server.tool("b", { description: "Writes things." }, () => {});
   }
 });
 
-Deno.test("extractActual: detects fetch() as NETWORK", async () => {
+Deno.test("extractActual: detects fetch() as NETWORK_OUTBOUND", async () => {
   const src = `
 declare const server: { tool: (n: string, o: { description: string }, h: () => unknown) => void };
 server.tool("net", { description: "anything" }, async () => {
@@ -41,13 +41,13 @@ server.tool("net", { description: "anything" }, async () => {
   try {
     const result = await extractActual(tmp);
     const entry = result.byTool.get("net");
-    assertEquals(entry?.actual.has("NETWORK"), true);
+    assertEquals(entry?.actual.has("NETWORK_OUTBOUND"), true);
   } finally {
     await Deno.remove(tmp);
   }
 });
 
-Deno.test("extractActual: detects process.kill as EXEC", async () => {
+Deno.test("extractActual: detects process.kill as EXEC_PROCESS", async () => {
   const src = `
 declare const server: { tool: (n: string, o: { description: string }, h: (a: { pid: number }) => unknown) => void };
 server.tool("k", { description: "anything" }, async ({ pid }) => {
@@ -59,7 +59,7 @@ server.tool("k", { description: "anything" }, async ({ pid }) => {
   try {
     const result = await extractActual(tmp);
     const entry = result.byTool.get("k");
-    assertEquals(entry?.actual.has("EXEC"), true);
+    assertEquals(entry?.actual.has("EXEC_PROCESS"), true);
   } finally {
     await Deno.remove(tmp);
   }
@@ -86,7 +86,7 @@ server.tool("noop", { description: "anything" }, () => {
 Deno.test("extractActual: follows intra-file helper functions (subtle.ts)", async () => {
   const result = await extractActual("./demo-servers/subtle.ts");
   const entry = result.byTool.get("get_weather");
-  assertEquals(entry?.actual.has("NETWORK"), true);
+  assertEquals(entry?.actual.has("NETWORK_OUTBOUND"), true);
 });
 
 Deno.test("extractActual: does not loop on mutual recursion", async () => {
@@ -107,20 +107,20 @@ server.tool("rec", { description: "x" }, () => a());
   }
 });
 
-Deno.test("extractActual: SQL SELECT → READ", async () => {
+Deno.test("extractActual: SQL SELECT → READ_DB", async () => {
   const result = await extractActual("./demo-servers/compliant.ts");
   const entry = result.byTool.get("list_users");
-  assertEquals(entry?.actual.has("READ"), true);
-  assertEquals(entry?.actual.has("WRITE"), false);
+  assertEquals(entry?.actual.has("READ_DB"), true);
+  assertEquals(entry?.actual.has("WRITE_DB"), false);
 });
 
-Deno.test("extractActual: SQL DELETE → WRITE", async () => {
+Deno.test("extractActual: SQL DELETE → WRITE_DB", async () => {
   const result = await extractActual("./demo-servers/obvious.ts");
   const entry = result.byTool.get("query_data");
-  assertEquals(entry?.actual.has("WRITE"), true);
+  assertEquals(entry?.actual.has("WRITE_DB"), true);
 });
 
-Deno.test("extractActual: dynamic SQL string → READ ∪ WRITE", async () => {
+Deno.test("extractActual: dynamic SQL string → READ_DB ∪ WRITE_DB", async () => {
   const src = `
 declare function pgQuery(sql: string): Promise<unknown[]>;
 declare const server: { tool: (n: string, o: { description: string }, h: (a: { sql: string }) => unknown) => void };
@@ -133,8 +133,8 @@ server.tool("dyn", { description: "x" }, async ({ sql }) => {
   try {
     const result = await extractActual(tmp);
     const entry = result.byTool.get("dyn");
-    assertEquals(entry?.actual.has("READ"), true);
-    assertEquals(entry?.actual.has("WRITE"), true);
+    assertEquals(entry?.actual.has("READ_DB"), true);
+    assertEquals(entry?.actual.has("WRITE_DB"), true);
   } finally {
     await Deno.remove(tmp);
   }
@@ -179,19 +179,19 @@ server.tool("env2", { description: "x" }, () => {
 Deno.test("extractActual: follows imported user functions across files", async () => {
   const result = await extractActual("./demo-servers/subtle-multifile.ts");
   const entry = result.byTool.get("get_weather");
-  assertEquals(entry?.actual.has("NETWORK"), true);
+  assertEquals(entry?.actual.has("NETWORK_OUTBOUND"), true);
 });
 
 Deno.test("extractActual: cross-file witnesses reference the helper file, not the entry", async () => {
   const result = await extractActual("./demo-servers/subtle-multifile.ts");
   const entry = result.byTool.get("get_weather");
-  const networkSites = entry?.witnesses.get("NETWORK") ?? [];
+  const networkSites = entry?.witnesses.get("NETWORK_OUTBOUND") ?? [];
   // The witness for fetch() should be in subtle-multifile-helper.ts, not subtle-multifile.ts
   assertEquals(networkSites.length > 0, true);
   assertEquals(networkSites[0].file, "subtle-multifile-helper.ts");
 });
 
-Deno.test("extractActual: named import { readFile } from node:fs/promises → READ", async () => {
+Deno.test("extractActual: named import { readFile } from node:fs/promises → READ_FS", async () => {
   const src = `
 import { readFile } from "node:fs/promises";
 declare const server: { tool: (n: string, o: { description: string }, h: () => unknown) => void };
@@ -204,13 +204,13 @@ server.tool("rf", { description: "x" }, async () => {
   try {
     const result = await extractActual(tmp);
     const entry = result.byTool.get("rf");
-    assertEquals(entry?.actual.has("READ"), true);
+    assertEquals(entry?.actual.has("READ_FS"), true);
   } finally {
     await Deno.remove(tmp);
   }
 });
 
-Deno.test("extractActual: aliased named import { readFile as rf } → READ", async () => {
+Deno.test("extractActual: aliased named import { readFile as rf } → READ_FS", async () => {
   const src = `
 import { readFile as rf } from "node:fs/promises";
 declare const server: { tool: (n: string, o: { description: string }, h: () => unknown) => void };
@@ -223,13 +223,13 @@ server.tool("aliased", { description: "x" }, async () => {
   try {
     const result = await extractActual(tmp);
     const entry = result.byTool.get("aliased");
-    assertEquals(entry?.actual.has("READ"), true);
+    assertEquals(entry?.actual.has("READ_FS"), true);
   } finally {
     await Deno.remove(tmp);
   }
 });
 
-Deno.test("extractActual: namespace import * as fsp → fsp.readFile → READ", async () => {
+Deno.test("extractActual: namespace import * as fsp → fsp.readFile → READ_FS", async () => {
   const src = `
 import * as fsp from "node:fs/promises";
 declare const server: { tool: (n: string, o: { description: string }, h: () => unknown) => void };
@@ -242,13 +242,13 @@ server.tool("ns", { description: "x" }, async () => {
   try {
     const result = await extractActual(tmp);
     const entry = result.byTool.get("ns");
-    assertEquals(entry?.actual.has("READ"), true);
+    assertEquals(entry?.actual.has("READ_FS"), true);
   } finally {
     await Deno.remove(tmp);
   }
 });
 
-Deno.test("extractActual: default import nodeFetch from node-fetch → NETWORK", async () => {
+Deno.test("extractActual: default import nodeFetch from node-fetch → NETWORK_OUTBOUND", async () => {
   const src = `
 import nodeFetch from "node-fetch";
 declare const server: { tool: (n: string, o: { description: string }, h: () => unknown) => void };
@@ -261,13 +261,13 @@ server.tool("nf", { description: "x" }, async () => {
   try {
     const result = await extractActual(tmp);
     const entry = result.byTool.get("nf");
-    assertEquals(entry?.actual.has("NETWORK"), true);
+    assertEquals(entry?.actual.has("NETWORK_OUTBOUND"), true);
   } finally {
     await Deno.remove(tmp);
   }
 });
 
-Deno.test("extractActual: default import axios → axios.post → NETWORK", async () => {
+Deno.test("extractActual: default import axios → axios.post → NETWORK_OUTBOUND", async () => {
   const src = `
 import axios from "axios";
 declare const server: { tool: (n: string, o: { description: string }, h: () => unknown) => void };
@@ -280,13 +280,13 @@ server.tool("ax", { description: "x" }, async () => {
   try {
     const result = await extractActual(tmp);
     const entry = result.byTool.get("ax");
-    assertEquals(entry?.actual.has("NETWORK"), true);
+    assertEquals(entry?.actual.has("NETWORK_OUTBOUND"), true);
   } finally {
     await Deno.remove(tmp);
   }
 });
 
-Deno.test("extractActual: prisma-shaped call findMany → READ", async () => {
+Deno.test("extractActual: prisma-shaped call findMany → READ_DB", async () => {
   const src = `
 declare const prisma: any;
 declare const server: { tool: (n: string, o: { description: string }, h: () => unknown) => void };
@@ -299,13 +299,13 @@ server.tool("pr", { description: "x" }, async () => {
   try {
     const result = await extractActual(tmp);
     const entry = result.byTool.get("pr");
-    assertEquals(entry?.actual.has("READ"), true);
+    assertEquals(entry?.actual.has("READ_DB"), true);
   } finally {
     await Deno.remove(tmp);
   }
 });
 
-Deno.test("extractActual: prisma-shaped call create → WRITE", async () => {
+Deno.test("extractActual: prisma-shaped call create → WRITE_DB", async () => {
   const src = `
 declare const prisma: any;
 declare const server: { tool: (n: string, o: { description: string }, h: () => unknown) => void };
@@ -318,7 +318,7 @@ server.tool("pc", { description: "x" }, async () => {
   try {
     const result = await extractActual(tmp);
     const entry = result.byTool.get("pc");
-    assertEquals(entry?.actual.has("WRITE"), true);
+    assertEquals(entry?.actual.has("WRITE_DB"), true);
   } finally {
     await Deno.remove(tmp);
   }
@@ -339,7 +339,7 @@ server.tool("then", { description: "x" }, async () => {
   try {
     const result = await extractActual(tmp);
     const entry = result.byTool.get("then");
-    assertEquals(entry?.actual.has("EXEC"), true);
+    assertEquals(entry?.actual.has("EXEC_PROCESS"), true);
   } finally {
     await Deno.remove(tmp);
   }
@@ -360,7 +360,7 @@ server.tool("catch", { description: "x" }, async () => {
   try {
     const result = await extractActual(tmp);
     const entry = result.byTool.get("catch");
-    assertEquals(entry?.actual.has("EXEC"), true);
+    assertEquals(entry?.actual.has("EXEC_PROCESS"), true);
   } finally {
     await Deno.remove(tmp);
   }
@@ -380,7 +380,7 @@ server.tool("timer", { description: "x" }, () => {
   try {
     const result = await extractActual(tmp);
     const entry = result.byTool.get("timer");
-    assertEquals(entry?.actual.has("NETWORK"), true);
+    assertEquals(entry?.actual.has("NETWORK_OUTBOUND"), true);
   } finally {
     await Deno.remove(tmp);
   }
@@ -400,7 +400,7 @@ server.tool("micro", { description: "x" }, () => {
   try {
     const result = await extractActual(tmp);
     const entry = result.byTool.get("micro");
-    assertEquals(entry?.actual.has("EXEC"), true);
+    assertEquals(entry?.actual.has("EXEC_PROCESS"), true);
   } finally {
     await Deno.remove(tmp);
   }
@@ -419,7 +419,7 @@ server.tool("noisy", { description: "x" }, ({ items }) => {
     const result = await extractActual(tmp);
     const entry = result.byTool.get("noisy");
     // Array methods NOT followed in v0.7. Documented limitation.
-    assertEquals(entry?.actual.has("NETWORK"), false);
+    assertEquals(entry?.actual.has("NETWORK_OUTBOUND"), false);
   } finally {
     await Deno.remove(tmp);
   }

@@ -46,6 +46,25 @@ Deno.test("meet: intersection of two sets", () => {
   );
 });
 
-Deno.test("ALL_LEAVES has exactly five members", () => {
-  assertEquals(ALL_LEAVES.size, 5);
+Deno.test("ALL_LEAVES has exactly thirteen members", () => {
+  assertEquals(ALL_LEAVES.size, 13);
+});
+
+Deno.test("subseteq hierarchy: child covered by parent", () => {
+  assertEquals(subseteq(new Set<Leaf>(["READ_FS"]), new Set<Leaf>(["READ"])), true);
+});
+
+Deno.test("subseteq hierarchy: parent NOT covered by child", () => {
+  assertEquals(subseteq(new Set<Leaf>(["READ"]), new Set<Leaf>(["READ_FS"])), false);
+});
+
+Deno.test("subseteq hierarchy: siblings are not subsets", () => {
+  assertEquals(subseteq(new Set<Leaf>(["READ_FS"]), new Set<Leaf>(["READ_DB"])), false);
+});
+
+Deno.test("subseteq hierarchy: mixed children covered by parent", () => {
+  assertEquals(
+    subseteq(new Set<Leaf>(["READ_FS", "READ_DB"]), new Set<Leaf>(["READ"])),
+    true,
+  );
 });

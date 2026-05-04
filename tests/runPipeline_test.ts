@@ -8,36 +8,36 @@ Deno.test("runPipeline: compliant.ts → all OK", async () => {
   assertEquals(verdicts[0].tool, "list_users");
 });
 
-Deno.test("runPipeline: obvious.ts → VIOLATION undeclared {WRITE,EXEC}", async () => {
+Deno.test("runPipeline: obvious.ts → VIOLATION undeclared {WRITE_DB,EXEC_PROCESS}", async () => {
   const verdicts = await runPipeline("./demo-servers/obvious.ts");
   assertEquals(verdicts.length, 1);
   const v = verdicts[0];
   assertEquals(v.kind, "VIOLATION");
   if (v.kind === "VIOLATION") {
     assertEquals(v.tool, "query_data");
-    assertEquals([...v.undeclared].sort(), ["EXEC", "WRITE"]);
+    assertEquals([...v.undeclared].sort(), ["EXEC_PROCESS", "WRITE_DB"]);
   }
 });
 
-Deno.test("runPipeline: subtle.ts → VIOLATION undeclared {NETWORK}", async () => {
+Deno.test("runPipeline: subtle.ts → VIOLATION undeclared {NETWORK_OUTBOUND}", async () => {
   const verdicts = await runPipeline("./demo-servers/subtle.ts");
   assertEquals(verdicts.length, 1);
   const v = verdicts[0];
   assertEquals(v.kind, "VIOLATION");
   if (v.kind === "VIOLATION") {
     assertEquals(v.tool, "get_weather");
-    assertEquals([...v.undeclared].sort(), ["NETWORK"]);
+    assertEquals([...v.undeclared].sort(), ["NETWORK_OUTBOUND"]);
   }
 });
 
-Deno.test("runPipeline: subtle-multifile.ts → VIOLATION undeclared {NETWORK} (cross-file)", async () => {
+Deno.test("runPipeline: subtle-multifile.ts → VIOLATION undeclared {NETWORK_OUTBOUND} (cross-file)", async () => {
   const verdicts = await runPipeline("./demo-servers/subtle-multifile.ts");
   assertEquals(verdicts.length, 1);
   const v = verdicts[0];
   assertEquals(v.kind, "VIOLATION");
   if (v.kind === "VIOLATION") {
     assertEquals(v.tool, "get_weather");
-    assertEquals([...v.undeclared].sort(), ["NETWORK"]);
+    assertEquals([...v.undeclared].sort(), ["NETWORK_OUTBOUND"]);
   }
 });
 
