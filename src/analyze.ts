@@ -1,4 +1,5 @@
 import ts from "typescript";
+import { SINKS } from "./sinks.ts";
 import type { CallSite, Leaf } from "./types.ts";
 
 export interface ToolEntry {
@@ -23,15 +24,65 @@ export function extractActual(srcPath: string): AnalyseResult {
   }
   const result: AnalyseResult = { byTool: new Map(), notes: [] };
 
+  function recordSink(entry: ToolEntry, leaf: Leaf, site: CallSite) {
+    entry.actual.add(leaf);
+    const list = entry.witnesses.get(leaf) ?? [];
+    list.push(site);
+    entry.witnesses.set(leaf, list);
+  }
+
+  function siteOf(node: ts.Node, sf: ts.SourceFile, symbol: string): CallSite {
+    const { line, character } = sf.getLineAndCharacterOfPosition(node.getStart(sf));
+    return {
+      file: sf.fileName.split("/").pop() ?? sf.fileName,
+      line: line + 1,
+      col: character + 1,
+      symbol,
+    };
+  }
+
+  function fqnOfCallee(call: ts.CallExpression, sf: ts.SourceFile): string | null {
+    const expr = call.expression;
+    // PropertyAccess: foo.bar(...) or a.b.c(...)
+    if (ts.isPropertyAccessExpression(expr)) {
+      const text = expr.getText(sf); // "process.kill", "pg.query"
+      return text;
+    }
+    // Identifier: bareName(...)
+    if (ts.isIdentifier(expr)) {
+      // Globals: fetch, eval, etc.
+      if (SINKS.has(`globalThis.${expr.text}`)) return `globalThis.${expr.text}`;
+      return null;
+    }
+    return null;
+  }
+
+  function visitToolHandler(handler: ts.Node, sf: ts.SourceFile, entry: ToolEntry) {
+    function walk(n: ts.Node) {
+      if (ts.isCallExpression(n)) {
+        const fqn = fqnOfCallee(n, sf);
+        if (fqn) {
+          const leaf = SINKS.get(fqn);
+          if (leaf) recordSink(entry, leaf, siteOf(n, sf, fqn));
+        }
+      }
+      ts.forEachChild(n, walk);
+    }
+    walk(handler);
+  }
+
   function visit(node: ts.Node) {
     if (ts.isCallExpression(node) && isServerToolCall(node)) {
-      const entry = parseServerToolCall(node, result.notes);
-      if (entry) {
-        result.byTool.set(entry.name, {
-          description: entry.description,
+      const meta = parseServerToolCall(node, result.notes);
+      if (meta) {
+        const entry: ToolEntry = {
+          description: meta.description,
           actual: new Set<Leaf>(),
           witnesses: new Map<Leaf, CallSite[]>(),
-        });
+        };
+        const handler = node.arguments[2];
+        visitToolHandler(handler, sourceFile!, entry);
+        result.byTool.set(meta.name, entry);
       }
     }
     ts.forEachChild(node, visit);
@@ -41,8 +92,6 @@ export function extractActual(srcPath: string): AnalyseResult {
 }
 
 function isServerToolCall(node: ts.CallExpression): boolean {
-  // Match `<something>.tool(...)`. We don't require the receiver to be named
-  // `server` exactly — many servers rebind it.
   const callee = node.expression;
   return ts.isPropertyAccessExpression(callee) && callee.name.text === "tool";
 }

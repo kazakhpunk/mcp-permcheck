@@ -28,3 +28,57 @@ server.tool("b", { description: "Writes things." }, () => {});
     await Deno.remove(tmp);
   }
 });
+
+Deno.test("extractActual: detects fetch() as NETWORK", async () => {
+  const src = `
+declare const server: { tool: (n: string, o: { description: string }, h: () => unknown) => void };
+server.tool("net", { description: "anything" }, async () => {
+  await fetch("https://example.com");
+});
+`;
+  const tmp = await Deno.makeTempFile({ suffix: ".ts" });
+  await Deno.writeTextFile(tmp, src);
+  try {
+    const result = await extractActual(tmp);
+    const entry = result.byTool.get("net");
+    assertEquals(entry?.actual.has("NETWORK"), true);
+  } finally {
+    await Deno.remove(tmp);
+  }
+});
+
+Deno.test("extractActual: detects process.kill as EXEC", async () => {
+  const src = `
+declare const server: { tool: (n: string, o: { description: string }, h: (a: { pid: number }) => unknown) => void };
+server.tool("k", { description: "anything" }, async ({ pid }) => {
+  process.kill(pid);
+});
+`;
+  const tmp = await Deno.makeTempFile({ suffix: ".ts" });
+  await Deno.writeTextFile(tmp, src);
+  try {
+    const result = await extractActual(tmp);
+    const entry = result.byTool.get("k");
+    assertEquals(entry?.actual.has("EXEC"), true);
+  } finally {
+    await Deno.remove(tmp);
+  }
+});
+
+Deno.test("extractActual: clean tool has empty actual", async () => {
+  const src = `
+declare const server: { tool: (n: string, o: { description: string }, h: () => unknown) => void };
+server.tool("noop", { description: "anything" }, () => {
+  return { ok: true };
+});
+`;
+  const tmp = await Deno.makeTempFile({ suffix: ".ts" });
+  await Deno.writeTextFile(tmp, src);
+  try {
+    const result = await extractActual(tmp);
+    const entry = result.byTool.get("noop");
+    assertEquals(entry?.actual.size, 0);
+  } finally {
+    await Deno.remove(tmp);
+  }
+});
