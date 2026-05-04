@@ -263,6 +263,23 @@ export function extractActual(srcPath: string): AnalyseResult {
             }
           }
 
+          // NEW: PropertyAccessExpression callee — resolve via type checker (monomorphic CHA).
+          // Handles this.method() and instance.method() by resolving to the MethodDeclaration.
+          if (ts.isPropertyAccessExpression(expr)) {
+            const symbol = checker.getSymbolAtLocation(expr.name);
+            if (symbol) {
+              for (const d of symbol.getDeclarations() ?? []) {
+                if (ts.isMethodDeclaration(d) && d.body) {
+                  if (!reached.has(d)) {
+                    reached.add(d);
+                    queue.push(d);
+                  }
+                  break;
+                }
+              }
+            }
+          }
+
           // Follow callback arguments for known async patterns.
           const asyncShape = getCalleeAsyncShape(n);
           if (asyncShape !== null) {
@@ -318,7 +335,7 @@ export function extractActual(srcPath: string): AnalyseResult {
       // (e.g. array iteration methods like .map/.forEach).
       if (
         !isRoot &&
-        (ts.isFunctionExpression(node) || ts.isArrowFunction(node) || ts.isFunctionDeclaration(node))
+        (ts.isFunctionExpression(node) || ts.isArrowFunction(node) || ts.isFunctionDeclaration(node) || ts.isMethodDeclaration(node))
       ) {
         return;
       }

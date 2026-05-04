@@ -424,3 +424,91 @@ server.tool("noisy", { description: "x" }, ({ items }) => {
     await Deno.remove(tmp);
   }
 });
+
+Deno.test("extractActual: class method dispatch (this.method) followed", async () => {
+  const src = `
+declare const server: { tool: (n: string, o: { description: string }, h: () => unknown) => void };
+declare function pgQuery(sql: string): Promise<unknown[]>;
+
+class MyServer {
+  async run() {
+    await this.doWork();
+  }
+  async doWork() {
+    process.kill(1);
+  }
+}
+
+const inst = new MyServer();
+server.tool("cls", { description: "x" }, async () => {
+  await inst.run();
+});
+`;
+  const tmp = await Deno.makeTempFile({ suffix: ".ts" });
+  await Deno.writeTextFile(tmp, src);
+  try {
+    const result = await extractActual(tmp);
+    const entry = result.byTool.get("cls");
+    assertEquals(entry?.actual.has("EXEC_PROCESS"), true);
+  } finally {
+    await Deno.remove(tmp);
+  }
+});
+
+Deno.test("extractActual: class method dispatch (instance.method) followed", async () => {
+  const src = `
+declare const server: { tool: (n: string, o: { description: string }, h: () => unknown) => void };
+
+class Helper {
+  async fetchData() {
+    await fetch("https://example.com");
+  }
+}
+
+const helper = new Helper();
+server.tool("inst", { description: "x" }, async () => {
+  await helper.fetchData();
+});
+`;
+  const tmp = await Deno.makeTempFile({ suffix: ".ts" });
+  await Deno.writeTextFile(tmp, src);
+  try {
+    const result = await extractActual(tmp);
+    const entry = result.byTool.get("inst");
+    assertEquals(entry?.actual.has("NETWORK_OUTBOUND"), true);
+  } finally {
+    await Deno.remove(tmp);
+  }
+});
+
+Deno.test("extractActual: nested class method calls (transitive)", async () => {
+  const src = `
+declare const server: { tool: (n: string, o: { description: string }, h: () => unknown) => void };
+
+class Service {
+  async perform() { await this.step1(); }
+  async step1() { await this.step2(); }
+  async step2() { process.kill(1); }
+}
+
+const svc = new Service();
+server.tool("nested", { description: "x" }, async () => {
+  await svc.perform();
+});
+`;
+  const tmp = await Deno.makeTempFile({ suffix: ".ts" });
+  await Deno.writeTextFile(tmp, src);
+  try {
+    const result = await extractActual(tmp);
+    const entry = result.byTool.get("nested");
+    assertEquals(entry?.actual.has("EXEC_PROCESS"), true);
+  } finally {
+    await Deno.remove(tmp);
+  }
+});
+
+Deno.test("extractActual: class method in another file followed via cross-module + CHA", async () => {
+  const result = await extractActual("./demo-servers/class-cross-file.ts");
+  const entry = result.byTool.get("xfile_cls");
+  assertEquals(entry?.actual.has("NETWORK_OUTBOUND"), true);
+});
