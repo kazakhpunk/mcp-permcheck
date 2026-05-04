@@ -98,7 +98,7 @@ function isPrismaShapedCall(call: ts.CallExpression): { leaf: Leaf } | null {
   if (!isRead && !isWrite) return null;
   // Check the receiver is itself a PropertyAccessExpression (for the .<model>. layer)
   if (!ts.isPropertyAccessExpression(expr.expression)) return null;
-  return { leaf: isRead ? "READ" : "WRITE" };
+  return { leaf: isRead ? "READ_DB" : "WRITE_DB" };
 }
 
 export interface ToolEntry {
@@ -195,13 +195,13 @@ export function extractActual(srcPath: string): AnalyseResult {
   function classifySql(arg: ts.Expression): Leaf[] {
     if (ts.isStringLiteral(arg) || ts.isNoSubstitutionTemplateLiteral(arg)) {
       const sql = arg.text.trim().toUpperCase();
-      if (sql.startsWith("SELECT")) return ["READ"];
+      if (sql.startsWith("SELECT")) return ["READ_DB"];
       if (/^(INSERT|UPDATE|DELETE|DROP|TRUNCATE|CREATE|ALTER)\b/.test(sql)) {
-        return ["WRITE"];
+        return ["WRITE_DB"];
       }
-      return ["READ", "WRITE"]; // unknown literal SQL — be conservative
+      return ["READ_DB", "WRITE_DB"]; // unknown literal SQL — be conservative
     }
-    return ["READ", "WRITE"]; // non-literal: over-approximate
+    return ["READ_DB", "WRITE_DB"]; // non-literal: over-approximate
   }
 
   function isSqlShapedCall(call: ts.CallExpression): boolean {
