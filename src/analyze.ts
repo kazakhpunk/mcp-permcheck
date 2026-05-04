@@ -19,10 +19,28 @@ export function extractActual(srcPath: string): AnalyseResult {
     options: { allowJs: false, noEmit: true, target: ts.ScriptTarget.ES2022 },
   });
   const sourceFile = program.getSourceFile(srcPath);
-  if (!sourceFile) {
-    throw new Error(`could not load source: ${srcPath}`);
-  }
+  if (!sourceFile) throw new Error(`could not load source: ${srcPath}`);
   const result: AnalyseResult = { byTool: new Map(), notes: [] };
+
+  // Pass 1: index file-local function bodies by name.
+  const fnsByName = new Map<string, ts.Node>();
+  function indexFns(n: ts.Node) {
+    if (ts.isFunctionDeclaration(n) && n.name) {
+      fnsByName.set(n.name.text, n);
+    } else if (ts.isVariableStatement(n)) {
+      for (const decl of n.declarationList.declarations) {
+        if (
+          ts.isIdentifier(decl.name) &&
+          decl.initializer &&
+          (ts.isFunctionExpression(decl.initializer) || ts.isArrowFunction(decl.initializer))
+        ) {
+          fnsByName.set(decl.name.text, decl.initializer);
+        }
+      }
+    }
+    ts.forEachChild(n, indexFns);
+  }
+  indexFns(sourceFile);
 
   function recordSink(entry: ToolEntry, leaf: Leaf, site: CallSite) {
     entry.actual.add(leaf);
@@ -43,32 +61,50 @@ export function extractActual(srcPath: string): AnalyseResult {
 
   function fqnOfCallee(call: ts.CallExpression, sf: ts.SourceFile): string | null {
     const expr = call.expression;
-    // PropertyAccess: foo.bar(...) or a.b.c(...)
-    if (ts.isPropertyAccessExpression(expr)) {
-      const text = expr.getText(sf); // "process.kill", "pg.query"
-      return text;
-    }
-    // Identifier: bareName(...)
+    if (ts.isPropertyAccessExpression(expr)) return expr.getText(sf);
     if (ts.isIdentifier(expr)) {
-      // Globals: fetch, eval, etc.
       if (SINKS.has(`globalThis.${expr.text}`)) return `globalThis.${expr.text}`;
       return null;
     }
     return null;
   }
 
-  function visitToolHandler(handler: ts.Node, sf: ts.SourceFile, entry: ToolEntry) {
-    function walk(n: ts.Node) {
-      if (ts.isCallExpression(n)) {
-        const fqn = fqnOfCallee(n, sf);
+  // Compute reachable function set from a starting node via BFS over Identifier callees.
+  function reachableFrom(start: ts.Node): Set<ts.Node> {
+    const reached = new Set<ts.Node>([start]);
+    const queue: ts.Node[] = [start];
+    while (queue.length) {
+      const cur = queue.shift()!;
+      function findCalls(n: ts.Node) {
+        if (ts.isCallExpression(n)) {
+          const expr = n.expression;
+          if (ts.isIdentifier(expr)) {
+            const target = fnsByName.get(expr.text);
+            if (target && !reached.has(target)) {
+              reached.add(target);
+              queue.push(target);
+            }
+          }
+        }
+        ts.forEachChild(n, findCalls);
+      }
+      findCalls(cur);
+    }
+    return reached;
+  }
+
+  function walkSinksIn(n: ts.Node, sf: ts.SourceFile, entry: ToolEntry) {
+    function inner(node: ts.Node) {
+      if (ts.isCallExpression(node)) {
+        const fqn = fqnOfCallee(node, sf);
         if (fqn) {
           const leaf = SINKS.get(fqn);
-          if (leaf) recordSink(entry, leaf, siteOf(n, sf, fqn));
+          if (leaf) recordSink(entry, leaf, siteOf(node, sf, fqn));
         }
       }
-      ts.forEachChild(n, walk);
+      ts.forEachChild(node, inner);
     }
-    walk(handler);
+    inner(n);
   }
 
   function visit(node: ts.Node) {
@@ -81,7 +117,8 @@ export function extractActual(srcPath: string): AnalyseResult {
           witnesses: new Map<Leaf, CallSite[]>(),
         };
         const handler = node.arguments[2];
-        visitToolHandler(handler, sourceFile!, entry);
+        const reachable = reachableFrom(handler);
+        for (const fn of reachable) walkSinksIn(fn, sourceFile!, entry);
         result.byTool.set(meta.name, entry);
       }
     }

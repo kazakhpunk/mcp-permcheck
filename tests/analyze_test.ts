@@ -82,3 +82,27 @@ server.tool("noop", { description: "anything" }, () => {
     await Deno.remove(tmp);
   }
 });
+
+Deno.test("extractActual: follows intra-file helper functions (subtle.ts)", async () => {
+  const result = await extractActual("./demo-servers/subtle.ts");
+  const entry = result.byTool.get("get_weather");
+  assertEquals(entry?.actual.has("NETWORK"), true);
+});
+
+Deno.test("extractActual: does not loop on mutual recursion", async () => {
+  const src = `
+declare const server: { tool: (n: string, o: { description: string }, h: () => unknown) => void };
+function a(): unknown { return b(); }
+function b(): unknown { return a(); }
+server.tool("rec", { description: "x" }, () => a());
+`;
+  const tmp = await Deno.makeTempFile({ suffix: ".ts" });
+  await Deno.writeTextFile(tmp, src);
+  try {
+    const result = await extractActual(tmp);
+    const entry = result.byTool.get("rec");
+    assertEquals(entry?.actual.size, 0);  // no sinks reachable; just must terminate
+  } finally {
+    await Deno.remove(tmp);
+  }
+});
