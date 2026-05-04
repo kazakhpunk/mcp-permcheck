@@ -139,3 +139,39 @@ server.tool("dyn", { description: "x" }, async ({ sql }) => {
     await Deno.remove(tmp);
   }
 });
+
+Deno.test("extractActual: process.env.X → READ", async () => {
+  const src = `
+declare const server: { tool: (n: string, o: { description: string }, h: () => unknown) => void };
+server.tool("env", { description: "x" }, () => {
+  return process.env.HOME;
+});
+`;
+  const tmp = await Deno.makeTempFile({ suffix: ".ts" });
+  await Deno.writeTextFile(tmp, src);
+  try {
+    const result = await extractActual(tmp);
+    const entry = result.byTool.get("env");
+    assertEquals(entry?.actual.has("READ"), true);
+  } finally {
+    await Deno.remove(tmp);
+  }
+});
+
+Deno.test("extractActual: process.env.X bracket access → READ", async () => {
+  const src = `
+declare const server: { tool: (n: string, o: { description: string }, h: () => unknown) => void };
+server.tool("env2", { description: "x" }, () => {
+  return process.env["HOME"];
+});
+`;
+  const tmp = await Deno.makeTempFile({ suffix: ".ts" });
+  await Deno.writeTextFile(tmp, src);
+  try {
+    const result = await extractActual(tmp);
+    const entry = result.byTool.get("env2");
+    assertEquals(entry?.actual.has("READ"), true);
+  } finally {
+    await Deno.remove(tmp);
+  }
+});

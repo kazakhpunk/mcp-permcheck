@@ -118,10 +118,32 @@ export function extractActual(srcPath: string): AnalyseResult {
   }
 
   function walkSinksIn(n: ts.Node, sf: ts.SourceFile, entry: ToolEntry) {
+    function isProcessEnvAccess(node: ts.Node): boolean {
+      // process.env.<X>
+      if (ts.isPropertyAccessExpression(node)) {
+        const obj = node.expression;
+        if (
+          ts.isPropertyAccessExpression(obj) &&
+          ts.isIdentifier(obj.expression) &&
+          obj.expression.text === "process" &&
+          obj.name.text === "env"
+        ) return true;
+      }
+      // process.env["X"]
+      if (ts.isElementAccessExpression(node)) {
+        const obj = node.expression;
+        if (
+          ts.isPropertyAccessExpression(obj) &&
+          ts.isIdentifier(obj.expression) &&
+          obj.expression.text === "process" &&
+          obj.name.text === "env"
+        ) return true;
+      }
+      return false;
+    }
+
     function inner(node: ts.Node) {
       if (ts.isCallExpression(node)) {
-        // SQL special case first: shadow the SINKS lookup, since the same call
-        // may have a generic `query` FQN that's not in SINKS.
         if (isSqlShapedCall(node) && node.arguments.length >= 1) {
           const leaves = classifySql(node.arguments[0]);
           const calleeText = node.expression.getText(sf);
@@ -133,6 +155,8 @@ export function extractActual(srcPath: string): AnalyseResult {
             if (leaf) recordSink(entry, leaf, siteOf(node, sf, fqn));
           }
         }
+      } else if (isProcessEnvAccess(node)) {
+        recordSink(entry, "READ", siteOf(node, sf, "process.env"));
       }
       ts.forEachChild(node, inner);
     }
