@@ -1,0 +1,20 @@
+{
+  "tasks": {
+    "test": "deno test --allow-read --allow-env"
+  },
+  "imports": {
+    "typescript": "npm:typescript@5.4.5",
+    "@std/assert": "jsr:@std/assert@1"
+  },
+  "fmt": {
+    "lineWidth": 100,
+    "indentWidth": 2,
+    "useTabs": false,
+    "semiColons": true,
+    "singleQuote": false
+  },
+  "compilerOptions": {
+    "strict": true,
+    "noImplicitAny": true
+  }
+}
