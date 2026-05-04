@@ -7,3 +7,4 @@ node_modules/
 # Clone with: git clone --depth 1 --filter=blob:none --sparse https://github.com/modelcontextprotocol/servers.git real-servers/_repo
 # Then: cd real-servers/_repo && git sparse-checkout set src/filesystem
 real-servers/
+*.pdf
