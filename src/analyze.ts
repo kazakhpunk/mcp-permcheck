@@ -230,7 +230,28 @@ export function extractActual(srcPath: string): AnalyseResult {
 
 function isServerToolCall(node: ts.CallExpression): boolean {
   const callee = node.expression;
-  return ts.isPropertyAccessExpression(callee) && callee.name.text === "tool";
+  if (!ts.isPropertyAccessExpression(callee)) return false;
+  const name = callee.name.text;
+  // Match both the older server.tool() API and the current server.registerTool() API.
+  return name === "tool" || name === "registerTool";
+}
+
+/**
+ * Fold a TypeScript expression into a string, handling:
+ *   - string literals and no-substitution template literals
+ *   - binary `+` concatenation of the above
+ * Returns the concatenated string, or null if any operand is non-literal.
+ */
+function foldStringExpr(node: ts.Expression): string | null {
+  if (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node)) {
+    return node.text;
+  }
+  if (ts.isBinaryExpression(node) && node.operatorToken.kind === ts.SyntaxKind.PlusToken) {
+    const left = foldStringExpr(node.left);
+    const right = foldStringExpr(node.right);
+    if (left !== null && right !== null) return left + right;
+  }
+  return null;
 }
 
 function parseServerToolCall(
@@ -255,11 +276,12 @@ function parseServerToolCall(
     if (
       ts.isPropertyAssignment(prop) &&
       ts.isIdentifier(prop.name) &&
-      prop.name.text === "description" &&
-      (ts.isStringLiteral(prop.initializer) ||
-        ts.isNoSubstitutionTemplateLiteral(prop.initializer))
+      prop.name.text === "description"
     ) {
-      description = prop.initializer.text;
+      const folded = foldStringExpr(prop.initializer as ts.Expression);
+      if (folded !== null) {
+        description = folded;
+      }
     }
   }
   return { name: nameArg.text, description };
