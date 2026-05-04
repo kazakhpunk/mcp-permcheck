@@ -34,6 +34,23 @@ export const SINKS: ReadonlyMap<string, Leaf> = new Map<string, Leaf>([
   ["net.createConnection", "NETWORK"],
   ["net.connect", "NETWORK"],
   ["dgram.createSocket", "NETWORK"],
+  // axios full surface
+  ["axios.default.put", "NETWORK"],
+  ["axios.default.delete", "NETWORK"],
+  ["axios.default.patch", "NETWORK"],
+  ["axios.default.head", "NETWORK"],
+  ["axios.default.options", "NETWORK"],
+  ["axios.default.request", "NETWORK"],
+  ["axios.default.postForm", "NETWORK"],
+  ["axios.default.getUri", "NETWORK"],
+  // undici (modern Node HTTP client)
+  ["undici.fetch", "NETWORK"],
+  ["undici.request", "NETWORK"],
+  ["undici.Client", "NETWORK"],
+  ["undici.Pool", "NETWORK"],
+  // ws (WebSocket)
+  ["ws.WebSocket", "NETWORK"],
+  ["ws.WebSocketServer", "NETWORK"],
 
   // READ — Node --allow-fs-read
   ["fs.readFileSync", "READ"],

@@ -1,6 +1,6 @@
-export type Leaf = "READ" | "WRITE" | "EXEC" | "NETWORK";
+export type Leaf = "READ" | "WRITE" | "EXEC" | "NETWORK" | "ENV";
 
-export const ALL_LEAVES: ReadonlySet<Leaf> = new Set(["READ", "WRITE", "EXEC", "NETWORK"]);
+export const ALL_LEAVES: ReadonlySet<Leaf> = new Set(["READ", "WRITE", "EXEC", "NETWORK", "ENV"]);
 
 export interface CallSite {
   file: string;

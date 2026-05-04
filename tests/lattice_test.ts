@@ -46,6 +46,6 @@ Deno.test("meet: intersection of two sets", () => {
   );
 });
 
-Deno.test("ALL_LEAVES has exactly four members", () => {
-  assertEquals(ALL_LEAVES.size, 4);
+Deno.test("ALL_LEAVES has exactly five members", () => {
+  assertEquals(ALL_LEAVES.size, 5);
 });

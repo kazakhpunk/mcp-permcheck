@@ -35,3 +35,18 @@ Deno.test("SINKS does not classify pure compute", () => {
   assertEquals(SINKS.has("Math.sqrt"), false);
   assertEquals(SINKS.has("JSON.parse"), false);
 });
+
+Deno.test("SINKS has expanded NETWORK entries (axios full surface)", () => {
+  assertEquals(SINKS.get("axios.default.put"), "NETWORK");
+  assertEquals(SINKS.get("axios.default.delete"), "NETWORK");
+  assertEquals(SINKS.get("axios.default.patch"), "NETWORK");
+});
+
+Deno.test("SINKS has undici entries", () => {
+  assertEquals(SINKS.get("undici.fetch"), "NETWORK");
+  assertEquals(SINKS.get("undici.request"), "NETWORK");
+});
+
+Deno.test("SINKS has ws WebSocket entry", () => {
+  assertEquals(SINKS.get("ws.WebSocket"), "NETWORK");
+});

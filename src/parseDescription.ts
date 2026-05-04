@@ -5,6 +5,8 @@ const KEYWORD_RULES: Array<[RegExp, Leaf]> = [
   [/\b(execute|executes|run|runs|spawn|spawns|invoke[-\s]command|kill|kills|terminate|terminates|shell)\b/i, "EXEC"],
   // NETWORK
   [/\b(http|fetch|fetches|request|requests|api|webhook|download|downloads|upload|uploads|send[-\s]request|sends an? http)\b/i, "NETWORK"],
+  // ENV — env vars, config, secrets
+  [/\b(env|environment|envvar|env[-_\s]?var|config|configuration|setting|settings|credential|credentials|secret|secrets|api[-_\s]?key|api[-_\s]?keys|access[-_\s]?token|auth[-_\s]?token)\b/i, "ENV"],
   // WRITE
   [/\b(write|writes|delete|deletes|remove|removes|update|updates|insert|inserts|modify|modifies|create|creates|drop|drops|save|saves|store|stores|persist|persists)\b/i, "WRITE"],
   // READ
