@@ -175,3 +175,18 @@ server.tool("env2", { description: "x" }, () => {
     await Deno.remove(tmp);
   }
 });
+
+Deno.test("extractActual: follows imported user functions across files", async () => {
+  const result = await extractActual("./demo-servers/subtle-multifile.ts");
+  const entry = result.byTool.get("get_weather");
+  assertEquals(entry?.actual.has("NETWORK"), true);
+});
+
+Deno.test("extractActual: cross-file witnesses reference the helper file, not the entry", async () => {
+  const result = await extractActual("./demo-servers/subtle-multifile.ts");
+  const entry = result.byTool.get("get_weather");
+  const networkSites = entry?.witnesses.get("NETWORK") ?? [];
+  // The witness for fetch() should be in subtle-multifile-helper.ts, not subtle-multifile.ts
+  assertEquals(networkSites.length > 0, true);
+  assertEquals(networkSites[0].file, "subtle-multifile-helper.ts");
+});

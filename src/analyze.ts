@@ -20,9 +20,13 @@ export function extractActual(srcPath: string): AnalyseResult {
   });
   const sourceFile = program.getSourceFile(srcPath);
   if (!sourceFile) throw new Error(`could not load source: ${srcPath}`);
+  const checker = program.getTypeChecker();
   const result: AnalyseResult = { byTool: new Map(), notes: [] };
 
-  // Pass 1: index file-local function bodies by name.
+  // Determine project root as the directory of srcPath.
+  const projectRoot = program.getCurrentDirectory();
+
+  // Pass 1: index function bodies by name across all user-code source files.
   const fnsByName = new Map<string, ts.Node>();
   function indexFns(n: ts.Node) {
     if (ts.isFunctionDeclaration(n) && n.name) {
@@ -40,7 +44,14 @@ export function extractActual(srcPath: string): AnalyseResult {
     }
     ts.forEachChild(n, indexFns);
   }
-  indexFns(sourceFile);
+
+  // Index all user-code source files (not declaration files, not node_modules, not outside project root).
+  for (const sf of program.getSourceFiles()) {
+    if (sf.isDeclarationFile) continue;
+    if (sf.fileName.includes("node_modules")) continue;
+    if (!sf.fileName.startsWith(projectRoot)) continue;
+    indexFns(sf);
+  }
 
   function recordSink(entry: ToolEntry, leaf: Leaf, site: CallSite) {
     entry.actual.add(leaf);
@@ -103,7 +114,37 @@ export function extractActual(srcPath: string): AnalyseResult {
         if (ts.isCallExpression(n)) {
           const expr = n.expression;
           if (ts.isIdentifier(expr)) {
-            const target = fnsByName.get(expr.text);
+            // First, try direct name lookup in indexed functions.
+            let target: ts.Node | undefined = fnsByName.get(expr.text);
+
+            // Fall back to TS type checker for cross-file identifier resolution.
+            if (!target) {
+              const symbol = checker.getSymbolAtLocation(expr);
+              if (symbol) {
+                const aliased = symbol.flags & ts.SymbolFlags.Alias
+                  ? checker.getAliasedSymbol(symbol)
+                  : symbol;
+                for (const d of aliased.getDeclarations() ?? []) {
+                  if (
+                    ts.isFunctionDeclaration(d) ||
+                    ts.isFunctionExpression(d) ||
+                    ts.isArrowFunction(d)
+                  ) {
+                    target = d;
+                    break;
+                  }
+                  if (
+                    ts.isVariableDeclaration(d) &&
+                    d.initializer &&
+                    (ts.isFunctionExpression(d.initializer) || ts.isArrowFunction(d.initializer))
+                  ) {
+                    target = d.initializer;
+                    break;
+                  }
+                }
+              }
+            }
+
             if (target && !reached.has(target)) {
               reached.add(target);
               queue.push(target);
@@ -174,7 +215,10 @@ export function extractActual(srcPath: string): AnalyseResult {
         };
         const handler = node.arguments[2];
         const reachable = reachableFrom(handler);
-        for (const fn of reachable) walkSinksIn(fn, sourceFile!, entry);
+        for (const fn of reachable) {
+          const fnSf = fn.getSourceFile();
+          walkSinksIn(fn, fnSf, entry);
+        }
         result.byTool.set(meta.name, entry);
       }
     }

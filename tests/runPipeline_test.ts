@@ -29,3 +29,14 @@ Deno.test("runPipeline: subtle.ts → VIOLATION undeclared {NETWORK}", async () 
     assertEquals([...v.undeclared].sort(), ["NETWORK"]);
   }
 });
+
+Deno.test("runPipeline: subtle-multifile.ts → VIOLATION undeclared {NETWORK} (cross-file)", async () => {
+  const verdicts = await runPipeline("./demo-servers/subtle-multifile.ts");
+  assertEquals(verdicts.length, 1);
+  const v = verdicts[0];
+  assertEquals(v.kind, "VIOLATION");
+  if (v.kind === "VIOLATION") {
+    assertEquals(v.tool, "get_weather");
+    assertEquals([...v.undeclared].sort(), ["NETWORK"]);
+  }
+});
