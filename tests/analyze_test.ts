@@ -190,3 +190,136 @@ Deno.test("extractActual: cross-file witnesses reference the helper file, not th
   assertEquals(networkSites.length > 0, true);
   assertEquals(networkSites[0].file, "subtle-multifile-helper.ts");
 });
+
+Deno.test("extractActual: named import { readFile } from node:fs/promises → READ", async () => {
+  const src = `
+import { readFile } from "node:fs/promises";
+declare const server: { tool: (n: string, o: { description: string }, h: () => unknown) => void };
+server.tool("rf", { description: "x" }, async () => {
+  await readFile("/etc/passwd");
+});
+`;
+  const tmp = await Deno.makeTempFile({ suffix: ".ts" });
+  await Deno.writeTextFile(tmp, src);
+  try {
+    const result = await extractActual(tmp);
+    const entry = result.byTool.get("rf");
+    assertEquals(entry?.actual.has("READ"), true);
+  } finally {
+    await Deno.remove(tmp);
+  }
+});
+
+Deno.test("extractActual: aliased named import { readFile as rf } → READ", async () => {
+  const src = `
+import { readFile as rf } from "node:fs/promises";
+declare const server: { tool: (n: string, o: { description: string }, h: () => unknown) => void };
+server.tool("aliased", { description: "x" }, async () => {
+  await rf("/etc/passwd");
+});
+`;
+  const tmp = await Deno.makeTempFile({ suffix: ".ts" });
+  await Deno.writeTextFile(tmp, src);
+  try {
+    const result = await extractActual(tmp);
+    const entry = result.byTool.get("aliased");
+    assertEquals(entry?.actual.has("READ"), true);
+  } finally {
+    await Deno.remove(tmp);
+  }
+});
+
+Deno.test("extractActual: namespace import * as fsp → fsp.readFile → READ", async () => {
+  const src = `
+import * as fsp from "node:fs/promises";
+declare const server: { tool: (n: string, o: { description: string }, h: () => unknown) => void };
+server.tool("ns", { description: "x" }, async () => {
+  await fsp.readFile("/etc/passwd");
+});
+`;
+  const tmp = await Deno.makeTempFile({ suffix: ".ts" });
+  await Deno.writeTextFile(tmp, src);
+  try {
+    const result = await extractActual(tmp);
+    const entry = result.byTool.get("ns");
+    assertEquals(entry?.actual.has("READ"), true);
+  } finally {
+    await Deno.remove(tmp);
+  }
+});
+
+Deno.test("extractActual: default import nodeFetch from node-fetch → NETWORK", async () => {
+  const src = `
+import nodeFetch from "node-fetch";
+declare const server: { tool: (n: string, o: { description: string }, h: () => unknown) => void };
+server.tool("nf", { description: "x" }, async () => {
+  await nodeFetch("https://example.com");
+});
+`;
+  const tmp = await Deno.makeTempFile({ suffix: ".ts" });
+  await Deno.writeTextFile(tmp, src);
+  try {
+    const result = await extractActual(tmp);
+    const entry = result.byTool.get("nf");
+    assertEquals(entry?.actual.has("NETWORK"), true);
+  } finally {
+    await Deno.remove(tmp);
+  }
+});
+
+Deno.test("extractActual: default import axios → axios.post → NETWORK", async () => {
+  const src = `
+import axios from "axios";
+declare const server: { tool: (n: string, o: { description: string }, h: () => unknown) => void };
+server.tool("ax", { description: "x" }, async () => {
+  await axios.post("https://example.com", { hi: 1 });
+});
+`;
+  const tmp = await Deno.makeTempFile({ suffix: ".ts" });
+  await Deno.writeTextFile(tmp, src);
+  try {
+    const result = await extractActual(tmp);
+    const entry = result.byTool.get("ax");
+    assertEquals(entry?.actual.has("NETWORK"), true);
+  } finally {
+    await Deno.remove(tmp);
+  }
+});
+
+Deno.test("extractActual: prisma-shaped call findMany → READ", async () => {
+  const src = `
+declare const prisma: any;
+declare const server: { tool: (n: string, o: { description: string }, h: () => unknown) => void };
+server.tool("pr", { description: "x" }, async () => {
+  await prisma.user.findMany();
+});
+`;
+  const tmp = await Deno.makeTempFile({ suffix: ".ts" });
+  await Deno.writeTextFile(tmp, src);
+  try {
+    const result = await extractActual(tmp);
+    const entry = result.byTool.get("pr");
+    assertEquals(entry?.actual.has("READ"), true);
+  } finally {
+    await Deno.remove(tmp);
+  }
+});
+
+Deno.test("extractActual: prisma-shaped call create → WRITE", async () => {
+  const src = `
+declare const prisma: any;
+declare const server: { tool: (n: string, o: { description: string }, h: () => unknown) => void };
+server.tool("pc", { description: "x" }, async () => {
+  await prisma.user.create({ data: { name: "x" } });
+});
+`;
+  const tmp = await Deno.makeTempFile({ suffix: ".ts" });
+  await Deno.writeTextFile(tmp, src);
+  try {
+    const result = await extractActual(tmp);
+    const entry = result.byTool.get("pc");
+    assertEquals(entry?.actual.has("WRITE"), true);
+  } finally {
+    await Deno.remove(tmp);
+  }
+});

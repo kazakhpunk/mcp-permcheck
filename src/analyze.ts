@@ -2,6 +2,105 @@ import ts from "typescript";
 import { SINKS } from "./sinks.ts";
 import type { CallSite, Leaf } from "./types.ts";
 
+// ---------------------------------------------------------------------------
+// Named-import / namespace-import alias resolution
+// ---------------------------------------------------------------------------
+
+const MODULE_NS: Record<string, string> = {
+  "fs": "fs",
+  "node:fs": "fs",
+  "fs/promises": "fs.promises",
+  "node:fs/promises": "fs.promises",
+  "child_process": "child_process",
+  "node:child_process": "child_process",
+  "http": "http",
+  "node:http": "http",
+  "https": "https",
+  "node:https": "https",
+  "net": "net",
+  "node:net": "net",
+  "dgram": "dgram",
+  "node:dgram": "dgram",
+  "worker_threads": "worker_threads",
+  "node:worker_threads": "worker_threads",
+  "axios": "axios",
+  "undici": "undici",
+  "ws": "ws",
+  "node-fetch": "node_fetch",
+  "pg": "pg",
+  "mongodb": "mongodb",
+  "mongoose": "mongoose",
+  "nodemailer": "nodemailer",
+  "redis": "redis",
+  "ioredis": "ioredis",
+  "@prisma/client": "prisma",
+};
+
+type Aliases = { named: Map<string, string>; namespace: Map<string, string> };
+const EMPTY_ALIASES: Aliases = { named: new Map(), namespace: new Map() };
+
+function buildImportAliases(sf: ts.SourceFile): Aliases {
+  const named = new Map<string, string>();
+  const namespace = new Map<string, string>();
+  for (const stmt of sf.statements) {
+    if (!ts.isImportDeclaration(stmt)) continue;
+    if (!ts.isStringLiteral(stmt.moduleSpecifier)) continue;
+    const ns = MODULE_NS[stmt.moduleSpecifier.text];
+    if (!ns) continue;
+    const ic = stmt.importClause;
+    if (!ic) continue;
+
+    // Default import: register as callable (foo()) AND as namespace (foo.X)
+    if (ic.name) {
+      const local = ic.name.text;
+      named.set(local, `${ns}.default`);
+      namespace.set(local, ns);
+    }
+    if (ic.namedBindings) {
+      const nb = ic.namedBindings;
+      if (ts.isNamespaceImport(nb)) {
+        namespace.set(nb.name.text, ns);
+      } else if (ts.isNamedImports(nb)) {
+        for (const elem of nb.elements) {
+          const localName = elem.name.text;
+          const exportName = elem.propertyName?.text ?? localName;
+          named.set(localName, `${ns}.${exportName}`);
+        }
+      }
+    }
+  }
+  return { named, namespace };
+}
+
+// ---------------------------------------------------------------------------
+// Prisma flow-sensitive detector
+// ---------------------------------------------------------------------------
+
+const PRISMA_READ_VERBS = new Set([
+  "findMany", "findFirst", "findUnique",
+  "findFirstOrThrow", "findUniqueOrThrow",
+  "count", "aggregate", "groupBy",
+]);
+const PRISMA_WRITE_VERBS = new Set([
+  "create", "update", "delete", "upsert",
+  "createMany", "updateMany", "deleteMany",
+  "updateManyAndReturn",
+]);
+
+function isPrismaShapedCall(call: ts.CallExpression): { leaf: Leaf } | null {
+  // Pattern: <receiver>.<model>.<verb>()
+  // Examples: prisma.user.findMany();  db.user.create();  this.prisma.post.delete();
+  const expr = call.expression;
+  if (!ts.isPropertyAccessExpression(expr)) return null;
+  const verb = expr.name.text;
+  const isRead = PRISMA_READ_VERBS.has(verb);
+  const isWrite = PRISMA_WRITE_VERBS.has(verb);
+  if (!isRead && !isWrite) return null;
+  // Check the receiver is itself a PropertyAccessExpression (for the .<model>. layer)
+  if (!ts.isPropertyAccessExpression(expr.expression)) return null;
+  return { leaf: isRead ? "READ" : "WRITE" };
+}
+
 export interface ToolEntry {
   description: string;
   actual: Set<Leaf>;
@@ -70,12 +169,25 @@ export function extractActual(srcPath: string): AnalyseResult {
     };
   }
 
-  function fqnOfCallee(call: ts.CallExpression, sf: ts.SourceFile): string | null {
+  function fqnOfCallee(call: ts.CallExpression, sf: ts.SourceFile, aliases: Aliases): string | null {
     const expr = call.expression;
-    if (ts.isPropertyAccessExpression(expr)) return expr.getText(sf);
     if (ts.isIdentifier(expr)) {
+      // 1. Named-import alias (e.g., `import { readFile } from "fs"; readFile()`)
+      const aliased = aliases.named.get(expr.text);
+      if (aliased) return aliased;
+      // 2. Global (e.g., bare `fetch()`, `eval()`)
       if (SINKS.has(`globalThis.${expr.text}`)) return `globalThis.${expr.text}`;
       return null;
+    }
+    if (ts.isPropertyAccessExpression(expr)) {
+      // 1. If the receiver is a namespace alias, rewrite the namespace
+      if (ts.isIdentifier(expr.expression)) {
+        const ns = aliases.namespace.get(expr.expression.text);
+        if (ns) return `${ns}.${expr.name.text}`;
+      }
+      // 2. Otherwise fall back to source text (handles process.kill, fs.readFile
+      //    when fs isn't imported — TS uses ambient declarations)
+      return expr.getText(sf);
     }
     return null;
   }
@@ -158,7 +270,7 @@ export function extractActual(srcPath: string): AnalyseResult {
     return reached;
   }
 
-  function walkSinksIn(n: ts.Node, sf: ts.SourceFile, entry: ToolEntry) {
+  function walkSinksIn(n: ts.Node, sf: ts.SourceFile, entry: ToolEntry, aliases: Aliases) {
     function isProcessEnvAccess(node: ts.Node): boolean {
       // process.env.<X>
       if (ts.isPropertyAccessExpression(node)) {
@@ -185,12 +297,16 @@ export function extractActual(srcPath: string): AnalyseResult {
 
     function inner(node: ts.Node) {
       if (ts.isCallExpression(node)) {
-        if (isSqlShapedCall(node) && node.arguments.length >= 1) {
+        const prisma = isPrismaShapedCall(node);
+        if (prisma) {
+          const calleeText = node.expression.getText(sf);
+          recordSink(entry, prisma.leaf, siteOf(node, sf, calleeText));
+        } else if (isSqlShapedCall(node) && node.arguments.length >= 1) {
           const leaves = classifySql(node.arguments[0]);
           const calleeText = node.expression.getText(sf);
           for (const leaf of leaves) recordSink(entry, leaf, siteOf(node, sf, calleeText));
         } else {
-          const fqn = fqnOfCallee(node, sf);
+          const fqn = fqnOfCallee(node, sf, aliases);
           if (fqn) {
             const leaf = SINKS.get(fqn);
             if (leaf) recordSink(entry, leaf, siteOf(node, sf, fqn));
@@ -202,6 +318,14 @@ export function extractActual(srcPath: string): AnalyseResult {
       ts.forEachChild(node, inner);
     }
     inner(n);
+  }
+
+  // Per-source-file alias cache (built lazily)
+  const aliasCache = new Map<ts.SourceFile, Aliases>();
+  function aliasesFor(sf: ts.SourceFile): Aliases {
+    let a = aliasCache.get(sf);
+    if (!a) { a = buildImportAliases(sf); aliasCache.set(sf, a); }
+    return a;
   }
 
   function visit(node: ts.Node) {
@@ -217,7 +341,7 @@ export function extractActual(srcPath: string): AnalyseResult {
         const reachable = reachableFrom(handler);
         for (const fn of reachable) {
           const fnSf = fn.getSourceFile();
-          walkSinksIn(fn, fnSf, entry);
+          walkSinksIn(fn, fnSf, entry, aliasesFor(fnSf));
         }
         result.byTool.set(meta.name, entry);
       }
