@@ -101,6 +101,37 @@ function isPrismaShapedCall(call: ts.CallExpression): { leaf: Leaf } | null {
   return { leaf: isRead ? "READ_DB" : "WRITE_DB" };
 }
 
+// ---------------------------------------------------------------------------
+// CallGraph data structures (exported)
+// ---------------------------------------------------------------------------
+
+export type CallEdgeTarget =
+  | { kind: "fn"; node: ts.Node; name: string }
+  | { kind: "sink"; fqn: string; leaf: Leaf };
+
+export interface CallEdge {
+  target: CallEdgeTarget;
+  site: CallSite;
+}
+
+export interface CallGraphNode {
+  fn: ts.Node; // function-like node
+  name: string; // best-effort identifier
+  file: string; // basename
+  line: number; // 1-indexed
+  edges: CallEdge[]; // outgoing edges
+}
+
+export interface CallGraph {
+  nodes: Map<ts.Node, CallGraphNode>; // all registered function-like nodes
+  toolHandlers: Map<string, ts.Node>; // tool name → handler entry node
+  notes: string[];
+}
+
+// ---------------------------------------------------------------------------
+// ToolEntry / AnalyseResult
+// ---------------------------------------------------------------------------
+
 export interface ToolEntry {
   description: string;
   actual: Set<Leaf>;
@@ -110,7 +141,12 @@ export interface ToolEntry {
 export interface AnalyseResult {
   byTool: Map<string, ToolEntry>;
   notes: string[];
+  graph: CallGraph;
 }
+
+// ---------------------------------------------------------------------------
+// Main entry point
+// ---------------------------------------------------------------------------
 
 export function extractActual(srcPath: string): AnalyseResult {
   const program = ts.createProgram({
@@ -120,43 +156,16 @@ export function extractActual(srcPath: string): AnalyseResult {
   const sourceFile = program.getSourceFile(srcPath);
   if (!sourceFile) throw new Error(`could not load source: ${srcPath}`);
   const checker = program.getTypeChecker();
-  const result: AnalyseResult = { byTool: new Map(), notes: [] };
 
   // Determine project root as the directory of srcPath.
   const projectRoot = program.getCurrentDirectory();
 
-  // Pass 1: index function bodies by name across all user-code source files.
-  const fnsByName = new Map<string, ts.Node>();
-  function indexFns(n: ts.Node) {
-    if (ts.isFunctionDeclaration(n) && n.name) {
-      fnsByName.set(n.name.text, n);
-    } else if (ts.isVariableStatement(n)) {
-      for (const decl of n.declarationList.declarations) {
-        if (
-          ts.isIdentifier(decl.name) &&
-          decl.initializer &&
-          (ts.isFunctionExpression(decl.initializer) || ts.isArrowFunction(decl.initializer))
-        ) {
-          fnsByName.set(decl.name.text, decl.initializer);
-        }
-      }
-    }
-    ts.forEachChild(n, indexFns);
-  }
-
-  // Index all user-code source files (not declaration files, not node_modules, not outside project root).
-  for (const sf of program.getSourceFiles()) {
-    if (sf.isDeclarationFile) continue;
-    if (sf.fileName.includes("node_modules")) continue;
-    if (!sf.fileName.startsWith(projectRoot)) continue;
-    indexFns(sf);
-  }
-
-  function recordSink(entry: ToolEntry, leaf: Leaf, site: CallSite) {
-    entry.actual.add(leaf);
-    const list = entry.witnesses.get(leaf) ?? [];
-    list.push(site);
-    entry.witnesses.set(leaf, list);
+  // Per-source-file alias cache (built lazily)
+  const aliasCache = new Map<ts.SourceFile, Aliases>();
+  function aliasesFor(sf: ts.SourceFile): Aliases {
+    let a = aliasCache.get(sf);
+    if (!a) { a = buildImportAliases(sf); aliasCache.set(sf, a); }
+    return a;
   }
 
   function siteOf(node: ts.Node, sf: ts.SourceFile, symbol: string): CallSite {
@@ -216,161 +225,338 @@ export function extractActual(srcPath: string): AnalyseResult {
     return false;
   }
 
-  // Compute reachable function set from a starting node via BFS over Identifier callees.
-  function reachableFrom(start: ts.Node): Set<ts.Node> {
-    const reached = new Set<ts.Node>([start]);
-    const queue: ts.Node[] = [start];
-    while (queue.length) {
-      const cur = queue.shift()!;
-      function findCalls(n: ts.Node) {
-        if (ts.isCallExpression(n)) {
-          const expr = n.expression;
-          if (ts.isIdentifier(expr)) {
-            // First, try direct name lookup in indexed functions.
-            let target: ts.Node | undefined = fnsByName.get(expr.text);
+  // ---------------------------------------------------------------------------
+  // Phase A: Build the CallGraph
+  // ---------------------------------------------------------------------------
 
-            // Fall back to TS type checker for cross-file identifier resolution.
-            if (!target) {
-              const symbol = checker.getSymbolAtLocation(expr);
-              if (symbol) {
-                const aliased = symbol.flags & ts.SymbolFlags.Alias
-                  ? checker.getAliasedSymbol(symbol)
-                  : symbol;
-                for (const d of aliased.getDeclarations() ?? []) {
-                  if (
-                    ts.isFunctionDeclaration(d) ||
-                    ts.isFunctionExpression(d) ||
-                    ts.isArrowFunction(d)
-                  ) {
-                    target = d;
-                    break;
-                  }
-                  if (
-                    ts.isVariableDeclaration(d) &&
-                    d.initializer &&
-                    (ts.isFunctionExpression(d.initializer) || ts.isArrowFunction(d.initializer))
-                  ) {
-                    target = d.initializer;
-                    break;
-                  }
-                }
-              }
-            }
+  const graph: CallGraph = {
+    nodes: new Map(),
+    toolHandlers: new Map(),
+    notes: [],
+  };
 
-            if (target && !reached.has(target)) {
-              reached.add(target);
-              queue.push(target);
-            }
-          }
-
-          // NEW: PropertyAccessExpression callee — resolve via type checker (monomorphic CHA).
-          // Handles this.method() and instance.method() by resolving to the MethodDeclaration.
-          if (ts.isPropertyAccessExpression(expr)) {
-            const symbol = checker.getSymbolAtLocation(expr.name);
-            if (symbol) {
-              for (const d of symbol.getDeclarations() ?? []) {
-                if (ts.isMethodDeclaration(d) && d.body) {
-                  if (!reached.has(d)) {
-                    reached.add(d);
-                    queue.push(d);
-                  }
-                  break;
-                }
-              }
-            }
-          }
-
-          // Follow callback arguments for known async patterns.
-          const asyncShape = getCalleeAsyncShape(n);
-          if (asyncShape !== null) {
-            const argIndices = asyncShape.kind === "promise-chain" ? [0, 1] : [0];
-            for (const i of argIndices) {
-              const arg = n.arguments[i];
-              if (arg && (ts.isFunctionExpression(arg) || ts.isArrowFunction(arg))) {
-                if (!reached.has(arg)) {
-                  reached.add(arg);
-                  queue.push(arg);
-                }
-              }
-            }
-          }
-        }
-        ts.forEachChild(n, findCalls);
+  // Helper: name a function-like node based on context
+  function nameForNode(n: ts.Node, fallback: string): string {
+    if (ts.isFunctionDeclaration(n) && n.name) return n.name.text;
+    if (ts.isMethodDeclaration(n) && ts.isIdentifier(n.name)) {
+      const cls = n.parent;
+      if (ts.isClassDeclaration(cls) && cls.name) {
+        return `${cls.name.text}.${n.name.text}`;
       }
-      findCalls(cur);
+      return n.name.text;
     }
-    return reached;
+    return fallback;
   }
 
-  function walkSinksIn(n: ts.Node, sf: ts.SourceFile, entry: ToolEntry, aliases: Aliases) {
-    function isProcessEnvAccess(node: ts.Node): boolean {
-      // process.env.<X>
-      if (ts.isPropertyAccessExpression(node)) {
-        const obj = node.expression;
+  // Pre-register a node into the graph if not already registered
+  function registerNode(node: ts.Node, name: string): CallGraphNode {
+    let gn = graph.nodes.get(node);
+    if (!gn) {
+      const sf = node.getSourceFile();
+      const { line } = sf.getLineAndCharacterOfPosition(node.getStart(sf));
+      gn = {
+        fn: node,
+        name,
+        file: sf.fileName.split("/").pop() ?? sf.fileName,
+        line: line + 1,
+        edges: [],
+      };
+      graph.nodes.set(node, gn);
+    }
+    return gn;
+  }
+
+  // fnsByName: same name-based index as before, for identifier resolution
+  const fnsByName = new Map<string, ts.Node>();
+
+  // Step A1: Pre-register all function-like nodes in user-code source files
+  function indexFns(n: ts.Node) {
+    if (ts.isFunctionDeclaration(n) && n.name) {
+      const name = n.name.text;
+      fnsByName.set(name, n);
+      registerNode(n, name);
+    } else if (ts.isMethodDeclaration(n) && ts.isIdentifier(n.name)) {
+      const methodName = nameForNode(n, n.name.text);
+      registerNode(n, methodName);
+    } else if (ts.isVariableStatement(n)) {
+      for (const decl of n.declarationList.declarations) {
         if (
-          ts.isPropertyAccessExpression(obj) &&
-          ts.isIdentifier(obj.expression) &&
-          obj.expression.text === "process" &&
-          obj.name.text === "env"
-        ) return true;
+          ts.isIdentifier(decl.name) &&
+          decl.initializer &&
+          (ts.isFunctionExpression(decl.initializer) || ts.isArrowFunction(decl.initializer))
+        ) {
+          const name = decl.name.text;
+          fnsByName.set(name, decl.initializer);
+          registerNode(decl.initializer, name);
+        }
       }
-      // process.env["X"]
-      if (ts.isElementAccessExpression(node)) {
-        const obj = node.expression;
-        if (
-          ts.isPropertyAccessExpression(obj) &&
-          ts.isIdentifier(obj.expression) &&
-          obj.expression.text === "process" &&
-          obj.name.text === "env"
-        ) return true;
+    }
+    ts.forEachChild(n, indexFns);
+  }
+
+  // Index all user-code source files (not declaration files, not node_modules, not outside project root).
+  for (const sf of program.getSourceFiles()) {
+    if (sf.isDeclarationFile) continue;
+    if (sf.fileName.includes("node_modules")) continue;
+    if (!sf.fileName.startsWith(projectRoot)) continue;
+    indexFns(sf);
+  }
+
+  // Step A2: Pre-register tool handlers from server.tool() calls
+  function collectToolHandlers(n: ts.Node) {
+    if (ts.isCallExpression(n) && isServerToolCall(n)) {
+      const meta = parseServerToolCall(n, graph.notes);
+      if (meta && n.arguments.length >= 3) {
+        const handlerArg = n.arguments[2];
+        const handlerName = `<handler:${meta.name}>`;
+        registerNode(handlerArg, handlerName);
+        graph.toolHandlers.set(meta.name, handlerArg);
       }
-      return false;
+    }
+    ts.forEachChild(n, collectToolHandlers);
+  }
+  collectToolHandlers(sourceFile);
+
+  // Step A3: Walk each registered node's body and emit edges
+  // (stop at nested function boundaries)
+  function isProcessEnvAccess(node: ts.Node): boolean {
+    if (ts.isPropertyAccessExpression(node)) {
+      const obj = node.expression;
+      if (
+        ts.isPropertyAccessExpression(obj) &&
+        ts.isIdentifier(obj.expression) &&
+        obj.expression.text === "process" &&
+        obj.name.text === "env"
+      ) return true;
+    }
+    if (ts.isElementAccessExpression(node)) {
+      const obj = node.expression;
+      if (
+        ts.isPropertyAccessExpression(obj) &&
+        ts.isIdentifier(obj.expression) &&
+        obj.expression.text === "process" &&
+        obj.name.text === "env"
+      ) return true;
+    }
+    return false;
+  }
+
+  // Callback counter per node (for stable naming of inline callbacks)
+  let callbackCounter = 0;
+
+  // Returns true if the node is in a declaration file or node_modules (not user code).
+  function isExternalNode(n: ts.Node): boolean {
+    const sf = n.getSourceFile();
+    return sf.isDeclarationFile ||
+      sf.fileName.includes("node_modules") ||
+      !sf.fileName.startsWith(projectRoot);
+  }
+
+  function resolveCallTargetNode(call: ts.CallExpression): ts.Node | null {
+    const expr = call.expression;
+
+    if (ts.isIdentifier(expr)) {
+      // Direct name lookup first (guaranteed to be user code since indexFns only indexes user code)
+      const target: ts.Node | undefined = fnsByName.get(expr.text);
+      if (target) return target;
+
+      // TS type-checker fallback — but ONLY for user-code nodes
+      const symbol = checker.getSymbolAtLocation(expr);
+      if (symbol) {
+        const aliased = symbol.flags & ts.SymbolFlags.Alias
+          ? checker.getAliasedSymbol(symbol)
+          : symbol;
+        for (const d of aliased.getDeclarations() ?? []) {
+          // Skip declaration files and node_modules
+          if (d.getSourceFile().isDeclarationFile) continue;
+          if (d.getSourceFile().fileName.includes("node_modules")) continue;
+          if (
+            ts.isFunctionDeclaration(d) ||
+            ts.isFunctionExpression(d) ||
+            ts.isArrowFunction(d)
+          ) {
+            return d;
+          }
+          if (
+            ts.isVariableDeclaration(d) &&
+            d.initializer &&
+            (ts.isFunctionExpression(d.initializer) || ts.isArrowFunction(d.initializer))
+          ) {
+            return d.initializer;
+          }
+        }
+      }
     }
 
+    if (ts.isPropertyAccessExpression(expr)) {
+      const symbol = checker.getSymbolAtLocation(expr.name);
+      if (symbol) {
+        for (const d of symbol.getDeclarations() ?? []) {
+          // Skip declaration files and node_modules
+          if (d.getSourceFile().isDeclarationFile) continue;
+          if (d.getSourceFile().fileName.includes("node_modules")) continue;
+          if (ts.isMethodDeclaration(d) && d.body) {
+            return d;
+          }
+        }
+      }
+    }
+
+    return null;
+  }
+
+  function buildEdgesFor(gn: CallGraphNode) {
+    const sf = gn.fn.getSourceFile();
+    const aliases = aliasesFor(sf);
+
     function inner(node: ts.Node, isRoot: boolean) {
-      // Stop at nested function boundaries that are not the root node being walked.
-      // Nested function/arrow expressions that are reachable via BFS will be walked
-      // separately (one call to walkSinksIn per reachable node). This prevents
-      // walking into callback arguments that the BFS intentionally did not follow
-      // (e.g. array iteration methods like .map/.forEach).
+      // Stop at nested function boundaries (not the root)
       if (
         !isRoot &&
-        (ts.isFunctionExpression(node) || ts.isArrowFunction(node) || ts.isFunctionDeclaration(node) || ts.isMethodDeclaration(node))
+        (ts.isFunctionExpression(node) ||
+          ts.isArrowFunction(node) ||
+          ts.isFunctionDeclaration(node) ||
+          ts.isMethodDeclaration(node))
       ) {
         return;
       }
+
       if (ts.isCallExpression(node)) {
         const prisma = isPrismaShapedCall(node);
         if (prisma) {
           const calleeText = node.expression.getText(sf);
-          recordSink(entry, prisma.leaf, siteOf(node, sf, calleeText));
+          gn.edges.push({
+            target: { kind: "sink", fqn: calleeText, leaf: prisma.leaf },
+            site: siteOf(node, sf, calleeText),
+          });
         } else if (isSqlShapedCall(node) && node.arguments.length >= 1) {
           const leaves = classifySql(node.arguments[0]);
           const calleeText = node.expression.getText(sf);
-          for (const leaf of leaves) recordSink(entry, leaf, siteOf(node, sf, calleeText));
+          for (const leaf of leaves) {
+            gn.edges.push({
+              target: { kind: "sink", fqn: calleeText, leaf },
+              site: siteOf(node, sf, calleeText),
+            });
+          }
         } else {
-          const fqn = fqnOfCallee(node, sf, aliases);
-          if (fqn) {
-            const leaf = SINKS.get(fqn);
-            if (leaf) recordSink(entry, leaf, siteOf(node, sf, fqn));
+          // Try to resolve to a known function node
+          const targetNode = resolveCallTargetNode(node);
+          if (targetNode && graph.nodes.has(targetNode)) {
+            const targetGn = graph.nodes.get(targetNode)!;
+            gn.edges.push({
+              target: { kind: "fn", node: targetNode, name: targetGn.name },
+              site: siteOf(node, sf, targetGn.name),
+            });
+          } else if (targetNode && !graph.nodes.has(targetNode)) {
+            // Node exists but wasn't pre-registered (e.g. cross-file resolved node)
+            const targetName = nameForNode(targetNode, "<unknown>");
+            const targetGn2 = registerNode(targetNode, targetName);
+            // We'll need to build edges for this node too; handle by
+            // registering it and then building its edges after this pass.
+            gn.edges.push({
+              target: { kind: "fn", node: targetNode, name: targetGn2.name },
+              site: siteOf(node, sf, targetGn2.name),
+            });
+          } else {
+            // Try FQN sink lookup
+            const fqn = fqnOfCallee(node, sf, aliases);
+            if (fqn) {
+              const leaf = SINKS.get(fqn);
+              if (leaf) {
+                gn.edges.push({
+                  target: { kind: "sink", fqn, leaf },
+                  site: siteOf(node, sf, fqn),
+                });
+              }
+            }
+          }
+
+          // Handle async-shape callbacks (promise chains, schedulers)
+          const asyncShape = getCalleeAsyncShape(node);
+          if (asyncShape !== null) {
+            const argIndices = asyncShape.kind === "promise-chain" ? [0, 1] : [0];
+            for (const i of argIndices) {
+              const arg = node.arguments[i];
+              if (arg && (ts.isFunctionExpression(arg) || ts.isArrowFunction(arg))) {
+                const cbName = `<callback@${callbackCounter++}>`;
+                const cbGn = registerNode(arg, cbName);
+                gn.edges.push({
+                  target: { kind: "fn", node: arg, name: cbGn.name },
+                  site: siteOf(node, sf, cbName),
+                });
+              }
+            }
           }
         }
       } else if (isProcessEnvAccess(node)) {
-        recordSink(entry, "ENV", siteOf(node, sf, "process.env"));
+        gn.edges.push({
+          target: { kind: "sink", fqn: "process.env", leaf: "ENV" },
+          site: siteOf(node, sf, "process.env"),
+        });
       }
+
       ts.forEachChild(node, (child) => inner(child, false));
     }
-    inner(n, true);
+
+    inner(gn.fn, true);
   }
 
-  // Per-source-file alias cache (built lazily)
-  const aliasCache = new Map<ts.SourceFile, Aliases>();
-  function aliasesFor(sf: ts.SourceFile): Aliases {
-    let a = aliasCache.get(sf);
-    if (!a) { a = buildImportAliases(sf); aliasCache.set(sf, a); }
-    return a;
+  // Build edges for all pre-registered nodes; use a "built" set to track which
+  // nodes have already had their edges computed. New nodes discovered during
+  // edge-building (e.g. cross-file resolved nodes) are processed in subsequent
+  // iterations until fixpoint.
+  const edgesBuilt = new Set<ts.Node>();
+  let prevSize = 0;
+  while (graph.nodes.size !== prevSize) {
+    prevSize = graph.nodes.size;
+    // Take a snapshot of current nodes to iterate over
+    const snapshot = [...graph.nodes.values()];
+    for (const gn of snapshot) {
+      if (!edgesBuilt.has(gn.fn)) {
+        edgesBuilt.add(gn.fn);
+        buildEdgesFor(gn);
+      }
+    }
   }
 
+  // ---------------------------------------------------------------------------
+  // Phase B: Per-tool DFS traversal to compute P_Actual
+  // ---------------------------------------------------------------------------
+
+  const result: AnalyseResult = { byTool: new Map(), notes: graph.notes, graph };
+
+  function recordSink(entry: ToolEntry, leaf: Leaf, site: CallSite) {
+    entry.actual.add(leaf);
+    const list = entry.witnesses.get(leaf) ?? [];
+    list.push(site);
+    entry.witnesses.set(leaf, list);
+  }
+
+  function dfsCollectSinks(
+    handlerNode: ts.Node,
+    entry: ToolEntry,
+  ): void {
+    const visited = new Set<ts.Node>();
+
+    function dfs(node: ts.Node): void {
+      if (visited.has(node)) return;
+      visited.add(node);
+      const gn = graph.nodes.get(node);
+      if (!gn) return;
+      for (const edge of gn.edges) {
+        if (edge.target.kind === "sink") {
+          recordSink(entry, edge.target.leaf, edge.site);
+        } else {
+          // fn edge: recurse
+          dfs(edge.target.node);
+        }
+      }
+    }
+
+    dfs(handlerNode);
+  }
+
+  // Walk server.tool() calls on the source file to build byTool entries
   function visit(node: ts.Node) {
     if (ts.isCallExpression(node) && isServerToolCall(node)) {
       const meta = parseServerToolCall(node, result.notes);
@@ -380,11 +566,9 @@ export function extractActual(srcPath: string): AnalyseResult {
           actual: new Set<Leaf>(),
           witnesses: new Map<Leaf, CallSite[]>(),
         };
-        const handler = node.arguments[2];
-        const reachable = reachableFrom(handler);
-        for (const fn of reachable) {
-          const fnSf = fn.getSourceFile();
-          walkSinksIn(fn, fnSf, entry, aliasesFor(fnSf));
+        const handlerNode = graph.toolHandlers.get(meta.name);
+        if (handlerNode) {
+          dfsCollectSinks(handlerNode, entry);
         }
         result.byTool.set(meta.name, entry);
       }
@@ -392,8 +576,13 @@ export function extractActual(srcPath: string): AnalyseResult {
     ts.forEachChild(node, visit);
   }
   visit(sourceFile);
+
   return result;
 }
+
+// ---------------------------------------------------------------------------
+// Helpers (file-level, not exported)
+// ---------------------------------------------------------------------------
 
 function isServerToolCall(node: ts.CallExpression): boolean {
   const callee = node.expression;
