@@ -532,23 +532,65 @@ The approach adapts three Android-security techniques from 2011–2014 to a new 
 
 ## Corpus evaluation
 
-To replicate the SHAPE of MCPDiFF's 10,240-server study at the scale reachable from public sources without a Python adapter, this repo includes batch infrastructure under `scripts/`:
+The MCPDiFF paper analysed ~10,240 servers but did not publish its dataset. We use the public alternative — **[Snakinya/MCPCorpus](https://github.com/Snakinya/MCPCorpus)**, ~14K servers with normalised metadata — and run our analyser on the TypeScript subset.
 
-- `scripts/crawl-corpus.ts` — assembles a TS MCP corpus from `modelcontextprotocol/servers` plus GitHub Search.
+Batch infrastructure under `scripts/`:
+
+- `scripts/crawl-corpus.ts` — pulls the TS subset of MCPCorpus (capped at 500 servers) plus the official `modelcontextprotocol/servers` reference set.
 - `scripts/batch-analyze.ts` — sparse-clones each, runs the pipeline, aggregates verdicts.
 - `scripts/summarize.ts` — reads results, emits `CORPUS_RESULTS.md`.
 
 Run all three sequentially:
 
 ```bash
-deno run --allow-net --allow-write scripts/crawl-corpus.ts
+deno run --allow-net --allow-write --allow-read --allow-run scripts/crawl-corpus.ts
 deno run --allow-read --allow-write --allow-net --allow-run --allow-env scripts/batch-analyze.ts
 deno run --allow-read --allow-write scripts/summarize.ts
 ```
 
-Results from the most recent run are committed at `corpus-results.json` and `CORPUS_RESULTS.md`. **This is not the full 10,240-server reproduction** (that requires the Python adapter that is on the v1 roadmap) — it's the path to 10k, demonstrated at the scale we can crawl publicly.
+Results from the most recent run are committed at `corpus-results.json` and `CORPUS_RESULTS.md`.
 
-Most recent run (N=80, four registration shapes recognised): **SUCCESS=10, NO_TOOLS_FOUND=46, NO_ENTRY_FILE=24** (46 tools, 7 violations). Entry-file detection improved substantially vs. the prior run (NO_ENTRY_FILE: 41→24). The main remaining gap is that `setRequestHandler` servers often build their tools array dynamically from imported schema objects, which the literal-array adapter cannot resolve.
+### Most recent run — N=500 from MCPCorpus
+
+| Outcome | Count |
+|---|---|
+| SUCCESS | 84 |
+| NO_TOOLS_FOUND | 298 |
+| NO_ENTRY_FILE | 87 |
+| CLONE_FAILED | 13 |
+
+Among the **84 analysable servers**: **648 tools** inspected; **405 verified OK (62.5%)**; **243 flagged as VIOLATION (37.5% per-tool violation rate)**.
+
+**Most-undeclared capabilities across all violations:**
+
+| Leaf | Times flagged |
+|---|---|
+| NETWORK_OUTBOUND | 139 |
+| ENV | 47 |
+| WRITE_DB | 46 |
+| WRITE_FS | 45 |
+| READ_FS | 28 |
+| READ_DB | 5 |
+| EXEC_PROCESS | 1 |
+
+**Top violators by tool count:**
+
+| Server | Violations | Undeclared leaves |
+|---|---|---|
+| `illuminaresolutions/n8n-mcp-server` | 32 | NETWORK_OUTBOUND |
+| `apinetwork/piapi-mcp-server` | 22 | NETWORK_OUTBOUND |
+| `cjo4m06/mcp-shrimp-task-manager` | 15 | ENV, WRITE_FS, READ_FS |
+| `joelhooks/logseq-mcp-tools` | 15 | NETWORK_OUTBOUND |
+| `DMontgomery40/mcp-3D-printer-server` | 13 | WRITE_DB, READ_FS, WRITE_FS |
+
+Comparison with MCPDiFF's headline: they report 13% of 10,240 servers had significant mismatches (server-level "any mismatch" rate). Our **37.5% per-tool violation rate on 648 tools across 84 servers** is a different metric on a smaller analysable subset, but the direction is consistent — *real-world MCP tools commonly under-declare capabilities they actually exercise, with NETWORK_OUTBOUND and ENV the dominant offenders.* Server-level "any-violation" rate from our run: **48 of 84 ≈ 57%** (any server with ≥1 violating tool).
+
+The 84/500 analysable rate (16.8%) is bottlenecked by:
+1. Dynamic tool-array construction in `setRequestHandler` servers (the dominant `NO_TOOLS_FOUND` cause).
+2. TypeScript-only coverage — many MCPCorpus entries are Python.
+3. Custom registration abstractions in larger frameworks.
+
+This is **the path to 10k** — same shape as MCPDiFF's evaluation, scaled to what's reproducible from public sources without the Python adapter and dynamic-construction support that are on the v1 roadmap.
 
 ---
 

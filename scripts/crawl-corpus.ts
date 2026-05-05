@@ -2,27 +2,32 @@
  * crawl-corpus.ts
  *
  * Assembles a corpus of TypeScript MCP servers from:
- *   a) modelcontextprotocol/servers subdirectories under src/
- *   b) GitHub Search API (unauthenticated)
+ *   a) modelcontextprotocol/servers subdirectories under src/ (high-quality reference servers)
+ *   b) Snakinya/MCPCorpus — a public ~14K-server dataset with normalised GitHub metadata
+ *      (cloned to real-servers/_mcpcorpus/; gitignored like the rest of real-servers/)
  *
  * Usage:
- *   deno run --allow-net --allow-write scripts/crawl-corpus.ts
+ *   deno run --allow-net --allow-write --allow-read --allow-run scripts/crawl-corpus.ts
  *
  * Writes corpus.json in the project root.
+ * Idempotent: safe to re-run.
  */
 
 const CORPUS_PATH = "./corpus.json";
-const MAX_SERVERS = 80;
-const GITHUB_API = "https://api.github.com";
+const MAX_SERVERS = 500;
+const MCPCORPUS_CLONE_URL = "https://github.com/Snakinya/MCPCorpus.git";
+const MCPCORPUS_DIR = "./real-servers/_mcpcorpus";
+const MCPCORPUS_DATA_FILE = `${MCPCORPUS_DIR}/Website/mcpso_servers_cleaned.json`;
 const MCP_SERVERS_REPO = "https://api.github.com/repos/modelcontextprotocol/servers";
 const MCP_SERVERS_CLONE = "https://github.com/modelcontextprotocol/servers.git";
+const MIN_STARS = 2; // skip zero/one-star repos that are likely abandoned
 
 interface CorpusEntry {
   name: string;
   cloneUrl: string;
   subpath: string | null;
   stars: number | null;
-  source: "modelcontextprotocol-servers" | "github-search";
+  source: "modelcontextprotocol-servers" | "mcpcorpus";
 }
 
 interface CorpusFile {
@@ -32,7 +37,31 @@ interface CorpusFile {
 }
 
 // ---------------------------------------------------------------------------
-// Part A: Enumerate TypeScript server subdirectories in modelcontextprotocol/servers
+// Shell helper
+// ---------------------------------------------------------------------------
+
+async function run(
+  cmd: string[],
+  cwd?: string,
+): Promise<{ success: boolean; stdout: string; stderr: string }> {
+  try {
+    const proc = new Deno.Command(cmd[0], {
+      args: cmd.slice(1),
+      cwd,
+      stdout: "piped",
+      stderr: "piped",
+    });
+    const output = await proc.output();
+    const stdout = new TextDecoder().decode(output.stdout);
+    const stderr = new TextDecoder().decode(output.stderr);
+    return { success: output.success, stdout, stderr };
+  } catch (e) {
+    return { success: false, stdout: "", stderr: String(e) };
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Part A: modelcontextprotocol/servers (reference servers)
 // ---------------------------------------------------------------------------
 
 async function fetchMcpServersSubdirs(): Promise<CorpusEntry[]> {
@@ -60,7 +89,6 @@ async function fetchMcpServersSubdirs(): Promise<CorpusEntry[]> {
 
   for (const dir of dirs) {
     const subpath = `src/${dir.name}`;
-    // Check if the directory contains a package.json and a .ts file with server.tool or server.registerTool
     let hasPackageJson = false;
     let hasTsWithServerTool = false;
 
@@ -148,85 +176,195 @@ async function fetchMcpServersSubdirs(): Promise<CorpusEntry[]> {
 }
 
 // ---------------------------------------------------------------------------
-// Part B: GitHub Search API
+// Part B: MCPCorpus
 // ---------------------------------------------------------------------------
 
-const EXCLUDE_PATTERNS = ["template", "boilerplate", "starter", "example"];
-
-function shouldExclude(repoName: string): boolean {
-  const lower = repoName.toLowerCase();
-  return EXCLUDE_PATTERNS.some((p) => lower.includes(p));
-}
-
-interface GithubRepo {
-  full_name: string;
-  clone_url: string;
-  stargazers_count: number;
-  fork: boolean;
-}
-
-async function searchGithub(query: string): Promise<GithubRepo[]> {
-  const url =
-    `${GITHUB_API}/search/repositories?q=${encodeURIComponent(query)}&sort=stars&order=desc&per_page=100`;
-  console.log(`Searching GitHub: ${query}`);
-
+/** Clone or update the MCPCorpus dataset repo (sparse — we only need Website/). */
+async function ensureMcpCorpus(): Promise<boolean> {
+  // Check if already cloned
   try {
-    const resp = await fetch(url, {
-      headers: { "Accept": "application/vnd.github+json", "User-Agent": "sound-permissions-crawler" },
-    });
+    await Deno.stat(MCPCORPUS_DATA_FILE);
+    console.log("MCPCorpus already cloned; using cached copy.");
+    return true;
+  } catch {
+    // Not cloned yet
+  }
 
-    if (resp.status === 403 || resp.status === 429) {
-      console.warn(`  WARNING: GitHub API rate limit hit (${resp.status}). Skipping query.`);
-      return [];
+  console.log("Cloning Snakinya/MCPCorpus (sparse — Website/ only)...");
+  await Deno.mkdir(MCPCORPUS_DIR, { recursive: true });
+
+  // Init + sparse checkout to get only Website/mcpso_servers_cleaned.json
+  const initResult = await run(["git", "init"], MCPCORPUS_DIR);
+  if (!initResult.success) {
+    console.warn(`  WARNING: git init failed: ${initResult.stderr.slice(0, 200)}`);
+    return false;
+  }
+
+  const remoteResult = await run(
+    ["git", "remote", "add", "origin", MCPCORPUS_CLONE_URL],
+    MCPCORPUS_DIR,
+  );
+  if (!remoteResult.success) {
+    // Remote might already exist if partially cloned
+    console.warn(`  WARNING: git remote add: ${remoteResult.stderr.slice(0, 200)}`);
+  }
+
+  const sparseInitResult = await run(
+    ["git", "sparse-checkout", "init", "--cone"],
+    MCPCORPUS_DIR,
+  );
+  if (!sparseInitResult.success) {
+    console.warn(`  WARNING: sparse-checkout init failed: ${sparseInitResult.stderr.slice(0, 200)}`);
+    return false;
+  }
+
+  const sparseSetResult = await run(
+    ["git", "sparse-checkout", "set", "Website"],
+    MCPCORPUS_DIR,
+  );
+  if (!sparseSetResult.success) {
+    console.warn(`  WARNING: sparse-checkout set failed: ${sparseSetResult.stderr.slice(0, 200)}`);
+    return false;
+  }
+
+  console.log("  Fetching (depth=1)...");
+  const fetchResult = await run(
+    ["git", "fetch", "--depth=1", "origin", "main"],
+    MCPCORPUS_DIR,
+  );
+  if (!fetchResult.success) {
+    // Try master branch
+    const fetchResult2 = await run(
+      ["git", "fetch", "--depth=1", "origin", "master"],
+      MCPCORPUS_DIR,
+    );
+    if (!fetchResult2.success) {
+      console.warn(`  WARNING: git fetch failed: ${fetchResult2.stderr.slice(0, 200)}`);
+      return false;
     }
+    await run(["git", "checkout", "FETCH_HEAD"], MCPCORPUS_DIR);
+  } else {
+    await run(["git", "checkout", "FETCH_HEAD"], MCPCORPUS_DIR);
+  }
 
-    if (!resp.ok) {
-      console.warn(`  WARNING: GitHub API returned ${resp.status} for query "${query}"`);
-      return [];
-    }
+  // Verify the data file is there
+  try {
+    await Deno.stat(MCPCORPUS_DATA_FILE);
+    console.log("  MCPCorpus data file found.");
+    return true;
+  } catch {
+    console.warn(`  WARNING: Expected data file not found at ${MCPCORPUS_DATA_FILE}`);
+    return false;
+  }
+}
 
-    const data = await resp.json();
-    console.log(`  Total hits: ${data.total_count ?? "unknown"}, fetched: ${data.items?.length ?? 0}`);
-    return data.items ?? [];
+/** Parse MCPCorpus cleaned JSON and extract TypeScript server entries. */
+interface McpCorpusRawEntry {
+  id?: unknown;
+  name?: unknown;
+  url?: unknown;
+  title?: unknown;
+  description?: unknown;
+  author_name?: unknown;
+  github?: {
+    full_name?: string;
+    stargazers_count?: number;
+    language?: string;
+    archived?: boolean;
+  } | null;
+}
+
+function extractSubpath(url: string): string | null {
+  const m = url.match(/\/tree\/(?:main|master)\/(.+)/);
+  if (m) return m[1].replace(/\/$/, "");
+  return null;
+}
+
+async function loadMcpCorpusEntries(
+  alreadyNames: Set<string>,
+): Promise<CorpusEntry[]> {
+  let raw: unknown;
+  try {
+    const text = await Deno.readTextFile(MCPCORPUS_DATA_FILE);
+    raw = JSON.parse(text);
   } catch (e) {
-    console.warn(`  WARNING: GitHub search failed: ${e}`);
+    console.warn(`  WARNING: Failed to parse MCPCorpus data file: ${e}`);
     return [];
   }
-}
 
-async function fetchGithubSearchEntries(alreadyNames: Set<string>): Promise<CorpusEntry[]> {
-  const queries = [
-    "mcp-server language:typescript",
-    "model-context-protocol language:typescript",
-  ];
+  if (!Array.isArray(raw)) {
+    console.warn("  WARNING: MCPCorpus data is not an array — schema may have changed. Skipping.");
+    return [];
+  }
 
-  const seen = new Set<string>(alreadyNames);
+  console.log(`  MCPCorpus: ${raw.length} total entries`);
+
   const entries: CorpusEntry[] = [];
+  const seenKeys = new Set<string>(alreadyNames);
 
-  for (const query of queries) {
-    const repos = await searchGithub(query);
+  let skippedNoGithub = 0;
+  let skippedNotTs = 0;
+  let skippedArchived = 0;
+  let skippedLowStars = 0;
+  let skippedDuplicate = 0;
 
-    for (const repo of repos) {
-      if (seen.has(repo.full_name)) continue;
-      seen.add(repo.full_name);
-
-      // Filter criteria
-      if (repo.stargazers_count < 1) continue;
-      if (shouldExclude(repo.full_name.split("/")[1])) continue;
-      if (repo.fork) continue;
-
-      entries.push({
-        name: repo.full_name,
-        cloneUrl: repo.clone_url,
-        subpath: null,
-        stars: repo.stargazers_count,
-        source: "github-search",
-      });
+  for (const item of raw as McpCorpusRawEntry[]) {
+    // Tolerate schema changes: skip entries that lack expected fields
+    const gh = item?.github;
+    if (!gh || typeof gh !== "object") {
+      skippedNoGithub++;
+      continue;
     }
 
-    // Small delay between queries to be polite
-    await new Promise((r) => setTimeout(r, 1000));
+    const lang = gh.language;
+    if (lang !== "TypeScript") {
+      skippedNotTs++;
+      continue;
+    }
+
+    if (gh.archived === true) {
+      skippedArchived++;
+      continue;
+    }
+
+    const fullName = gh.full_name;
+    if (!fullName || typeof fullName !== "string") {
+      skippedNoGithub++;
+      continue;
+    }
+
+    const stars = typeof gh.stargazers_count === "number" ? gh.stargazers_count : 0;
+    if (stars < MIN_STARS) {
+      skippedLowStars++;
+      continue;
+    }
+
+    const url = typeof item.url === "string" ? item.url : "";
+    const subpath = url ? extractSubpath(url) : null;
+
+    // Dedup key: repo + subpath
+    const key = subpath ? `${fullName}#${subpath}` : fullName;
+    if (seenKeys.has(key)) {
+      skippedDuplicate++;
+      continue;
+    }
+    seenKeys.add(key);
+
+    const cloneUrl = `https://github.com/${fullName}.git`;
+
+    entries.push({
+      name: key,
+      cloneUrl,
+      subpath,
+      stars,
+      source: "mcpcorpus",
+    });
   }
+
+  console.log(`  Filter results: TS=${
+    raw.length - skippedNotTs - skippedNoGithub
+  } kept, archived=${skippedArchived} skipped, low-stars(<${MIN_STARS})=${skippedLowStars} skipped, dup=${skippedDuplicate} skipped, no-github=${skippedNoGithub} skipped`);
+  console.log(`  MCPCorpus TypeScript entries (pre-cap): ${entries.length}`);
 
   return entries;
 }
@@ -236,25 +374,42 @@ async function fetchGithubSearchEntries(alreadyNames: Set<string>): Promise<Corp
 // ---------------------------------------------------------------------------
 
 async function main() {
-  console.log("=== sound-permissions corpus crawler ===\n");
+  console.log("=== sound-permissions corpus crawler (MCPCorpus edition) ===\n");
 
   const allServers: CorpusEntry[] = [];
 
-  // Part A
+  // Part A: modelcontextprotocol/servers reference servers
   const mcpEntries = await fetchMcpServersSubdirs();
   allServers.push(...mcpEntries);
-  console.log(`\nmodelcontextprotocol/servers: ${mcpEntries.length} servers\n`);
+  console.log(`\nmodelcontextprotocol/servers: ${mcpEntries.length} reference servers\n`);
 
-  // Part B
-  const alreadyNames = new Set(allServers.map((e) => e.name));
-  const githubEntries = await fetchGithubSearchEntries(alreadyNames);
-  allServers.push(...githubEntries);
-  console.log(`\nGitHub search: ${githubEntries.length} additional servers`);
+  // Part B: MCPCorpus
+  const corpusAvailable = await ensureMcpCorpus();
+  if (!corpusAvailable) {
+    console.warn(
+      "WARNING: MCPCorpus not available. Corpus will only contain modelcontextprotocol/servers entries.",
+    );
+  } else {
+    const alreadyNames = new Set(allServers.map((e) => e.name));
+    // Also add bare repo names without subpath to prevent double-adding repo with/without subpath
+    for (const e of allServers) {
+      const bare = e.name.split("#")[0];
+      alreadyNames.add(bare);
+    }
+
+    const mcpCorpusEntries = await loadMcpCorpusEntries(alreadyNames);
+
+    // Sort by stars descending so the 500 cap picks the most popular servers
+    mcpCorpusEntries.sort((a, b) => (b.stars ?? 0) - (a.stars ?? 0));
+
+    allServers.push(...mcpCorpusEntries);
+    console.log(`\nMCPCorpus contribution: ${mcpCorpusEntries.length} additional TS servers`);
+  }
 
   // Cap at MAX_SERVERS
   const capped = allServers.slice(0, MAX_SERVERS);
   if (allServers.length > MAX_SERVERS) {
-    console.log(`\nCapping corpus at ${MAX_SERVERS} (had ${allServers.length})`);
+    console.log(`\nCapping corpus at ${MAX_SERVERS} (had ${allServers.length} total)`);
   }
 
   const corpus: CorpusFile = {

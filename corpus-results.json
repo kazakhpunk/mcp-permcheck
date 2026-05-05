@@ -1,10 +1,11 @@
 {
-  "ranAt": "2026-05-05T13:23:06.743Z",
-  "totalAttempted": 80,
+  "ranAt": "2026-05-05T14:21:07.368Z",
+  "totalAttempted": 500,
   "outcomes": {
-    "SUCCESS": 10,
-    "NO_ENTRY_FILE": 24,
-    "NO_TOOLS_FOUND": 46
+    "SUCCESS": 84,
+    "NO_ENTRY_FILE": 87,
+    "NO_TOOLS_FOUND": 298,
+    "CLONE_FAILED": 13
   },
   "results": [
     {
@@ -22,7 +23,7 @@
           "witnessCount": 3
         }
       ],
-      "analysedAt": "2026-05-05T13:22:42.999Z"
+      "analysedAt": "2026-05-05T13:51:07.260Z"
     },
     {
       "name": "modelcontextprotocol/servers#memory",
@@ -40,46 +41,32 @@
       "error": "pipeline ran but no server.tool() or registerTool() calls detected"
     },
     {
-      "name": "google-gemini/gemini-cli",
-      "outcome": "SUCCESS",
-      "tools": 2,
-      "ok": 1,
-      "violation": 1,
-      "violationDetails": [
-        {
-          "tool": "closeDiff",
-          "undeclared": [
-            "WRITE_DB"
-          ],
-          "witnessCount": 2
-        }
-      ],
-      "analysedAt": "2026-05-05T13:22:47.699Z"
-    },
-    {
-      "name": "upstash/context7",
-      "outcome": "SUCCESS",
-      "tools": 2,
-      "ok": 1,
-      "violation": 1,
-      "violationDetails": [
-        {
-          "tool": "query-docs",
-          "undeclared": [
-            "NETWORK_OUTBOUND"
-          ],
-          "witnessCount": 1
-        }
-      ],
-      "analysedAt": "2026-05-05T13:22:47.823Z"
-    },
-    {
-      "name": "ruvnet/ruflo",
+      "name": "microsoft/playwright",
       "outcome": "NO_TOOLS_FOUND",
       "error": "pipeline ran but no server.tool() or registerTool() calls detected"
     },
     {
-      "name": "ChromeDevTools/chrome-devtools-mcp",
+      "name": "cline/cline",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "prisma/prisma",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "gitroomhq/postiz-app",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "activepieces/activepieces",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "bytedance/UI-TARS-desktop#packages/agent-infra/mcp-servers/browser",
       "outcome": "NO_TOOLS_FOUND",
       "error": "pipeline ran but no server.tool() or registerTool() calls detected"
     },
@@ -89,33 +76,14 @@
       "error": "no .ts file with server.tool() or server.registerTool() found"
     },
     {
-      "name": "bytedance/UI-TARS-desktop",
-      "outcome": "SUCCESS",
-      "tools": 1,
-      "ok": 1,
-      "violation": 0,
-      "violationDetails": [],
-      "analysedAt": "2026-05-05T13:22:49.662Z"
-    },
-    {
-      "name": "activepieces/activepieces",
-      "outcome": "NO_TOOLS_FOUND",
-      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
-    },
-    {
-      "name": "czlonkowski/n8n-mcp",
-      "outcome": "NO_TOOLS_FOUND",
-      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
-    },
-    {
-      "name": "nukeop/nuclear",
+      "name": "elie222/inbox-zero#apps/mcp-server",
       "outcome": "NO_ENTRY_FILE",
       "error": "no .ts file with server.tool() or server.registerTool() found"
     },
     {
-      "name": "triggerdotdev/trigger.dev",
-      "outcome": "NO_TOOLS_FOUND",
-      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+      "name": "elie222/inbox-zero",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
     },
     {
       "name": "GLips/Figma-Context-MCP",
@@ -123,22 +91,12 @@
       "error": "pipeline ran but no server.tool() or registerTool() calls detected"
     },
     {
-      "name": "open-metadata/OpenMetadata",
-      "outcome": "NO_ENTRY_FILE",
-      "error": "no .ts file with server.tool() or server.registerTool() found"
-    },
-    {
-      "name": "mksglu/context-mode",
+      "name": "benjamine/jsondiffpatch#packages/diff-mcp",
       "outcome": "NO_TOOLS_FOUND",
       "error": "pipeline ran but no server.tool() or registerTool() calls detected"
     },
     {
-      "name": "hangwin/mcp-chrome",
-      "outcome": "NO_TOOLS_FOUND",
-      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
-    },
-    {
-      "name": "mcp-use/mcp-use",
+      "name": "executeautomation/mcp-playwright",
       "outcome": "NO_TOOLS_FOUND",
       "error": "pipeline ran but no server.tool() or registerTool() calls detected"
     },
@@ -148,46 +106,12 @@
       "error": "no .ts file with server.tool() or server.registerTool() found"
     },
     {
+      "name": "opensumi/core",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
       "name": "idosal/git-mcp",
-      "outcome": "NO_TOOLS_FOUND",
-      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
-    },
-    {
-      "name": "webiny/webiny-js",
-      "outcome": "SUCCESS",
-      "tools": 2,
-      "ok": 2,
-      "violation": 0,
-      "violationDetails": [],
-      "analysedAt": "2026-05-05T13:22:56.356Z"
-    },
-    {
-      "name": "BrowserMCP/mcp",
-      "outcome": "NO_TOOLS_FOUND",
-      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
-    },
-    {
-      "name": "wonderwhy-er/DesktopCommanderMCP",
-      "outcome": "NO_TOOLS_FOUND",
-      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
-    },
-    {
-      "name": "getsentry/XcodeBuildMCP",
-      "outcome": "NO_TOOLS_FOUND",
-      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
-    },
-    {
-      "name": "google-labs-code/stitch-skills",
-      "outcome": "NO_ENTRY_FILE",
-      "error": "no .ts file with server.tool() or server.registerTool() found"
-    },
-    {
-      "name": "nanbingxyz/5ire",
-      "outcome": "NO_ENTRY_FILE",
-      "error": "no .ts file with server.tool() or server.registerTool() found"
-    },
-    {
-      "name": "epiral/bb-browser",
       "outcome": "NO_TOOLS_FOUND",
       "error": "pipeline ran but no server.tool() or registerTool() calls detected"
     },
@@ -197,9 +121,19 @@
       "error": "pipeline ran but no server.tool() or registerTool() calls detected"
     },
     {
-      "name": "exa-labs/exa-mcp-server",
+      "name": "cloudflare/mcp-server-cloudflare",
       "outcome": "NO_TOOLS_FOUND",
       "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "msgbyte/tianji#apps/mcp-server",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "smallcloudai/refact",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
     },
     {
       "name": "makenotion/notion-mcp-server",
@@ -207,37 +141,22 @@
       "error": "pipeline ran but no server.tool() or registerTool() calls detected"
     },
     {
-      "name": "Pimzino/spec-workflow-mcp",
-      "outcome": "NO_TOOLS_FOUND",
-      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
-    },
-    {
-      "name": "antvis/mcp-server-chart",
-      "outcome": "NO_TOOLS_FOUND",
-      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
-    },
-    {
-      "name": "leerob/directories",
+      "name": "sourcebot-dev/sourcebot#packages/mcp",
       "outcome": "NO_ENTRY_FILE",
       "error": "no .ts file with server.tool() or server.registerTool() found"
     },
     {
-      "name": "cloudflare/mcp-server-cloudflare",
-      "outcome": "NO_TOOLS_FOUND",
-      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
-    },
-    {
-      "name": "opensumi/core",
-      "outcome": "NO_TOOLS_FOUND",
-      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
-    },
-    {
-      "name": "archestra-ai/archestra",
-      "outcome": "NO_TOOLS_FOUND",
-      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
-    },
-    {
       "name": "browserbase/mcp-server-browserbase",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "autobrowser-ai/mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "browsermcp/mcp",
       "outcome": "NO_TOOLS_FOUND",
       "error": "pipeline ran but no server.tool() or registerTool() calls detected"
     },
@@ -247,7 +166,217 @@
       "error": "pipeline ran but no server.tool() or registerTool() calls detected"
     },
     {
-      "name": "Jpisnice/shadcn-ui-mcp-server",
+      "name": "zcaceres/markdownify-mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "chatmcp/mcp-directory",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "exa-labs/exa-mcp-server",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "cyberagiinc/DevDocs",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "supabase-community/mcp-supabase",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "supabase-community/supabase-mcp",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "supercorp-ai/supergateway",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "nrwl/nx-console",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "cameroncooke/XcodeBuildMCP",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "HiveNexus/HiveChat",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "chatmcp/mcp-server-chatsum",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "mcpservers/mcp-server-chatsum",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "metorial/mcp-containers",
+      "outcome": "SUCCESS",
+      "tools": 10,
+      "ok": 0,
+      "violation": 10,
+      "violationDetails": [
+        {
+          "tool": "list_spreadsheets",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "create_spreadsheet",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "get_spreadsheet",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "update_spreadsheet_properties",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "add_sheet",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "delete_sheet",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "duplicate_sheet",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "batch_get_values",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "batch_update_values",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "batch_clear_values",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        }
+      ],
+      "analysedAt": "2026-05-05T13:55:34.815Z"
+    },
+    {
+      "name": "mobile-next/mobile-mcp",
+      "outcome": "SUCCESS",
+      "tools": 1,
+      "ok": 0,
+      "violation": 1,
+      "violationDetails": [
+        {
+          "tool": "mobile_take_screenshot",
+          "undeclared": [
+            "ENV",
+            "EXEC_PROCESS",
+            "WRITE_FS",
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 28
+        }
+      ],
+      "analysedAt": "2026-05-05T13:55:37.080Z"
+    },
+    {
+      "name": "openops-cloud/openops",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "patruff/ollama-mcp-bridge",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "suekou/mcp-notion-server",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "Flux159/mcp-server-kubernetes",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "taybenlor/runno",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "jae-jae/fetcher-mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "jae-jae/fetch-mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "antvis/mcp-server-chart",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "QuantGeekDev/mcp-framework",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "antfu/nuxt-mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "ryoppippi/sitemcp",
       "outcome": "NO_TOOLS_FOUND",
       "error": "pipeline ran but no server.tool() or registerTool() calls detected"
     },
@@ -257,100 +386,53 @@
       "error": "pipeline ran but no server.tool() or registerTool() calls detected"
     },
     {
-      "name": "supercorp-ai/supergateway",
+      "name": "regenrek/deepwiki-mcp",
       "outcome": "NO_ENTRY_FILE",
       "error": "no .ts file with server.tool() or server.registerTool() found"
     },
     {
-      "name": "metatool-ai/metamcp",
-      "outcome": "NO_TOOLS_FOUND",
-      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
-    },
-    {
-      "name": "PleasePrompto/notebooklm-mcp",
-      "outcome": "NO_TOOLS_FOUND",
-      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
-    },
-    {
-      "name": "microsoft/skills",
+      "name": "likec4/likec4#packages/mcp",
       "outcome": "NO_ENTRY_FILE",
       "error": "no .ts file with server.tool() or server.registerTool() found"
     },
     {
-      "name": "Mouseww/anything-analyzer",
+      "name": "ifuryst/rednote-mcp",
       "outcome": "NO_TOOLS_FOUND",
       "error": "pipeline ran but no server.tool() or registerTool() calls detected"
     },
     {
-      "name": "jamubc/gemini-mcp-tool",
+      "name": "iFurySt/RedNote-MCP",
       "outcome": "NO_TOOLS_FOUND",
       "error": "pipeline ran but no server.tool() or registerTool() calls detected"
     },
     {
-      "name": "modelcontextprotocol/ext-apps",
+      "name": "mondaycom/vibe",
       "outcome": "NO_TOOLS_FOUND",
       "error": "pipeline ran but no server.tool() or registerTool() calls detected"
     },
     {
-      "name": "perplexityai/modelcontextprotocol",
+      "name": "riseandignite/mcp-shield",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "benborla/mcp-server-mysql",
       "outcome": "SUCCESS",
-      "tools": 4,
+      "tools": 1,
       "ok": 0,
-      "violation": 4,
+      "violation": 1,
       "violationDetails": [
         {
-          "tool": "perplexity_ask",
+          "tool": "mysql_query",
           "undeclared": [
             "ENV",
-            "NETWORK_OUTBOUND"
+            "READ_DB",
+            "WRITE_DB"
           ],
-          "witnessCount": 6
-        },
-        {
-          "tool": "perplexity_research",
-          "undeclared": [
-            "ENV",
-            "NETWORK_OUTBOUND"
-          ],
-          "witnessCount": 6
-        },
-        {
-          "tool": "perplexity_reason",
-          "undeclared": [
-            "ENV",
-            "NETWORK_OUTBOUND"
-          ],
-          "witnessCount": 6
-        },
-        {
-          "tool": "perplexity_search",
-          "undeclared": [
-            "ENV",
-            "NETWORK_OUTBOUND"
-          ],
-          "witnessCount": 6
+          "witnessCount": 11
         }
       ],
-      "analysedAt": "2026-05-05T13:23:00.929Z"
-    },
-    {
-      "name": "AmoyLab/Unla",
-      "outcome": "NO_ENTRY_FILE",
-      "error": "no .ts file with server.tool() or server.registerTool() found"
-    },
-    {
-      "name": "crbnos/carbon",
-      "outcome": "SUCCESS",
-      "tools": 10,
-      "ok": 10,
-      "violation": 0,
-      "violationDetails": [],
-      "analysedAt": "2026-05-05T13:23:01.595Z"
-    },
-    {
-      "name": "cyberagiinc/DevDocs",
-      "outcome": "NO_ENTRY_FILE",
-      "error": "no .ts file with server.tool() or server.registerTool() found"
+      "analysedAt": "2026-05-05T13:57:53.473Z"
     },
     {
       "name": "samanhappy/mcphub",
@@ -358,59 +440,235 @@
       "error": "pipeline ran but no server.tool() or registerTool() calls detected"
     },
     {
-      "name": "chatmcp/mcpso",
-      "outcome": "NO_ENTRY_FILE",
-      "error": "no .ts file with server.tool() or server.registerTool() found"
-    },
-    {
-      "name": "mcp-router/mcp-router",
+      "name": "worryzyy/HowToCook-mcp",
       "outcome": "NO_TOOLS_FOUND",
       "error": "pipeline ran but no server.tool() or registerTool() calls detected"
     },
     {
-      "name": "Vexa-ai/vexa",
+      "name": "michaellatman/mcp-get",
       "outcome": "NO_ENTRY_FILE",
       "error": "no .ts file with server.tool() or server.registerTool() found"
     },
     {
-      "name": "agentset-ai/agentset",
+      "name": "zcaceres/fetch-mcp",
+      "outcome": "SUCCESS",
+      "tools": 6,
+      "ok": 6,
+      "violation": 0,
+      "violationDetails": [],
+      "analysedAt": "2026-05-05T13:58:03.508Z"
+    },
+    {
+      "name": "CopilotKit/open-multi-agent-canvas",
       "outcome": "NO_ENTRY_FILE",
       "error": "no .ts file with server.tool() or server.registerTool() found"
     },
     {
-      "name": "MCPJam/inspector",
+      "name": "cjo4m06/mcp-shrimp-task-manager",
+      "outcome": "SUCCESS",
+      "tools": 15,
+      "ok": 0,
+      "violation": 15,
+      "violationDetails": [
+        {
+          "tool": "plan_task",
+          "undeclared": [
+            "ENV",
+            "WRITE_FS",
+            "READ_FS"
+          ],
+          "witnessCount": 14
+        },
+        {
+          "tool": "analyze_task",
+          "undeclared": [
+            "ENV",
+            "READ_FS"
+          ],
+          "witnessCount": 11
+        },
+        {
+          "tool": "reflect_task",
+          "undeclared": [
+            "ENV",
+            "READ_FS"
+          ],
+          "witnessCount": 11
+        },
+        {
+          "tool": "split_tasks",
+          "undeclared": [
+            "READ_FS",
+            "ENV",
+            "WRITE_FS"
+          ],
+          "witnessCount": 19
+        },
+        {
+          "tool": "list_tasks",
+          "undeclared": [
+            "ENV",
+            "WRITE_FS",
+            "READ_FS"
+          ],
+          "witnessCount": 13
+        },
+        {
+          "tool": "execute_task",
+          "undeclared": [
+            "ENV",
+            "WRITE_FS",
+            "READ_FS"
+          ],
+          "witnessCount": 15
+        },
+        {
+          "tool": "verify_task",
+          "undeclared": [
+            "ENV",
+            "WRITE_FS",
+            "READ_FS"
+          ],
+          "witnessCount": 15
+        },
+        {
+          "tool": "delete_task",
+          "undeclared": [
+            "ENV",
+            "WRITE_FS",
+            "READ_FS"
+          ],
+          "witnessCount": 15
+        },
+        {
+          "tool": "clear_all_tasks",
+          "undeclared": [
+            "ENV",
+            "READ_FS",
+            "WRITE_FS"
+          ],
+          "witnessCount": 16
+        },
+        {
+          "tool": "update_task",
+          "undeclared": [
+            "ENV",
+            "READ_FS",
+            "WRITE_FS"
+          ],
+          "witnessCount": 15
+        },
+        {
+          "tool": "query_task",
+          "undeclared": [
+            "ENV",
+            "WRITE_FS",
+            "READ_FS"
+          ],
+          "witnessCount": 14
+        },
+        {
+          "tool": "get_task_detail",
+          "undeclared": [
+            "ENV",
+            "WRITE_FS",
+            "READ_FS"
+          ],
+          "witnessCount": 14
+        },
+        {
+          "tool": "process_thought",
+          "undeclared": [
+            "ENV",
+            "READ_FS"
+          ],
+          "witnessCount": 11
+        },
+        {
+          "tool": "init_project_rules",
+          "undeclared": [
+            "ENV",
+            "READ_FS"
+          ],
+          "witnessCount": 11
+        },
+        {
+          "tool": "research_mode",
+          "undeclared": [
+            "ENV",
+            "READ_FS"
+          ],
+          "witnessCount": 11
+        }
+      ],
+      "analysedAt": "2026-05-05T13:58:16.611Z"
+    },
+    {
+      "name": "alioshr/memory-bank-mcp",
       "outcome": "NO_TOOLS_FOUND",
       "error": "pipeline ran but no server.tool() or registerTool() calls detected"
     },
     {
-      "name": "modelcontextprotocol/mcpb",
-      "outcome": "NO_ENTRY_FILE",
-      "error": "no .ts file with server.tool() or server.registerTool() found"
-    },
-    {
-      "name": "OpenAgentPlatform/Dive",
-      "outcome": "NO_ENTRY_FILE",
-      "error": "no .ts file with server.tool() or server.registerTool() found"
-    },
-    {
-      "name": "forloopcodes/contextplus",
+      "name": "StevenStavrakis/obsidian-mcp",
       "outcome": "NO_TOOLS_FOUND",
       "error": "pipeline ran but no server.tool() or registerTool() calls detected"
     },
     {
-      "name": "chrisryugj/korean-law-mcp",
-      "outcome": "NO_TOOLS_FOUND",
-      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+      "name": "resend/mcp-send-email",
+      "outcome": "SUCCESS",
+      "tools": 3,
+      "ok": 1,
+      "violation": 2,
+      "violationDetails": [
+        {
+          "tool": "connect-to-editor",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "disconnect-from-editor",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        }
+      ],
+      "analysedAt": "2026-05-05T13:58:23.039Z"
     },
     {
-      "name": "microsoft/azure-devops-mcp",
-      "outcome": "NO_TOOLS_FOUND",
-      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+      "name": "ykhli/mcp-send-email",
+      "outcome": "SUCCESS",
+      "tools": 3,
+      "ok": 1,
+      "violation": 2,
+      "violationDetails": [
+        {
+          "tool": "connect-to-editor",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "disconnect-from-editor",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        }
+      ],
+      "analysedAt": "2026-05-05T13:58:25.039Z"
     },
     {
-      "name": "skyhook-io/radar",
-      "outcome": "NO_ENTRY_FILE",
-      "error": "no .ts file with server.tool() or server.registerTool() found"
+      "name": "ferrislucas/iterm-mcp",
+      "outcome": "SUCCESS",
+      "tools": 3,
+      "ok": 3,
+      "violation": 0,
+      "violationDetails": [],
+      "analysedAt": "2026-05-05T13:58:27.513Z"
     },
     {
       "name": "leonardsellem/n8n-mcp-server",
@@ -418,38 +676,445 @@
       "error": "pipeline ran but no server.tool() or registerTool() calls detected"
     },
     {
-      "name": "MicrosoftDocs/mcp",
+      "name": "Shopify/dev-mcp",
+      "outcome": "CLONE_FAILED",
+      "error": "git clone failed: Cloning into './real-servers/Shopify__dev-mcp'...\nremote: Repository not found.\nfatal: repository 'https://github.com/Shopify/dev-mcp.git/' not found\n"
+    },
+    {
+      "name": "kleneway/awesome-cursor-mpc-server",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "tevonsb/homeassistant-mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "smithery-ai/cli",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "graphlit/graphlit-mcp-server",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "neondatabase-labs/mcp-server-neon",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "neondatabase/mcp-server-neon",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "hyperbrowserai/mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "evalstate/mcp-hfspace",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "nanoapi-io/napi",
       "outcome": "NO_ENTRY_FILE",
       "error": "no .ts file with server.tool() or server.registerTool() found"
     },
     {
-      "name": "PaperDebugger/paperdebugger",
-      "outcome": "NO_ENTRY_FILE",
-      "error": "no .ts file with server.tool() or server.registerTool() found"
-    },
-    {
-      "name": "ghostwright/phantom",
+      "name": "RafalWilinski/aws-mcp",
       "outcome": "SUCCESS",
       "tools": 3,
-      "ok": 3,
-      "violation": 0,
-      "violationDetails": [],
-      "analysedAt": "2026-05-05T13:23:03.655Z"
+      "ok": 0,
+      "violation": 3,
+      "violationDetails": [
+        {
+          "tool": "run-aws-code",
+          "undeclared": [
+            "WRITE_DB"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "list-credentials",
+          "undeclared": [
+            "WRITE_DB"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "select-profile",
+          "undeclared": [
+            "WRITE_DB"
+          ],
+          "witnessCount": 1
+        }
+      ],
+      "analysedAt": "2026-05-05T13:59:01.017Z"
     },
     {
-      "name": "Flux159/mcp-server-kubernetes",
-      "outcome": "NO_TOOLS_FOUND",
-      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
-    },
-    {
-      "name": "regenrek/deepwiki-mcp",
+      "name": "dcSpark/shinkai-apps",
       "outcome": "NO_ENTRY_FILE",
       "error": "no .ts file with server.tool() or server.registerTool() found"
     },
     {
-      "name": "Prismer-AI/PrismerCloud",
+      "name": "mcpdotdirect/evm-mcp-server",
+      "outcome": "SUCCESS",
+      "tools": 25,
+      "ok": 17,
+      "violation": 8,
+      "violationDetails": [
+        {
+          "tool": "get_wallet_address",
+          "undeclared": [
+            "ENV"
+          ],
+          "witnessCount": 3
+        },
+        {
+          "tool": "get_allowance",
+          "undeclared": [
+            "ENV"
+          ],
+          "witnessCount": 3
+        },
+        {
+          "tool": "write_contract",
+          "undeclared": [
+            "ENV"
+          ],
+          "witnessCount": 4
+        },
+        {
+          "tool": "transfer_native",
+          "undeclared": [
+            "ENV"
+          ],
+          "witnessCount": 4
+        },
+        {
+          "tool": "transfer_erc20",
+          "undeclared": [
+            "ENV"
+          ],
+          "witnessCount": 4
+        },
+        {
+          "tool": "approve_token_spending",
+          "undeclared": [
+            "ENV"
+          ],
+          "witnessCount": 4
+        },
+        {
+          "tool": "sign_message",
+          "undeclared": [
+            "ENV"
+          ],
+          "witnessCount": 3
+        },
+        {
+          "tool": "sign_typed_data",
+          "undeclared": [
+            "ENV"
+          ],
+          "witnessCount": 3
+        }
+      ],
+      "analysedAt": "2026-05-05T13:59:33.608Z"
+    },
+    {
+      "name": "web-agent-master/google-search",
       "outcome": "NO_TOOLS_FOUND",
       "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "r-huijts/xcode-mcp-server",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "base/base-mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "Tiberriver256/mcp-server-azure-devops",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "Tiberriver256/azure-devops-mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "zueai/mcp-manager",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "kiliczsh/mcp-mongo-server",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "rekog-labs/MCP-Nest",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "CheMiguel23/MemoryMesh",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "apify/actors-mcp-server",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "API-200/api200",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "RafalWilinski/mcp-apple-notes",
+      "outcome": "SUCCESS",
+      "tools": 5,
+      "ok": 5,
+      "violation": 0,
+      "violationDetails": [],
+      "analysedAt": "2026-05-05T14:00:17.270Z"
+    },
+    {
+      "name": "mondaycom/mcp",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "mondaycom/mcp#packages/monday-api-mcp",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "cyanheads/atlas-mcp-server",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "joshrutkowski/applescript-mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "Jacck/mcp-reasoner",
+      "outcome": "SUCCESS",
+      "tools": 1,
+      "ok": 1,
+      "violation": 0,
+      "violationDetails": [],
+      "analysedAt": "2026-05-05T14:00:30.576Z"
+    },
+    {
+      "name": "harsha-iiiv/openapi-mcp-generator",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "ZubeidHendricks/youtube-mcp-server",
+      "outcome": "SUCCESS",
+      "tools": 10,
+      "ok": 0,
+      "violation": 10,
+      "violationDetails": [
+        {
+          "tool": "videos_getVideo",
+          "undeclared": [
+            "WRITE_DB"
+          ],
+          "witnessCount": 2
+        },
+        {
+          "tool": "videos_searchVideos",
+          "undeclared": [
+            "READ_DB",
+            "WRITE_DB"
+          ],
+          "witnessCount": 2
+        },
+        {
+          "tool": "transcripts_getTranscript",
+          "undeclared": [
+            "ENV"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "channels_getChannel",
+          "undeclared": [
+            "WRITE_DB"
+          ],
+          "witnessCount": 2
+        },
+        {
+          "tool": "channels_getChannels",
+          "undeclared": [
+            "WRITE_DB"
+          ],
+          "witnessCount": 2
+        },
+        {
+          "tool": "channels_searchChannels",
+          "undeclared": [
+            "WRITE_DB"
+          ],
+          "witnessCount": 2
+        },
+        {
+          "tool": "channels_findCreators",
+          "undeclared": [
+            "READ_DB",
+            "WRITE_DB"
+          ],
+          "witnessCount": 2
+        },
+        {
+          "tool": "channels_listVideos",
+          "undeclared": [
+            "WRITE_DB"
+          ],
+          "witnessCount": 2
+        },
+        {
+          "tool": "playlists_getPlaylist",
+          "undeclared": [
+            "WRITE_DB"
+          ],
+          "witnessCount": 2
+        },
+        {
+          "tool": "playlists_getPlaylistItems",
+          "undeclared": [
+            "WRITE_DB"
+          ],
+          "witnessCount": 2
+        }
+      ],
+      "analysedAt": "2026-05-05T14:00:34.924Z"
+    },
+    {
+      "name": "EvalsOne/MCP-bridge",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "mongodb-labs/atlas-mcp-server",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "mongodb-js/mongodb-mcp-server",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "hannesrudolph/mcp-ragdocs",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "agentset-ai/agentset#packages/mcp",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "nanbingxyz/mcpsvr",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "taazkareem/clickup-mcp-server",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "TaazKareem/clickup-mcp-server",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "ssut/Remote-MCP",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "blurrah/mcp-graphql",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "InditexTech/mcp-server-simulator-ios-idb",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "wong2/litemcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "jacksteamdev/obsidian-mcp-tools",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "getsentry/sentry-mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "formulahendry/mcp-server-code-runner",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "gannonh/firebase-mcp",
+      "outcome": "SUCCESS",
+      "tools": 12,
+      "ok": 10,
+      "violation": 2,
+      "violationDetails": [
+        {
+          "tool": "storage_upload",
+          "undeclared": [
+            "ENV",
+            "READ_FS"
+          ],
+          "witnessCount": 2
+        },
+        {
+          "tool": "storage_upload_from_url",
+          "undeclared": [
+            "ENV"
+          ],
+          "witnessCount": 2
+        }
+      ],
+      "analysedAt": "2026-05-05T14:01:30.595Z"
+    },
+    {
+      "name": "domdomegg/airtable-mcp-server",
+      "outcome": "SUCCESS",
+      "tools": 1,
+      "ok": 1,
+      "violation": 0,
+      "violationDetails": [],
+      "analysedAt": "2026-05-05T14:01:32.670Z"
     },
     {
       "name": "arabold/docs-mcp-server",
@@ -457,23 +1122,1238 @@
       "error": "pipeline ran but no server.tool() or registerTool() calls detected"
     },
     {
-      "name": "kimsungwhee/apple-docs-mcp",
+      "name": "g0t4/mcp-server-commands",
+      "outcome": "SUCCESS",
+      "tools": 1,
+      "ok": 0,
+      "violation": 1,
+      "violationDetails": [
+        {
+          "tool": "run_process",
+          "undeclared": [
+            "ENV",
+            "WRITE_FS"
+          ],
+          "witnessCount": 3
+        }
+      ],
+      "analysedAt": "2026-05-05T14:01:35.279Z"
+    },
+    {
+      "name": "bigcodegen/mcp-neovim-server",
       "outcome": "NO_TOOLS_FOUND",
       "error": "pipeline ran but no server.tool() or registerTool() calls detected"
     },
     {
-      "name": "TanStack/cli",
+      "name": "spences10/mcp-sequentialthinking-tools",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "egoist/fetch-mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "wegotdocs/open-mcp",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "ttommyth/interactive-mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "zcaceres/easy-mcp",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "punkpeye/mcp-proxy",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "QuantGeekDev/mongo-mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "jae-jae/g-search-mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "aliargun/mcp-server-gemini",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "revit-mcp/revit-mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "dvcrn/mcp-server-siri-shortcuts",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "fatwang2/search1api-mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "akuity/argocd-mcp",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "PraneshASP/foundry-mcp-server",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "TencentEdgeOne/edgeone-pages-mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "lucasmontano/mcp-montano-server",
       "outcome": "SUCCESS",
       "tools": 1,
       "ok": 1,
       "violation": 0,
       "violationDetails": [],
-      "analysedAt": "2026-05-05T13:23:04.684Z"
+      "analysedAt": "2026-05-05T14:02:35.384Z"
     },
     {
-      "name": "Devin-AXIS/A2V",
+      "name": "TimHolden/figma-mcp-server",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "metatool-ai/mcp-server-metamcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "adamwattis/mcp-proxy-server",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "biegehydra/BifrostMCP",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "mcpgod/cli",
       "outcome": "NO_ENTRY_FILE",
       "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "Cheffromspace/MCPControl",
+      "outcome": "SUCCESS",
+      "tools": 23,
+      "ok": 23,
+      "violation": 0,
+      "violationDetails": [],
+      "analysedAt": "2026-05-05T14:02:48.019Z"
+    },
+    {
+      "name": "awkoy/notion-mcp-server",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "isaacphi/mcp-gdrive",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "waldzellai/waldzell-mcp",
+      "outcome": "CLONE_FAILED",
+      "error": "git clone failed: Cloning into './real-servers/waldzellai__waldzell-mcp'...\nremote: Internal Server Error\nfatal: unable to access 'https://github.com/waldzellai/waldzell-mcp.git/': The requested URL returned error: 500\n"
+    },
+    {
+      "name": "waldzellai/mcp-enhancement-servers",
+      "outcome": "CLONE_FAILED",
+      "error": "git clone failed: Cloning into './real-servers/waldzellai__mcp-enhancement-servers'...\nremote: Internal Server Error\nfatal: unable to access 'https://github.com/waldzellai/mcp-enhancement-servers.git/': The requested URL returned error: 500\n"
+    },
+    {
+      "name": "gannonh/memento-mcp",
+      "outcome": "CLONE_FAILED",
+      "error": "git clone failed: Cloning into './real-servers/gannonh__memento-mcp'...\nremote: Internal Server Error\nfatal: unable to access 'https://github.com/gannonh/memento-mcp.git/': The requested URL returned error: 500\n"
+    },
+    {
+      "name": "kaliaboi/mcp-zotero",
+      "outcome": "CLONE_FAILED",
+      "error": "git clone failed: Cloning into './real-servers/kaliaboi__mcp-zotero'...\nremote: Internal Server Error\nfatal: unable to access 'https://github.com/kaliaboi/mcp-zotero.git/': The requested URL returned error: 500\n"
+    },
+    {
+      "name": "mastergo-design/mastergo-magic-mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "paypal/agent-toolkit",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "f2c-ai/f2c-mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "ErickWendel/erickwendel-contributions-mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "cline/linear-mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "yuniko-software/minecraft-mcp-server",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "cyanheads/obsidian-mcp-server",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "integromat/make-mcp-server",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "delano/postman-mcp-server",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "ivo-toby/mcp-openapi-server",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "34892002/bilibili-mcp-js",
+      "outcome": "SUCCESS",
+      "tools": 8,
+      "ok": 8,
+      "violation": 0,
+      "violationDetails": [],
+      "analysedAt": "2026-05-05T14:03:47.008Z"
+    },
+    {
+      "name": "baranwang/mcp-trends-hub",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "eniayomi/gcp-mcp",
+      "outcome": "SUCCESS",
+      "tools": 9,
+      "ok": 9,
+      "violation": 0,
+      "violationDetails": [],
+      "analysedAt": "2026-05-05T14:03:52.044Z"
+    },
+    {
+      "name": "mettamatt/code-reasoning",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "kasarlabs/snak",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "jfrog/mcp-jfrog",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "InterviewReady/mcp-server",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "jazelly/next-mcp-server",
+      "outcome": "SUCCESS",
+      "tools": 1,
+      "ok": 1,
+      "violation": 0,
+      "violationDetails": [],
+      "analysedAt": "2026-05-05T14:04:03.389Z"
+    },
+    {
+      "name": "langfuse/mcp-server-langfuse",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "spences10/mcp-omnisearch",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "MCP-Club/mcpm",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "agentrpc/agentrpc",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "juehang/vscode-mcp-server",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "comet-ml/opik-mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "illuminaresolutions/n8n-mcp-server",
+      "outcome": "SUCCESS",
+      "tools": 33,
+      "ok": 1,
+      "violation": 32,
+      "violationDetails": [
+        {
+          "tool": "list-workflows",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "get-workflow",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "create-workflow",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "update-workflow",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "delete-workflow",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "activate-workflow",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "deactivate-workflow",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "list-projects",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "create-project",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "delete-project",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "update-project",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "list-users",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "create-users",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "get-user",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "delete-user",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "list-variables",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "create-variable",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "delete-variable",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "create-credential",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "delete-credential",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "get-credential-schema",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "list-executions",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "get-execution",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "delete-execution",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "create-tag",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "list-tags",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "get-tag",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "update-tag",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "delete-tag",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "get-workflow-tags",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "update-workflow-tags",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "generate-audit",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        }
+      ],
+      "analysedAt": "2026-05-05T14:04:22.440Z"
+    },
+    {
+      "name": "v-3/discordmcp",
+      "outcome": "SUCCESS",
+      "tools": 2,
+      "ok": 2,
+      "violation": 0,
+      "violationDetails": [],
+      "analysedAt": "2026-05-05T14:04:24.367Z"
+    },
+    {
+      "name": "spences10/mcp-svelte-docs",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "flux159/mcp-chat",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "tacticlaunch/mcp-linear",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "zhixiaoqiang/antd-components-mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "doggybee/mcp-server-ccxt",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "ayeletstudioindia/unreal-analyzer-mcp",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "ptbsare/mcp-proxy-server",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "jazelly/vite-react-mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "milisp/mcp-store",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "djyde/browser-mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "dcolley/swagger-mcp",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "roychri/mcp-server-asana",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "mcp-router/mcp-router",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "larksuite/lark-openapi-mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "milisp/mcp-linker",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "XeroAPI/xero-mcp-server",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "winor30/mcp-server-datadog",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "jhgaylor/node-candidate-mcp-server",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "marcelmarais/spotify-mcp-server",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "rawveg/ollama-mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "aaronjmars/web3-research-mcp",
+      "outcome": "SUCCESS",
+      "tools": 9,
+      "ok": 5,
+      "violation": 4,
+      "violationDetails": [
+        {
+          "tool": "fetch-content",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "search-source",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "research-source",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "research-token",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        }
+      ],
+      "analysedAt": "2026-05-05T14:05:27.281Z"
+    },
+    {
+      "name": "marimo-team/codemirror-mcp",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "cyanheads/git-mcp-server",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "lapras-inc/lapras-mcp-server",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "acomagu/vscode-as-mcp-server",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "QuantGeekDev/coincap-mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "TencentCloudBase/cloudbase-ai-deploy-mcp",
+      "outcome": "SUCCESS",
+      "tools": 1,
+      "ok": 0,
+      "violation": 1,
+      "violationDetails": [
+        {
+          "tool": "activateInviteCode",
+          "undeclared": [
+            "ENV"
+          ],
+          "witnessCount": 19
+        }
+      ],
+      "analysedAt": "2026-05-05T14:06:30.717Z"
+    },
+    {
+      "name": "cantian-ai/bazi-mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "DMontgomery40/mcp-3D-printer-server",
+      "outcome": "SUCCESS",
+      "tools": 16,
+      "ok": 3,
+      "violation": 13,
+      "violationDetails": [
+        {
+          "tool": "extend_stl_base",
+          "undeclared": [
+            "WRITE_DB"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "slice_stl",
+          "undeclared": [
+            "WRITE_DB"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "confirm_temperatures",
+          "undeclared": [
+            "WRITE_DB"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "process_and_print_stl",
+          "undeclared": [
+            "WRITE_DB",
+            "READ_FS",
+            "WRITE_FS"
+          ],
+          "witnessCount": 6
+        },
+        {
+          "tool": "scale_stl",
+          "undeclared": [
+            "WRITE_DB"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "rotate_stl",
+          "undeclared": [
+            "WRITE_DB"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "translate_stl",
+          "undeclared": [
+            "WRITE_DB"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "modify_stl_section",
+          "undeclared": [
+            "WRITE_DB"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "generate_stl_visualization",
+          "undeclared": [
+            "WRITE_DB"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "print_3mf",
+          "undeclared": [
+            "READ_FS",
+            "WRITE_DB"
+          ],
+          "witnessCount": 5
+        },
+        {
+          "tool": "merge_vertices",
+          "undeclared": [
+            "WRITE_DB"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "center_model",
+          "undeclared": [
+            "WRITE_DB"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "lay_flat",
+          "undeclared": [
+            "WRITE_DB"
+          ],
+          "witnessCount": 1
+        }
+      ],
+      "analysedAt": "2026-05-05T14:06:36.543Z"
+    },
+    {
+      "name": "qpd-v/mcp-DEEPwebresearch",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "sammcj/mcp-package-docs",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "mhart/mcp-hono-stateless",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "mario-andreschak/mcp-windows-desktop-automation",
+      "outcome": "SUCCESS",
+      "tools": 6,
+      "ok": 6,
+      "violation": 0,
+      "violationDetails": [],
+      "analysedAt": "2026-05-05T14:06:44.693Z"
+    },
+    {
+      "name": "aindreyway/mcp-codex-keeper",
+      "outcome": "CLONE_FAILED",
+      "error": "git clone failed: Cloning into './real-servers/aindreyway__mcp-codex-keeper'...\nremote: Repository not found.\nfatal: repository 'https://github.com/aindreyway/mcp-codex-keeper.git/' not found\n"
+    },
+    {
+      "name": "alfonsograziano/node-code-sandbox-mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "cnych/mcp-sse-demo",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "PV-Bhat/vibe-check-mcp-server",
+      "outcome": "SUCCESS",
+      "tools": 5,
+      "ok": 3,
+      "violation": 2,
+      "violationDetails": [
+        {
+          "tool": "vibe_check",
+          "undeclared": [
+            "ENV",
+            "WRITE_FS",
+            "READ_FS",
+            "WRITE_DB",
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 19
+        },
+        {
+          "tool": "vibe_learn",
+          "undeclared": [
+            "WRITE_FS",
+            "READ_FS"
+          ],
+          "witnessCount": 2
+        }
+      ],
+      "analysedAt": "2026-05-05T14:07:00.131Z"
+    },
+    {
+      "name": "jonrad/lsp-mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "tadasant/mcp-server-stability-ai",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "FradSer/mcp-server-apple-reminders",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "aaronsb/google-workspace-mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "tuncer-byte/memory-bank-MCP",
+      "outcome": "SUCCESS",
+      "tools": 5,
+      "ok": 0,
+      "violation": 5,
+      "violationDetails": [
+        {
+          "tool": "initialize_memory_bank",
+          "undeclared": [
+            "ENV",
+            "WRITE_FS"
+          ],
+          "witnessCount": 4
+        },
+        {
+          "tool": "update_document",
+          "undeclared": [
+            "WRITE_FS",
+            "READ_FS"
+          ],
+          "witnessCount": 3
+        },
+        {
+          "tool": "query_memory_bank",
+          "undeclared": [
+            "READ_FS"
+          ],
+          "witnessCount": 2
+        },
+        {
+          "tool": "export_memory_bank",
+          "undeclared": [
+            "READ_FS",
+            "WRITE_FS"
+          ],
+          "witnessCount": 3
+        },
+        {
+          "tool": "create_cursor_rules",
+          "undeclared": [
+            "WRITE_FS"
+          ],
+          "witnessCount": 1
+        }
+      ],
+      "analysedAt": "2026-05-05T14:07:19.275Z"
+    },
+    {
+      "name": "block/vscode-mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "block/code-mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "Softeria/ms-365-mcp-server",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "mixelpixx/Google-Search-MCP-Server",
+      "outcome": "SUCCESS",
+      "tools": 4,
+      "ok": 1,
+      "violation": 3,
+      "violationDetails": [
+        {
+          "tool": "google_search",
+          "undeclared": [
+            "WRITE_DB"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "extract_webpage_content",
+          "undeclared": [
+            "WRITE_DB"
+          ],
+          "witnessCount": 2
+        },
+        {
+          "tool": "research_topic",
+          "undeclared": [
+            "WRITE_DB"
+          ],
+          "witnessCount": 2
+        }
+      ],
+      "analysedAt": "2026-05-05T14:07:28.516Z"
+    },
+    {
+      "name": "mixelpixx/GoogleSearch_McpServer",
+      "outcome": "SUCCESS",
+      "tools": 4,
+      "ok": 1,
+      "violation": 3,
+      "violationDetails": [
+        {
+          "tool": "google_search",
+          "undeclared": [
+            "WRITE_DB"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "extract_webpage_content",
+          "undeclared": [
+            "WRITE_DB"
+          ],
+          "witnessCount": 2
+        },
+        {
+          "tool": "research_topic",
+          "undeclared": [
+            "WRITE_DB"
+          ],
+          "witnessCount": 2
+        }
+      ],
+      "analysedAt": "2026-05-05T14:07:30.796Z"
+    },
+    {
+      "name": "vercel/mcp-adapter",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "square/square-mcp-server",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "marcusschiesser/mcp-config",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "shannonlal/mcp-postman",
+      "outcome": "SUCCESS",
+      "tools": 1,
+      "ok": 1,
+      "violation": 0,
+      "violationDetails": [],
+      "analysedAt": "2026-05-05T14:07:39.711Z"
+    },
+    {
+      "name": "browserstack/mcp-server",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "lamemind/mcp-server-multiverse",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "shariqriazz/vertex-ai-mcp-server",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "boguan/create-mcp-app",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "boguan/create-mcp-server-app",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "BurtTheCoder/mcp-virustotal",
+      "outcome": "SUCCESS",
+      "tools": 7,
+      "ok": 0,
+      "violation": 7,
+      "violationDetails": [
+        {
+          "tool": "get_url_report",
+          "undeclared": [
+            "WRITE_FS"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "get_url_relationship",
+          "undeclared": [
+            "WRITE_FS"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "get_file_report",
+          "undeclared": [
+            "WRITE_FS"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "get_file_relationship",
+          "undeclared": [
+            "WRITE_FS"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "get_ip_report",
+          "undeclared": [
+            "WRITE_FS"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "get_ip_relationship",
+          "undeclared": [
+            "WRITE_FS"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "get_domain_report",
+          "undeclared": [
+            "WRITE_FS"
+          ],
+          "witnessCount": 1
+        }
+      ],
+      "analysedAt": "2026-05-05T14:07:54.355Z"
+    },
+    {
+      "name": "sanity-io/sanity-mcp-server",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "nailuoGG/anki-mcp-server",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "edwin-finance/edwin#examples/mcp-server",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "zcaceres/gtasks-mcp",
+      "outcome": "SUCCESS",
+      "tools": 7,
+      "ok": 3,
+      "violation": 4,
+      "violationDetails": [
+        {
+          "tool": "search",
+          "undeclared": [
+            "WRITE_DB"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "list",
+          "undeclared": [
+            "WRITE_DB"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "clear",
+          "undeclared": [
+            "WRITE_DB"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "list-tasklists",
+          "undeclared": [
+            "WRITE_DB"
+          ],
+          "witnessCount": 1
+        }
+      ],
+      "analysedAt": "2026-05-05T14:08:04.326Z"
+    },
+    {
+      "name": "translated/lara-mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "nulab/backlog-mcp-server",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "trknhr/backlog-mcp-server",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "MFYDev/ghost-mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "NeuclaiLabs/centroid",
+      "outcome": "CLONE_FAILED",
+      "error": "git clone failed: Cloning into './real-servers/NeuclaiLabs__centroid'...\nremote: Repository not found.\nfatal: repository 'https://github.com/NeuclaiLabs/centroid.git/' not found\n"
     },
     {
       "name": "lgazo/drawio-mcp-server",
@@ -481,26 +2361,2209 @@
       "error": "pipeline ran but no server.tool() or registerTool() calls detected"
     },
     {
-      "name": "sceneview/sceneview",
+      "name": "evalstate/mcp-miro",
       "outcome": "SUCCESS",
-      "tools": 7,
-      "ok": 7,
-      "violation": 0,
-      "violationDetails": [],
-      "analysedAt": "2026-05-05T13:23:06.387Z"
+      "tools": 6,
+      "ok": 0,
+      "violation": 6,
+      "violationDetails": [
+        {
+          "tool": "list_boards",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "create_sticky_note",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "bulk_create_items",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "get_frames",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "get_items_in_frame",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "create_shape",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        }
+      ],
+      "analysedAt": "2026-05-05T14:08:23.260Z"
     },
     {
-      "name": "apify/apify-mcp-server",
+      "name": "r-huijts/strava-mcp",
       "outcome": "NO_TOOLS_FOUND",
       "error": "pipeline ran but no server.tool() or registerTool() calls detected"
     },
     {
-      "name": "higress-group/himarket",
+      "name": "appliedrelevance/frappe_mcp_server",
+      "outcome": "CLONE_FAILED",
+      "error": "git clone failed: Cloning into './real-servers/appliedrelevance__frappe_mcp_server'...\nremote: Repository not found.\nfatal: repository 'https://github.com/appliedrelevance/frappe_mcp_server.git/' not found\n"
+    },
+    {
+      "name": "alchemyplatform/alchemy-mcp-server",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "auth0/auth0-mcp-server",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "mclenhard/mcp-evals",
+      "outcome": "SUCCESS",
+      "tools": 1,
+      "ok": 1,
+      "violation": 0,
+      "violationDetails": [],
+      "analysedAt": "2026-05-05T14:08:36.632Z"
+    },
+    {
+      "name": "gabrielfroes/mcp-server-sample",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "YuChenSSR/multi-ai-advisor-mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "jsonresume/mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "delorenj/mcp-server-trello",
+      "outcome": "SUCCESS",
+      "tools": 46,
+      "ok": 44,
+      "violation": 2,
+      "violationDetails": [
+        {
+          "tool": "set_active_board",
+          "undeclared": [
+            "WRITE_FS"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "set_active_workspace",
+          "undeclared": [
+            "WRITE_FS"
+          ],
+          "witnessCount": 1
+        }
+      ],
+      "analysedAt": "2026-05-05T14:08:45.795Z"
+    },
+    {
+      "name": "JoshuaRileyDev/app-store-connect-mcp-server",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "CohumanSpace/digimon-engine",
+      "outcome": "CLONE_FAILED",
+      "error": "git clone failed: Cloning into './real-servers/CohumanSpace__digimon-engine'...\nremote: Repository not found.\nfatal: repository 'https://github.com/CohumanSpace/digimon-engine.git/' not found\n"
+    },
+    {
+      "name": "tigranbs/mcgravity",
       "outcome": "NO_ENTRY_FILE",
       "error": "no .ts file with server.tool() or server.registerTool() found"
     },
     {
-      "name": "philschmid/mcp-cli",
+      "name": "GeLi2001/shopify-mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "cliffhall/GooseTeam",
+      "outcome": "SUCCESS",
+      "tools": 12,
+      "ok": 12,
+      "violation": 0,
+      "violationDetails": [],
+      "analysedAt": "2026-05-05T14:09:10.909Z"
+    },
+    {
+      "name": "PublikPrinciple/obsidian-mcp-rest",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "ruvnet/federated-mcp",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "sapientpants/sonarqube-mcp-server",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "da-okazaki/mcp-neo4j-server",
+      "outcome": "SUCCESS",
+      "tools": 3,
+      "ok": 3,
+      "violation": 0,
+      "violationDetails": [],
+      "analysedAt": "2026-05-05T14:09:18.577Z"
+    },
+    {
+      "name": "zhsama/duckduckgo-mcp-server",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "AbdelStark/bitcoin-mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "2b3pro/roam-research-mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "apinetwork/piapi-mcp-server",
+      "outcome": "SUCCESS",
+      "tools": 23,
+      "ok": 1,
+      "violation": 22,
+      "violationDetails": [
+        {
+          "tool": "image_faceswap",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 2
+        },
+        {
+          "tool": "image_rmbg",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 2
+        },
+        {
+          "tool": "image_segment",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 2
+        },
+        {
+          "tool": "image_upscale",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 2
+        },
+        {
+          "tool": "video_faceswap",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 2
+        },
+        {
+          "tool": "video_upscale",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 2
+        },
+        {
+          "tool": "generate_image",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 2
+        },
+        {
+          "tool": "modify_image",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 2
+        },
+        {
+          "tool": "derive_image",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 2
+        },
+        {
+          "tool": "generate_image_controlnet",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 2
+        },
+        {
+          "tool": "generate_video_hunyuan",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 2
+        },
+        {
+          "tool": "generate_video_skyreels",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 2
+        },
+        {
+          "tool": "generate_video_wan",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 2
+        },
+        {
+          "tool": "generate_music_for_video",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 2
+        },
+        {
+          "tool": "tts_zero_shot",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 2
+        },
+        {
+          "tool": "midjourney_imagine",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 2
+        },
+        {
+          "tool": "generate_video_kling",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 2
+        },
+        {
+          "tool": "generate_video_effect_kling",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 2
+        },
+        {
+          "tool": "generate_music_suno",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 2
+        },
+        {
+          "tool": "generate_video_luma",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 2
+        },
+        {
+          "tool": "generate_3d_model",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 2
+        },
+        {
+          "tool": "generate_video_hailuo",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 2
+        }
+      ],
+      "analysedAt": "2026-05-05T14:09:28.848Z"
+    },
+    {
+      "name": "runablehq/mobile-mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "bankless/onchain-mcp",
+      "outcome": "SUCCESS",
+      "tools": 10,
+      "ok": 10,
+      "violation": 0,
+      "violationDetails": [],
+      "analysedAt": "2026-05-05T14:09:32.826Z"
+    },
+    {
+      "name": "tsmztech/mcp-server-salesforce",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "eyalzh/browser-control-mcp",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "ReAPI-com/mcp-openapi",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "chriscarrollsmith/taskqueue-mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "nganiet/mcp-vercel",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "ProgramComputer/NASA-MCP-server",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "playcanvas/editor-mcp-server",
+      "outcome": "SUCCESS",
+      "tools": 9,
+      "ok": 9,
+      "violation": 0,
+      "violationDetails": [],
+      "analysedAt": "2026-05-05T14:09:47.842Z"
+    },
+    {
+      "name": "MiniMax-AI/MiniMax-MCP-JS",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "circleci-public/mcp-server-circleci",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "CircleCI-Public/mcp-server-circleci",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "heroku/heroku-mcp-server",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "playcanvas/mcp-editor",
+      "outcome": "SUCCESS",
+      "tools": 9,
+      "ok": 9,
+      "violation": 0,
+      "violationDetails": [],
+      "analysedAt": "2026-05-05T14:09:56.231Z"
+    },
+    {
+      "name": "ivo-toby/contentful-mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "wong2/mcp-jina-reader",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "confluentinc/mcp-confluent",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "GeLi2001/datadog-mcp-server",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "lazy-dinosaur/ccxt-mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "fleek-platform/eliza-plugin-mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "Quegenx/vercel-mcp-server",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "rember/rember-mcp",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "algolia/mcp-node",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "DMontgomery40/pentest-mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "PolarVista/Xcode-mcp-server",
+      "outcome": "SUCCESS",
+      "tools": 2,
+      "ok": 2,
+      "violation": 0,
+      "violationDetails": [],
+      "analysedAt": "2026-05-05T14:11:07.199Z"
+    },
+    {
+      "name": "alexander-zuev/kollektiv-mcp",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "VeriTeknik/pluggedin-mcp-proxy",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "danwritecode/mcp-client-server-host-demo",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "Omedia/mcp-server-drupal",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "dataforseo/mcp-server-typescript",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "Tritlo/lsp-mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "zueai/create-mcp",
+      "outcome": "CLONE_FAILED",
+      "error": "git clone failed: Cloning into './real-servers/zueai__create-mcp'...\nremote: Repository not found.\nfatal: repository 'https://github.com/zueai/create-mcp.git/' not found\n"
+    },
+    {
+      "name": "merajmehrabi/puppeteer-mcp-server",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "Jpisnice/shadcn-ui-mcp-unofficial",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "lukaskai/voice-call-mcp-server",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "themotionmachine/OmniFocus-MCP",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "webflow/mcp-server",
+      "outcome": "SUCCESS",
+      "tools": 1,
+      "ok": 1,
+      "violation": 0,
+      "violationDetails": [],
+      "analysedAt": "2026-05-05T14:11:41.476Z"
+    },
+    {
+      "name": "mottibec/otelcol-mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "yuna0x0/anilist-mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "VeyraX/veyrax-mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "upstash/mcp-server",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "IzumiSy/mcp-duckdb-memory-server",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "upstash/mcp-server-upstash",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "joelhooks/logseq-mcp-tools",
+      "outcome": "SUCCESS",
+      "tools": 15,
+      "ok": 0,
+      "violation": 15,
+      "violationDetails": [
+        {
+          "tool": "getPage",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "getJournalSummary",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "createPage",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "searchPages",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "getBacklinks",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "addJournalEntry",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "analyzeGraph",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "findKnowledgeGaps",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "analyzeJournalPatterns",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "smartQuery",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "suggestConnections",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "addJournalBlock",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "addJournalContent",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "addNoteContent",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "getBlock",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        }
+      ],
+      "analysedAt": "2026-05-05T14:11:55.971Z"
+    },
+    {
+      "name": "sdd330/feishu-mcp-server",
+      "outcome": "CLONE_FAILED",
+      "error": "git clone failed: Cloning into './real-servers/sdd330__feishu-mcp-server'...\nremote: Repository not found.\nfatal: repository 'https://github.com/sdd330/feishu-mcp-server.git/' not found\n"
+    },
+    {
+      "name": "hiromitsusasaki/raindrop-io-mcp-server",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "NapthaAI/http-oauth-mcp-server",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "twilio-labs/mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "d-kimuson/claude-crew",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "Skobyn/dataforseo-mcp-server",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "sawa-zen/vrchat-mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "useshortcut/mcp-server-shortcut",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "movibe/memory-bank-mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "jason-tan-swe/railway-mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "ssdeanx/deep-research-mcp-server",
+      "outcome": "SUCCESS",
+      "tools": 1,
+      "ok": 0,
+      "violation": 1,
+      "violationDetails": [
+        {
+          "tool": "deepResearch.run",
+          "undeclared": [
+            "ENV",
+            "WRITE_FS"
+          ],
+          "witnessCount": 2
+        }
+      ],
+      "analysedAt": "2026-05-05T14:12:18.124Z"
+    },
+    {
+      "name": "yonaka15/mcp-server-redmine",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "isaacwasserman/mcp-langchain-ts-client",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "kablewy/salesforce-mcp-server",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "r-huijts/ns-mcp-server",
+      "outcome": "SUCCESS",
+      "tools": 8,
+      "ok": 8,
+      "violation": 0,
+      "violationDetails": [],
+      "analysedAt": "2026-05-05T14:12:26.513Z"
+    },
+    {
+      "name": "muppet-dev/kit",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "hamidra/yamcp",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "egoist/exa-mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "ko1ynnky/github-actions-mcp-server",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "krzko/google-cloud-mcp",
+      "outcome": "SUCCESS",
+      "tools": 2,
+      "ok": 0,
+      "violation": 2,
+      "violationDetails": [
+        {
+          "tool": "gcp-utils-set-project-id",
+          "undeclared": [
+            "ENV",
+            "WRITE_FS",
+            "READ_FS"
+          ],
+          "witnessCount": 5
+        },
+        {
+          "tool": "gcp-utils-get-project-id",
+          "undeclared": [
+            "ENV",
+            "WRITE_FS"
+          ],
+          "witnessCount": 20
+        }
+      ],
+      "analysedAt": "2026-05-05T14:12:44.849Z"
+    },
+    {
+      "name": "kevinwatt/yt-dlp-mcp",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "ac3xx/mcp-servers-kagi",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "directus/mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "SureScaleAI/openai-gpt-image-mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "freshtechbro/Vibe-Coder-MCP",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "freshtechbro/vibe-coder-mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "solana-foundation/solana-dev-mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "Braffolk/mcp-summarization-functions",
+      "outcome": "SUCCESS",
+      "tools": 5,
+      "ok": 5,
+      "violation": 0,
+      "violationDetails": [],
+      "analysedAt": "2026-05-05T14:13:11.659Z"
+    },
+    {
+      "name": "railsware/mailtrap-mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "yamanoku/baseline-mcp-server",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "pulumi/mcp-server",
+      "outcome": "CLONE_FAILED",
+      "error": "git clone failed: Cloning into './real-servers/pulumi__mcp-server'...\nremote: Repository not found.\nfatal: repository 'https://github.com/pulumi/mcp-server.git/' not found\n"
+    },
+    {
+      "name": "djalal/quran-mcp-server",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "GoPlausible/algorand-mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "Linzo99/browser-use-mcp-client",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "Garoth/wolframalpha-llm-mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "kunwarVivek/mcp-github-project-manager",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "ruchernchong/mcp-server-google-analytics",
+      "outcome": "SUCCESS",
+      "tools": 5,
+      "ok": 5,
+      "violation": 0,
+      "violationDetails": [],
+      "analysedAt": "2026-05-05T14:13:52.684Z"
+    },
+    {
+      "name": "aicu-icu/xhs-mcp-server",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "bnb-chain/bnbchain-mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "aiDotEngineer/aie-mcp",
+      "outcome": "SUCCESS",
+      "tools": 1,
+      "ok": 1,
+      "violation": 0,
+      "violationDetails": [],
+      "analysedAt": "2026-05-05T14:14:00.401Z"
+    },
+    {
+      "name": "gleanwork/mcp-server",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "akazwz/workers-mcp-demo",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "Kong/mcp-konnect",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "thirdstrandstudio/mcp-figma",
+      "outcome": "SUCCESS",
+      "tools": 31,
+      "ok": 31,
+      "violation": 0,
+      "violationDetails": [],
+      "analysedAt": "2026-05-05T14:14:08.956Z"
+    },
+    {
+      "name": "takumi0706/google-calendar-mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "JayArrowz/mcp-figma",
+      "outcome": "SUCCESS",
+      "tools": 31,
+      "ok": 31,
+      "violation": 0,
+      "violationDetails": [],
+      "analysedAt": "2026-05-05T14:14:13.322Z"
+    },
+    {
+      "name": "situ2001/unplugin-mcp",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "situ2001/rollup-plugin-mcp",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "cyanheads/mcp-ts-template",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "yokingma/one-search-mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "baranwang/mcp-tung-shing",
+      "outcome": "SUCCESS",
+      "tools": 1,
+      "ok": 1,
+      "violation": 0,
+      "violationDetails": [],
+      "analysedAt": "2026-05-05T14:14:24.862Z"
+    },
+    {
+      "name": "awkoy/replicate-flux-mcp",
+      "outcome": "SUCCESS",
+      "tools": 9,
+      "ok": 9,
+      "violation": 0,
+      "violationDetails": [],
+      "analysedAt": "2026-05-05T14:14:26.978Z"
+    },
+    {
+      "name": "aashari/boilerplate-mcp-server",
+      "outcome": "SUCCESS",
+      "tools": 1,
+      "ok": 1,
+      "violation": 0,
+      "violationDetails": [],
+      "analysedAt": "2026-05-05T14:14:29.250Z"
+    },
+    {
+      "name": "AbdelStark/nostr-mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "NightTrek/Serper-search-mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "ravenwits/mcp-server-arangodb",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "egoist/shell-command-mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "fredericbarthelet/linkedin-mcp-server",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "jonverrier/McpDoc",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "shaike1/mcp-server-ssh",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "anyproto/anytype-mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "shadowcz007/mcp_server_exe",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "dx-zero/mcpn",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "sylphlab/pdf-reader-mcp",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "shtse8/pdf-reader-mcp",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "fl0w1nd/grok2-image-mcp-server",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "AgentDeskAI/workflows-mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "zhiwei5576/excel-mcp-server",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "Heratiki/locallama-mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "qianniuspace/mcp-security-audit",
+      "outcome": "SUCCESS",
+      "tools": 1,
+      "ok": 1,
+      "violation": 0,
+      "violationDetails": [],
+      "analysedAt": "2026-05-05T14:15:47.813Z"
+    },
+    {
+      "name": "truss44/mcp-crypto-price",
+      "outcome": "SUCCESS",
+      "tools": 7,
+      "ok": 0,
+      "violation": 7,
+      "violationDetails": [
+        {
+          "tool": "get-crypto-price",
+          "undeclared": [
+            "ENV",
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 3
+        },
+        {
+          "tool": "get-market-analysis",
+          "undeclared": [
+            "ENV",
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 3
+        },
+        {
+          "tool": "get-historical-analysis",
+          "undeclared": [
+            "ENV",
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 3
+        },
+        {
+          "tool": "get-top-assets",
+          "undeclared": [
+            "ENV",
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 3
+        },
+        {
+          "tool": "get-technical-analysis",
+          "undeclared": [
+            "ENV",
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 3
+        },
+        {
+          "tool": "get-rates",
+          "undeclared": [
+            "ENV",
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 3
+        },
+        {
+          "tool": "get-exchanges",
+          "undeclared": [
+            "ENV",
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 3
+        }
+      ],
+      "analysedAt": "2026-05-05T14:15:50.898Z"
+    },
+    {
+      "name": "cyanheads/mentor-mcp-server",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "phuc-nt/mcp-atlassian-server",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "d-kimuson/esa-mcp-server",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "tokenizin-agency/mcp-npx-fetch",
+      "outcome": "SUCCESS",
+      "tools": 4,
+      "ok": 4,
+      "violation": 0,
+      "violationDetails": [],
+      "analysedAt": "2026-05-05T14:15:59.858Z"
+    },
+    {
+      "name": "datastax/astra-db-mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "makeplane/plane-mcp-server",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "maton-ai/agent-toolkit",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "spences10/mcp-n8n-builder",
+      "outcome": "SUCCESS",
+      "tools": 10,
+      "ok": 2,
+      "violation": 8,
+      "violationDetails": [
+        {
+          "tool": "list_available_nodes",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "list_workflows",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "get_workflow",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "update_workflow",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 2
+        },
+        {
+          "tool": "delete_workflow",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "deactivate_workflow",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "list_executions",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "get_execution",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        }
+      ],
+      "analysedAt": "2026-05-05T14:16:11.035Z"
+    },
+    {
+      "name": "highlight-ing/mcp-bundler",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "AustinKelsay/nostr-mcp-server",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "atom2ueki/mcp-server-ios-simulator",
+      "outcome": "SUCCESS",
+      "tools": 12,
+      "ok": 11,
+      "violation": 1,
+      "violationDetails": [
+        {
+          "tool": "terminate-simulator-session",
+          "undeclared": [
+            "WRITE_DB"
+          ],
+          "witnessCount": 1
+        }
+      ],
+      "analysedAt": "2026-05-05T14:16:23.757Z"
+    },
+    {
+      "name": "olaservo/shannon-thinking",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "oakenai/mcp-edit-file-lines",
+      "outcome": "SUCCESS",
+      "tools": 4,
+      "ok": 0,
+      "violation": 4,
+      "violationDetails": [
+        {
+          "tool": "edit_file_lines",
+          "undeclared": [
+            "WRITE_FS",
+            "WRITE_DB"
+          ],
+          "witnessCount": 8
+        },
+        {
+          "tool": "approve_edit",
+          "undeclared": [
+            "READ_FS",
+            "WRITE_FS",
+            "WRITE_DB"
+          ],
+          "witnessCount": 8
+        },
+        {
+          "tool": "get_file_lines",
+          "undeclared": [
+            "WRITE_FS",
+            "WRITE_DB"
+          ],
+          "witnessCount": 8
+        },
+        {
+          "tool": "search_file",
+          "undeclared": [
+            "WRITE_FS",
+            "WRITE_DB"
+          ],
+          "witnessCount": 8
+        }
+      ],
+      "analysedAt": "2026-05-05T14:16:27.646Z"
+    },
+    {
+      "name": "a-bonus/google-docs-mcp",
+      "outcome": "SUCCESS",
+      "tools": 1,
+      "ok": 0,
+      "violation": 1,
+      "violationDetails": [
+        {
+          "tool": "listEvents",
+          "undeclared": [
+            "ENV",
+            "WRITE_FS"
+          ],
+          "witnessCount": 11
+        }
+      ],
+      "analysedAt": "2026-05-05T14:16:55.390Z"
+    },
+    {
+      "name": "Kuon-dev/advanced-reason-mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "yWorks/mcp-typescribe",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "getrupt/ashra-mcp",
+      "outcome": "SUCCESS",
+      "tools": 1,
+      "ok": 1,
+      "violation": 0,
+      "violationDetails": [],
+      "analysedAt": "2026-05-05T14:17:01.782Z"
+    },
+    {
+      "name": "karthiks3000/figma-mcp-server",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "cablate/mcp-google-map",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "marcopesani/mcp-server-serper",
+      "outcome": "SUCCESS",
+      "tools": 2,
+      "ok": 2,
+      "violation": 0,
+      "violationDetails": [],
+      "analysedAt": "2026-05-05T14:17:11.925Z"
+    },
+    {
+      "name": "shricodev/chat-nextjs-mcp-client",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "jinzcdev/markmap-mcp-server",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "ying-dao/yingdao_mcp_server",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "jinzcdev/leetcode-mcp-server",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "chatwork/chatwork-mcp-server",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "api7/apisix-mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "Selenium39/mcp-server-weibo",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "aashari/mcp-server-atlassian-bitbucket",
+      "outcome": "SUCCESS",
+      "tools": 5,
+      "ok": 5,
+      "violation": 0,
+      "violationDetails": [],
+      "analysedAt": "2026-05-05T14:17:28.926Z"
+    },
+    {
+      "name": "ConechoAI/nchan-mcp-transport",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "StudentOfJS/mcp-figma-to-react",
+      "outcome": "SUCCESS",
+      "tools": 4,
+      "ok": 1,
+      "violation": 3,
+      "violationDetails": [
+        {
+          "tool": "generateReactComponent",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "generateComponentLibrary",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "figmaToReactWorkflow",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 2
+        }
+      ],
+      "analysedAt": "2026-05-05T14:17:33.249Z"
+    },
+    {
+      "name": "GuiBibeau/mcp-gemini-tutorial",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "mschwarzmueller/demo-mcp-server-client-implementation",
+      "outcome": "SUCCESS",
+      "tools": 1,
+      "ok": 0,
+      "violation": 1,
+      "violationDetails": [
+        {
+          "tool": "store-knowledge",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        }
+      ],
+      "analysedAt": "2026-05-05T14:17:37.187Z"
+    },
+    {
+      "name": "pnizer/wweb-mcp",
+      "outcome": "SUCCESS",
+      "tools": 13,
+      "ok": 12,
+      "violation": 1,
+      "violationDetails": [
+        {
+          "tool": "download_media_from_message",
+          "undeclared": [
+            "WRITE_FS",
+            "READ_FS"
+          ],
+          "witnessCount": 2
+        }
+      ],
+      "analysedAt": "2026-05-05T14:17:39.311Z"
+    },
+    {
+      "name": "nickgnd/tmux-mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "ahonn/mcp-server-gsc",
+      "outcome": "SUCCESS",
+      "tools": 8,
+      "ok": 8,
+      "violation": 0,
+      "violationDetails": [],
+      "analysedAt": "2026-05-05T14:17:43.111Z"
+    },
+    {
+      "name": "gzuuus/dvmcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "9Ninety/MCPNotes",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "alexatnordnet/mcp-google-custom-search-server",
+      "outcome": "SUCCESS",
+      "tools": 1,
+      "ok": 1,
+      "violation": 0,
+      "violationDetails": [],
+      "analysedAt": "2026-05-05T14:17:50.371Z"
+    },
+    {
+      "name": "punkpeye/fastmcp-boilerplate",
+      "outcome": "CLONE_FAILED",
+      "error": "git clone failed: Cloning into './real-servers/punkpeye__fastmcp-boilerplate'...\nremote: Repository not found.\nfatal: repository 'https://github.com/punkpeye/fastmcp-boilerplate.git/' not found\n"
+    },
+    {
+      "name": "xmannii/nobitex-mcp-server",
+      "outcome": "SUCCESS",
+      "tools": 1,
+      "ok": 1,
+      "violation": 0,
+      "violationDetails": [],
+      "analysedAt": "2026-05-05T14:17:53.142Z"
+    },
+    {
+      "name": "aliyun/mcp-server-esa",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "groq/compound-mcp-server",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "adeze/raindrop-mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "moeru-ai/xsmcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "InhiblabCore/mcp-image-compression",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "scrapeless-ai/scrapeless-mcp-server",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "royshil/obs-mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "brianellin/bsky-mcp-server",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "yuna0x0/hackmd-mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "mmmeff/outline-mcp-server",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "beekmarks/mcp-wasm",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "duhlink/instagram-server-next-mcp",
+      "outcome": "SUCCESS",
+      "tools": 2,
+      "ok": 0,
+      "violation": 2,
+      "violationDetails": [
+        {
+          "tool": "get_profile_data",
+          "undeclared": [
+            "ENV",
+            "WRITE_FS"
+          ],
+          "witnessCount": 5
+        },
+        {
+          "tool": "get_post_data",
+          "undeclared": [
+            "ENV"
+          ],
+          "witnessCount": 1
+        }
+      ],
+      "analysedAt": "2026-05-05T14:19:11.922Z"
+    },
+    {
+      "name": "debugg-ai/debugg-ai-mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "posthog/mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "Pimzino/agentic-tools-mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "gannonh/agent-pm",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "azer/react-analyzer-mcp",
+      "outcome": "SUCCESS",
+      "tools": 3,
+      "ok": 1,
+      "violation": 2,
+      "violationDetails": [
+        {
+          "tool": "analyze-react",
+          "undeclared": [
+            "READ_FS"
+          ],
+          "witnessCount": 3
+        },
+        {
+          "tool": "analyze-project",
+          "undeclared": [
+            "READ_FS"
+          ],
+          "witnessCount": 3
+        }
+      ],
+      "analysedAt": "2026-05-05T14:19:33.723Z"
+    },
+    {
+      "name": "redis/mcp-redis-cloud",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "containerelic/github-enterprise-mcp",
+      "outcome": "SUCCESS",
+      "tools": 28,
+      "ok": 19,
+      "violation": 9,
+      "violationDetails": [
+        {
+          "tool": "delete-repository",
+          "undeclared": [
+            "WRITE_DB"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "list-users",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "get-user",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "create-user",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "update-user",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "delete-user",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "suspend-user",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "unsuspend-user",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "list-user-orgs",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        }
+      ],
+      "analysedAt": "2026-05-05T14:19:38.948Z"
+    },
+    {
+      "name": "haxzie/sequel-mcp",
+      "outcome": "SUCCESS",
+      "tools": 2,
+      "ok": 0,
+      "violation": 2,
+      "violationDetails": [
+        {
+          "tool": "query",
+          "undeclared": [
+            "ENV",
+            "READ_DB",
+            "WRITE_DB"
+          ],
+          "witnessCount": 4
+        },
+        {
+          "tool": "schema",
+          "undeclared": [
+            "ENV",
+            "READ_DB",
+            "WRITE_DB"
+          ],
+          "witnessCount": 4
+        }
+      ],
+      "analysedAt": "2026-05-05T14:19:41.023Z"
+    },
+    {
+      "name": "SGFGOV/medusa-mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "ddukbg/github-enterprise-mcp",
+      "outcome": "SUCCESS",
+      "tools": 28,
+      "ok": 19,
+      "violation": 9,
+      "violationDetails": [
+        {
+          "tool": "delete-repository",
+          "undeclared": [
+            "WRITE_DB"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "list-users",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "get-user",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "create-user",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "update-user",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "delete-user",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "suspend-user",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "unsuspend-user",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "list-user-orgs",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        }
+      ],
+      "analysedAt": "2026-05-05T14:19:47.853Z"
+    },
+    {
+      "name": "lostintangent/gistpad-mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "Jacse/trpc-mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "bradfair/mcp-cline-personas",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "ChristophEnglisch/keycloak-model-context-protocol",
+      "outcome": "SUCCESS",
+      "tools": 4,
+      "ok": 4,
+      "violation": 0,
+      "violationDetails": [],
+      "analysedAt": "2026-05-05T14:19:55.728Z"
+    },
+    {
+      "name": "screenshotone/mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "DrJonBrock/luke-desktop",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "laulauland/bluesky-context-server",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "istarwyh/mcpadvisor",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "microsoft/typespec-mcp",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "jser/mcp",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "yepcode/mcp-server-js",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "KelvinQiu802/mcp-sse",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "cswkim/discogs-mcp-server",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "Azure-Samples/mcp-auth-servers",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "winterjung/mcp-korean-spell",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "pwh-pwh/coin-mcp-server",
+      "outcome": "SUCCESS",
+      "tools": 3,
+      "ok": 0,
+      "violation": 3,
+      "violationDetails": [
+        {
+          "tool": "getTokenPrice",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "getAnnoucements",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "getCoinInfo",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        }
+      ],
+      "analysedAt": "2026-05-05T14:20:21.743Z"
+    },
+    {
+      "name": "bsmi021/mcp-gemini-server",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "integration-app/mcp-server",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "stanislavlysenko0912/todoist-mcp-server",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "jlucaso1/whatsapp-mcp-ts",
+      "outcome": "SUCCESS",
+      "tools": 7,
+      "ok": 1,
+      "violation": 6,
+      "violationDetails": [
+        {
+          "tool": "search_contacts",
+          "undeclared": [
+            "WRITE_FS"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "list_messages",
+          "undeclared": [
+            "WRITE_FS"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "list_chats",
+          "undeclared": [
+            "WRITE_FS"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "get_chat",
+          "undeclared": [
+            "WRITE_FS"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "get_message_context",
+          "undeclared": [
+            "WRITE_FS"
+          ],
+          "witnessCount": 1
+        },
+        {
+          "tool": "search_messages",
+          "undeclared": [
+            "WRITE_FS"
+          ],
+          "witnessCount": 1
+        }
+      ],
+      "analysedAt": "2026-05-05T14:20:30.304Z"
+    },
+    {
+      "name": "xiaolaa2/ableton-copilot-mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "ogoldberg/gemini-context-mcp-server",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "petrbroz/aps-mcp-server",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "JigsawStack/jigsawstack-mcp-server",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "JigsawStack/jigsawstack-mcp-server#image-generation",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "sanderkooger/mcp-server-ragdocs",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "jango-blockchained/advanced-homeassistant-mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "crazyrabbitLTC/mcp-etherscan-server",
+      "outcome": "SUCCESS",
+      "tools": 6,
+      "ok": 0,
+      "violation": 6,
+      "violationDetails": [
+        {
+          "tool": "check-balance",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 4
+        },
+        {
+          "tool": "get-transactions",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 4
+        },
+        {
+          "tool": "get-token-transfers",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 4
+        },
+        {
+          "tool": "get-contract-abi",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 4
+        },
+        {
+          "tool": "get-gas-prices",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 4
+        },
+        {
+          "tool": "get-ens-name",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 4
+        }
+      ],
+      "analysedAt": "2026-05-05T14:20:49.049Z"
+    },
+    {
+      "name": "hideya/langchain-mcp-tools-ts",
+      "outcome": "SUCCESS",
+      "tools": 2,
+      "ok": 2,
+      "violation": 0,
+      "violationDetails": [],
+      "analysedAt": "2026-05-05T14:20:51.084Z"
+    },
+    {
+      "name": "orbit-logistics/notion-mcp-server",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "slowmist/MistTrackMCP",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "toolsdk-ai/awesome-mcp-registry",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "amith-vp/indian-railway-mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "nota/gyazo-mcp-server",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "starwind-ui/starwind-ui-mcp",
       "outcome": "NO_TOOLS_FOUND",
       "error": "pipeline ran but no server.tool() or registerTool() calls detected"
     }
