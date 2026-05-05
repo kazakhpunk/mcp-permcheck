@@ -155,13 +155,18 @@ async function cloneRepo(
 // ---------------------------------------------------------------------------
 
 async function grepForServerTool(dir: string): Promise<string | null> {
-  // Search for .ts files containing server.tool or server.registerTool
+  // Search for .ts files containing any of the recognised tool-registration patterns:
+  //   server.tool(), server.registerTool()  — original server.tool SDK
+  //   setRequestHandler(ListToolsRequestSchema  — older SDK / raw SDK
+  //   .addTool({  — fastmcp style
+  const pattern =
+    "server\\.tool\\|server\\.registerTool\\|setRequestHandler.*ListToolsRequestSchema\\|ListToolsRequestSchema.*setRequestHandler\\|\\.addTool({\\|\\.addTool( {";
   const result = await run([
     "grep",
     "-rl",
     "--include=*.ts",
     "-e",
-    "server\\.tool\\|server\\.registerTool",
+    pattern,
     dir,
   ]);
   if (!result.success || !result.stdout.trim()) return null;
@@ -182,6 +187,16 @@ async function exists(p: string): Promise<boolean> {
   }
 }
 
+/** Returns true if the file content contains a recognised tool-registration pattern. */
+function hasToolRegistration(content: string): boolean {
+  return (
+    content.includes("server.tool") ||
+    content.includes("server.registerTool") ||
+    content.includes("ListToolsRequestSchema") ||
+    content.includes(".addTool(")
+  );
+}
+
 async function findEntryFile(
   cloneDir: string,
   subpath: string | null,
@@ -195,9 +210,8 @@ async function findEntryFile(
   ];
   for (const c of candidates) {
     if (await exists(c)) {
-      // Verify it contains server.tool or server.registerTool
       const content = await Deno.readTextFile(c).catch(() => "");
-      if (content.includes("server.tool") || content.includes("server.registerTool")) {
+      if (hasToolRegistration(content)) {
         return c;
       }
     }
@@ -282,6 +296,9 @@ async function analyseEntry(
 async function main() {
   const startTime = Date.now();
 
+  // Parse flags: --force / --rerun re-analyses every server even if already in results
+  const force = Deno.args.includes("--force") || Deno.args.includes("--rerun");
+
   // Read corpus
   let corpus: { totalCount: number; servers: CorpusEntry[] };
   try {
@@ -292,14 +309,18 @@ async function main() {
     Deno.exit(1);
   }
 
-  // Load existing results (for idempotency)
+  // Load existing results (for idempotency; skipped when --force)
   let existingResults: ServerResult[] = [];
-  try {
-    const existing: ResultsFile = JSON.parse(await Deno.readTextFile(RESULTS_PATH));
-    existingResults = existing.results ?? [];
-    console.log(`Loaded ${existingResults.length} existing results from ${RESULTS_PATH}`);
-  } catch {
-    // No existing results — start fresh
+  if (!force) {
+    try {
+      const existing: ResultsFile = JSON.parse(await Deno.readTextFile(RESULTS_PATH));
+      existingResults = existing.results ?? [];
+      console.log(`Loaded ${existingResults.length} existing results from ${RESULTS_PATH}`);
+    } catch {
+      // No existing results — start fresh
+    }
+  } else {
+    console.log("--force: re-analysing all servers from scratch");
   }
 
   const existingNames = new Set(existingResults.map((r) => r.name));

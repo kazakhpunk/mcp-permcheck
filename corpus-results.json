@@ -1,10 +1,10 @@
 {
-  "ranAt": "2026-05-05T12:47:21.408Z",
+  "ranAt": "2026-05-05T13:23:06.743Z",
   "totalAttempted": 80,
   "outcomes": {
-    "SUCCESS": 9,
-    "NO_ENTRY_FILE": 41,
-    "NO_TOOLS_FOUND": 30
+    "SUCCESS": 10,
+    "NO_ENTRY_FILE": 24,
+    "NO_TOOLS_FOUND": 46
   },
   "results": [
     {
@@ -22,7 +22,7 @@
           "witnessCount": 3
         }
       ],
-      "analysedAt": "2026-05-05T12:21:37.108Z"
+      "analysedAt": "2026-05-05T13:22:42.999Z"
     },
     {
       "name": "modelcontextprotocol/servers#memory",
@@ -54,7 +54,7 @@
           "witnessCount": 2
         }
       ],
-      "analysedAt": "2026-05-05T12:22:45.115Z"
+      "analysedAt": "2026-05-05T13:22:47.699Z"
     },
     {
       "name": "upstash/context7",
@@ -71,7 +71,7 @@
           "witnessCount": 1
         }
       ],
-      "analysedAt": "2026-05-05T12:22:55.450Z"
+      "analysedAt": "2026-05-05T13:22:47.823Z"
     },
     {
       "name": "ruvnet/ruflo",
@@ -95,7 +95,7 @@
       "ok": 1,
       "violation": 0,
       "violationDetails": [],
-      "analysedAt": "2026-05-05T12:24:41.112Z"
+      "analysedAt": "2026-05-05T13:22:49.662Z"
     },
     {
       "name": "activepieces/activepieces",
@@ -104,8 +104,8 @@
     },
     {
       "name": "czlonkowski/n8n-mcp",
-      "outcome": "NO_ENTRY_FILE",
-      "error": "no .ts file with server.tool() or server.registerTool() found"
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
     },
     {
       "name": "nukeop/nuclear",
@@ -134,8 +134,8 @@
     },
     {
       "name": "hangwin/mcp-chrome",
-      "outcome": "NO_ENTRY_FILE",
-      "error": "no .ts file with server.tool() or server.registerTool() found"
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
     },
     {
       "name": "mcp-use/mcp-use",
@@ -159,17 +159,17 @@
       "ok": 2,
       "violation": 0,
       "violationDetails": [],
-      "analysedAt": "2026-05-05T12:29:54.034Z"
+      "analysedAt": "2026-05-05T13:22:56.356Z"
     },
     {
       "name": "BrowserMCP/mcp",
-      "outcome": "NO_ENTRY_FILE",
-      "error": "no .ts file with server.tool() or server.registerTool() found"
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
     },
     {
       "name": "wonderwhy-er/DesktopCommanderMCP",
-      "outcome": "NO_ENTRY_FILE",
-      "error": "no .ts file with server.tool() or server.registerTool() found"
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
     },
     {
       "name": "getsentry/XcodeBuildMCP",
@@ -203,18 +203,18 @@
     },
     {
       "name": "makenotion/notion-mcp-server",
-      "outcome": "NO_ENTRY_FILE",
-      "error": "no .ts file with server.tool() or server.registerTool() found"
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
     },
     {
       "name": "Pimzino/spec-workflow-mcp",
-      "outcome": "NO_ENTRY_FILE",
-      "error": "no .ts file with server.tool() or server.registerTool() found"
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
     },
     {
       "name": "antvis/mcp-server-chart",
-      "outcome": "NO_ENTRY_FILE",
-      "error": "no .ts file with server.tool() or server.registerTool() found"
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
     },
     {
       "name": "leerob/directories",
@@ -228,8 +228,8 @@
     },
     {
       "name": "opensumi/core",
-      "outcome": "NO_ENTRY_FILE",
-      "error": "no .ts file with server.tool() or server.registerTool() found"
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
     },
     {
       "name": "archestra-ai/archestra",
@@ -243,13 +243,13 @@
     },
     {
       "name": "punkpeye/fastmcp",
-      "outcome": "NO_ENTRY_FILE",
-      "error": "no .ts file with server.tool() or server.registerTool() found"
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
     },
     {
       "name": "Jpisnice/shadcn-ui-mcp-server",
-      "outcome": "NO_ENTRY_FILE",
-      "error": "no .ts file with server.tool() or server.registerTool() found"
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
     },
     {
       "name": "bytebase/dbhub",
@@ -263,13 +263,13 @@
     },
     {
       "name": "metatool-ai/metamcp",
-      "outcome": "NO_ENTRY_FILE",
-      "error": "no .ts file with server.tool() or server.registerTool() found"
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
     },
     {
       "name": "PleasePrompto/notebooklm-mcp",
-      "outcome": "NO_ENTRY_FILE",
-      "error": "no .ts file with server.tool() or server.registerTool() found"
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
     },
     {
       "name": "microsoft/skills",
@@ -283,8 +283,8 @@
     },
     {
       "name": "jamubc/gemini-mcp-tool",
-      "outcome": "NO_ENTRY_FILE",
-      "error": "no .ts file with server.tool() or server.registerTool() found"
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
     },
     {
       "name": "modelcontextprotocol/ext-apps",
@@ -331,7 +331,7 @@
           "witnessCount": 6
         }
       ],
-      "analysedAt": "2026-05-05T12:33:17.257Z"
+      "analysedAt": "2026-05-05T13:23:00.929Z"
     },
     {
       "name": "AmoyLab/Unla",
@@ -345,7 +345,7 @@
       "ok": 10,
       "violation": 0,
       "violationDetails": [],
-      "analysedAt": "2026-05-05T12:33:34.883Z"
+      "analysedAt": "2026-05-05T13:23:01.595Z"
     },
     {
       "name": "cyberagiinc/DevDocs",
@@ -399,8 +399,8 @@
     },
     {
       "name": "chrisryugj/korean-law-mcp",
-      "outcome": "NO_ENTRY_FILE",
-      "error": "no .ts file with server.tool() or server.registerTool() found"
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
     },
     {
       "name": "microsoft/azure-devops-mcp",
@@ -414,8 +414,8 @@
     },
     {
       "name": "leonardsellem/n8n-mcp-server",
-      "outcome": "NO_ENTRY_FILE",
-      "error": "no .ts file with server.tool() or server.registerTool() found"
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
     },
     {
       "name": "MicrosoftDocs/mcp",
@@ -434,12 +434,12 @@
       "ok": 3,
       "violation": 0,
       "violationDetails": [],
-      "analysedAt": "2026-05-05T12:35:50.284Z"
+      "analysedAt": "2026-05-05T13:23:03.655Z"
     },
     {
       "name": "Flux159/mcp-server-kubernetes",
-      "outcome": "NO_ENTRY_FILE",
-      "error": "no .ts file with server.tool() or server.registerTool() found"
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
     },
     {
       "name": "regenrek/deepwiki-mcp",
@@ -458,8 +458,8 @@
     },
     {
       "name": "kimsungwhee/apple-docs-mcp",
-      "outcome": "NO_ENTRY_FILE",
-      "error": "no .ts file with server.tool() or server.registerTool() found"
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
     },
     {
       "name": "TanStack/cli",
@@ -468,7 +468,7 @@
       "ok": 1,
       "violation": 0,
       "violationDetails": [],
-      "analysedAt": "2026-05-05T12:37:01.740Z"
+      "analysedAt": "2026-05-05T13:23:04.684Z"
     },
     {
       "name": "Devin-AXIS/A2V",
@@ -482,8 +482,12 @@
     },
     {
       "name": "sceneview/sceneview",
-      "outcome": "NO_TOOLS_FOUND",
-      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+      "outcome": "SUCCESS",
+      "tools": 7,
+      "ok": 7,
+      "violation": 0,
+      "violationDetails": [],
+      "analysedAt": "2026-05-05T13:23:06.387Z"
     },
     {
       "name": "apify/apify-mcp-server",
