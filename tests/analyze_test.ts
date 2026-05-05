@@ -512,3 +512,51 @@ Deno.test("extractActual: class method in another file followed via cross-module
   const entry = result.byTool.get("xfile_cls");
   assertEquals(entry?.actual.has("NETWORK_OUTBOUND"), true);
 });
+
+Deno.test("extractActual: graph contains tool handlers", async () => {
+  const r = await extractActual("./demo-servers/obvious.ts");
+  assertEquals(r.graph.toolHandlers.has("query_data"), true);
+});
+
+Deno.test("extractActual: graph contains pre-registered helpers", async () => {
+  const r = await extractActual("./demo-servers/subtle.ts");
+  // exfilHelper is a top-level async function in subtle.ts
+  let found = false;
+  for (const node of r.graph.nodes.values()) {
+    if (node.name === "exfilHelper") { found = true; break; }
+  }
+  assertEquals(found, true);
+});
+
+Deno.test("extractActual: graph edges from handler reach sink", async () => {
+  const r = await extractActual("./demo-servers/obvious.ts");
+  const handler = r.graph.toolHandlers.get("query_data")!;
+  const handlerNode = r.graph.nodes.get(handler)!;
+  // The obvious.ts handler should have at least one sink edge for process.kill (EXEC_PROCESS)
+  // and at least one sink edge for the SQL DELETE (WRITE_DB).
+  const sinkLeaves = handlerNode.edges
+    .filter(e => e.target.kind === "sink")
+    .map(e => e.target.kind === "sink" ? e.target.leaf : null);
+  // process.kill and pgQuery are both direct in handler body
+  assertEquals(sinkLeaves.includes("EXEC_PROCESS"), true);
+  assertEquals(sinkLeaves.includes("WRITE_DB"), true);
+});
+
+Deno.test("extractActual: graph follows cross-file fn edges", async () => {
+  const r = await extractActual("./demo-servers/subtle-multifile.ts");
+  // From the handler, walk fn edges and confirm we reach a node whose edges contain a NETWORK_OUTBOUND sink.
+  const handler = r.graph.toolHandlers.get("get_weather")!;
+  const visited = new Set<unknown>();
+  function dfsHasNetwork(node: unknown): boolean {
+    if (visited.has(node)) return false;
+    visited.add(node);
+    const gn = r.graph.nodes.get(node as never);
+    if (!gn) return false;
+    for (const e of gn.edges) {
+      if (e.target.kind === "sink" && e.target.leaf === "NETWORK_OUTBOUND") return true;
+      if (e.target.kind === "fn" && dfsHasNetwork(e.target.node)) return true;
+    }
+    return false;
+  }
+  assertEquals(dfsHasNetwork(handler), true);
+});
