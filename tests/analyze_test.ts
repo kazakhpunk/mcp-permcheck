@@ -560,3 +560,185 @@ Deno.test("extractActual: graph follows cross-file fn edges", async () => {
   }
   assertEquals(dfsHasNetwork(handler), true);
 });
+
+// ---------------------------------------------------------------------------
+// Shape adapter tests: setRequestHandler
+// ---------------------------------------------------------------------------
+
+Deno.test("extractActual: setRequestHandler with switch — 2 tools, correct sinks", async () => {
+  const src = `
+import { ListToolsRequestSchema, CallToolRequestSchema } from "@modelcontextprotocol/sdk/types.js";
+import fs from "fs";
+declare const server: { setRequestHandler: (schema: unknown, handler: (...args: unknown[]) => unknown) => void };
+
+server.setRequestHandler(ListToolsRequestSchema, async () => {
+  return {
+    tools: [
+      { name: "write_file", description: "Writes to a file.", inputSchema: {} },
+      { name: "fetch_data", description: "Fetches data.", inputSchema: {} },
+    ],
+  };
+});
+
+server.setRequestHandler(CallToolRequestSchema, async (request: any) => {
+  switch (request.params.name) {
+    case "write_file":
+      fs.writeFileSync("/tmp/out.txt", "hello");
+      return { content: [] };
+    case "fetch_data":
+      await fetch("https://example.com");
+      return { content: [] };
+  }
+});
+`;
+  const tmp = await Deno.makeTempFile({ suffix: ".ts" });
+  await Deno.writeTextFile(tmp, src);
+  try {
+    const result = await extractActual(tmp);
+    assertEquals([...result.byTool.keys()].sort(), ["fetch_data", "write_file"]);
+    assertEquals(result.byTool.get("write_file")?.actual.has("WRITE_FS"), true);
+    assertEquals(result.byTool.get("write_file")?.actual.has("NETWORK_OUTBOUND"), false);
+    assertEquals(result.byTool.get("fetch_data")?.actual.has("NETWORK_OUTBOUND"), true);
+    assertEquals(result.byTool.get("fetch_data")?.actual.has("WRITE_FS"), false);
+  } finally {
+    await Deno.remove(tmp);
+  }
+});
+
+Deno.test("extractActual: setRequestHandler — tool descriptions extracted", async () => {
+  const src = `
+import { ListToolsRequestSchema, CallToolRequestSchema } from "@modelcontextprotocol/sdk/types.js";
+declare const server: { setRequestHandler: (schema: unknown, handler: (...args: unknown[]) => unknown) => void };
+
+server.setRequestHandler(ListToolsRequestSchema, async () => ({
+  tools: [{ name: "my_tool", description: "Does something useful.", inputSchema: {} }],
+}));
+
+server.setRequestHandler(CallToolRequestSchema, async (request: any) => {
+  switch (request.params.name) {
+    case "my_tool":
+      return { content: [] };
+  }
+});
+`;
+  const tmp = await Deno.makeTempFile({ suffix: ".ts" });
+  await Deno.writeTextFile(tmp, src);
+  try {
+    const result = await extractActual(tmp);
+    assertEquals(result.byTool.get("my_tool")?.description, "Does something useful.");
+  } finally {
+    await Deno.remove(tmp);
+  }
+});
+
+Deno.test("extractActual: setRequestHandler without switch (fallback) — body sinks attributed", async () => {
+  const src = `
+import { ListToolsRequestSchema, CallToolRequestSchema } from "@modelcontextprotocol/sdk/types.js";
+declare const server: { setRequestHandler: (schema: unknown, handler: (...args: unknown[]) => unknown) => void };
+
+server.setRequestHandler(ListToolsRequestSchema, async () => ({
+  tools: [{ name: "do_thing", description: "Does a thing.", inputSchema: {} }],
+}));
+
+server.setRequestHandler(CallToolRequestSchema, async (request: any) => {
+  // No switch — direct dispatch
+  if (request.params.name === "do_thing") {
+    await fetch("https://api.example.com");
+  }
+  return { content: [] };
+});
+`;
+  const tmp = await Deno.makeTempFile({ suffix: ".ts" });
+  await Deno.writeTextFile(tmp, src);
+  try {
+    const result = await extractActual(tmp);
+    assertEquals([...result.byTool.keys()], ["do_thing"]);
+    // Fallback: full handler body attributed — fetch should be reachable
+    assertEquals(result.byTool.get("do_thing")?.actual.has("NETWORK_OUTBOUND"), true);
+  } finally {
+    await Deno.remove(tmp);
+  }
+});
+
+// ---------------------------------------------------------------------------
+// Shape adapter tests: addTool (fastmcp style)
+// ---------------------------------------------------------------------------
+
+Deno.test("extractActual: addTool with execute property — NETWORK_OUTBOUND detected", async () => {
+  const src = `
+declare const server: { addTool: (opts: unknown) => void };
+server.addTool({
+  name: "fetch_thing",
+  description: "Fetches something from the network.",
+  execute: async (_args: unknown) => {
+    await fetch("https://example.com");
+    return "done";
+  },
+});
+`;
+  const tmp = await Deno.makeTempFile({ suffix: ".ts" });
+  await Deno.writeTextFile(tmp, src);
+  try {
+    const result = await extractActual(tmp);
+    assertEquals([...result.byTool.keys()], ["fetch_thing"]);
+    assertEquals(result.byTool.get("fetch_thing")?.actual.has("NETWORK_OUTBOUND"), true);
+    assertEquals(result.byTool.get("fetch_thing")?.description, "Fetches something from the network.");
+  } finally {
+    await Deno.remove(tmp);
+  }
+});
+
+Deno.test("extractActual: addTool with handler property — WRITE_FS detected", async () => {
+  const src = `
+import fs from "fs";
+declare const server: { addTool: (opts: unknown) => void };
+server.addTool({
+  name: "save_file",
+  description: "Saves content to disk.",
+  handler: async (_args: unknown) => {
+    fs.writeFileSync("/tmp/out.txt", "data");
+    return "saved";
+  },
+});
+`;
+  const tmp = await Deno.makeTempFile({ suffix: ".ts" });
+  await Deno.writeTextFile(tmp, src);
+  try {
+    const result = await extractActual(tmp);
+    assertEquals([...result.byTool.keys()], ["save_file"]);
+    assertEquals(result.byTool.get("save_file")?.actual.has("WRITE_FS"), true);
+  } finally {
+    await Deno.remove(tmp);
+  }
+});
+
+Deno.test("extractActual: addTool multiple tools — each isolated to its own handler", async () => {
+  const src = `
+import fs from "fs";
+declare const server: { addTool: (opts: unknown) => void };
+server.addTool({
+  name: "tool_a",
+  description: "Network tool.",
+  execute: async () => { await fetch("https://a.example.com"); },
+});
+server.addTool({
+  name: "tool_b",
+  description: "FS tool.",
+  execute: async () => { fs.writeFileSync("/tmp/b.txt", "x"); },
+});
+`;
+  const tmp = await Deno.makeTempFile({ suffix: ".ts" });
+  await Deno.writeTextFile(tmp, src);
+  try {
+    const result = await extractActual(tmp);
+    assertEquals([...result.byTool.keys()].sort(), ["tool_a", "tool_b"]);
+    // tool_a should only have network, not FS
+    assertEquals(result.byTool.get("tool_a")?.actual.has("NETWORK_OUTBOUND"), true);
+    assertEquals(result.byTool.get("tool_a")?.actual.has("WRITE_FS"), false);
+    // tool_b should only have FS, not network
+    assertEquals(result.byTool.get("tool_b")?.actual.has("WRITE_FS"), true);
+    assertEquals(result.byTool.get("tool_b")?.actual.has("NETWORK_OUTBOUND"), false);
+  } finally {
+    await Deno.remove(tmp);
+  }
+});
