@@ -128,6 +128,12 @@ export interface CallGraph {
   notes: string[];
 }
 
+// Internal extension used by shape adapters to store per-tool descriptions alongside handlers.
+// Not exported — callers get descriptions via ToolEntry.description.
+interface CallGraphExt extends CallGraph {
+  toolDescriptions?: Map<string, string>;
+}
+
 // ---------------------------------------------------------------------------
 // ToolEntry / AnalyseResult
 // ---------------------------------------------------------------------------
@@ -316,6 +322,12 @@ export function extractActual(srcPath: string): AnalyseResult {
     ts.forEachChild(n, collectToolHandlers);
   }
   collectToolHandlers(sourceFile);
+
+  // Step A2b: Pre-register tool handlers from setRequestHandler (ListToolsRequestSchema + switch)
+  collectSetRequestHandlerTools(sourceFile, graph, registerNode);
+
+  // Step A2c: Pre-register tool handlers from server.addTool({name, execute})
+  collectAddToolHandlers(sourceFile, graph, registerNode);
 
   // Step A3: Walk each registered node's body and emit edges
   // (stop at nested function boundaries)
@@ -577,6 +589,22 @@ export function extractActual(srcPath: string): AnalyseResult {
   }
   visit(sourceFile);
 
+  // Phase B2: Build byTool entries for tools found by setRequestHandler and addTool adapters
+  // (tools already registered in graph.toolHandlers by the new adapters, with descriptions
+  //  stored in graph.notes-adjacent toolDescriptions map — access via the dedicated helper).
+  for (const [toolName, handlerNode] of graph.toolHandlers) {
+    if (result.byTool.has(toolName)) continue; // already handled above
+    // Description is stored in toolDescriptions if set by adapters
+    const description = (graph as CallGraphExt).toolDescriptions?.get(toolName) ?? "";
+    const entry: ToolEntry = {
+      description,
+      actual: new Set<Leaf>(),
+      witnesses: new Map<Leaf, CallSite[]>(),
+    };
+    dfsCollectSinks(handlerNode, entry);
+    result.byTool.set(toolName, entry);
+  }
+
   return result;
 }
 
@@ -649,6 +677,290 @@ function foldStringExpr(node: ts.Expression): string | null {
     if (left !== null && right !== null) return left + right;
   }
   return null;
+}
+
+// ---------------------------------------------------------------------------
+// Shape adapter A1: setRequestHandler(ListToolsRequestSchema / CallToolRequestSchema)
+// ---------------------------------------------------------------------------
+
+/**
+ * Walk `node` and all its descendants to find the first ArrayLiteralExpression
+ * assigned to a property named `tools`. Returns null if not found.
+ *
+ * This handles the common pattern where the array is nested inside a return
+ * statement or a helper callback (e.g. `return { tools: [...] }`).
+ */
+function findToolsArray(node: ts.Node): ts.ArrayLiteralExpression | null {
+  if (ts.isObjectLiteralExpression(node)) {
+    for (const prop of node.properties) {
+      if (
+        ts.isPropertyAssignment(prop) &&
+        ts.isIdentifier(prop.name) &&
+        prop.name.text === "tools" &&
+        ts.isArrayLiteralExpression(prop.initializer)
+      ) {
+        return prop.initializer;
+      }
+    }
+  }
+  // Recurse into children
+  let found: ts.ArrayLiteralExpression | null = null;
+  ts.forEachChild(node, (child) => {
+    if (found) return;
+    // Stop descent into nested function bodies that are not the root handler
+    if (
+      ts.isFunctionDeclaration(child) ||
+      ts.isMethodDeclaration(child)
+    ) return;
+    found = findToolsArray(child);
+  });
+  return found;
+}
+
+/**
+ * From a `setRequestHandler(ListToolsRequestSchema, handler)` call's handler body,
+ * extract { name → description } entries for all tool objects with literal names.
+ * Covers patterns nested inside arrow functions passed to .then() / helpers.
+ */
+function extractToolsFromListHandler(
+  handlerBody: ts.Node,
+): Map<string, string> {
+  const toolsArray = findToolsArray(handlerBody);
+  const result = new Map<string, string>();
+  if (!toolsArray) return result;
+
+  for (const elem of toolsArray.elements) {
+    if (!ts.isObjectLiteralExpression(elem)) continue;
+    let name: string | null = null;
+    let description = "";
+
+    for (const prop of elem.properties) {
+      if (!ts.isPropertyAssignment(prop) || !ts.isIdentifier(prop.name)) continue;
+      if (prop.name.text === "name") {
+        const folded = foldStringExpr(prop.initializer as ts.Expression);
+        if (folded !== null) name = folded;
+      }
+      if (prop.name.text === "description") {
+        const folded = foldStringExpr(prop.initializer as ts.Expression);
+        if (folded !== null) description = folded;
+      }
+    }
+    if (name !== null) {
+      result.set(name, description);
+    }
+  }
+  return result;
+}
+
+/**
+ * From a `setRequestHandler(CallToolRequestSchema, handler)` call's handler body,
+ * find a switch statement and return a Map<toolName, CaseClause> for all cases
+ * whose label is a string literal matching a known tool name.
+ */
+function extractCasesFromCallHandler(
+  handlerBody: ts.Node,
+  knownTools: Set<string>,
+): Map<string, ts.CaseClause> {
+  const result = new Map<string, ts.CaseClause>();
+
+  function findSwitch(node: ts.Node): ts.SwitchStatement | null {
+    if (ts.isSwitchStatement(node)) return node;
+    let found: ts.SwitchStatement | null = null;
+    ts.forEachChild(node, (child) => {
+      if (found) return;
+      // Don't cross nested function boundaries
+      if (ts.isFunctionExpression(child) || ts.isArrowFunction(child) ||
+          ts.isFunctionDeclaration(child) || ts.isMethodDeclaration(child)) return;
+      found = findSwitch(child);
+    });
+    return found;
+  }
+
+  const sw = findSwitch(handlerBody);
+  if (!sw) return result;
+
+  for (const clause of sw.caseBlock.clauses) {
+    if (!ts.isCaseClause(clause)) continue;
+    const label = clause.expression;
+    if (!ts.isStringLiteral(label) && !ts.isNoSubstitutionTemplateLiteral(label)) continue;
+    const toolName = label.text;
+    if (knownTools.has(toolName)) {
+      result.set(toolName, clause);
+    }
+  }
+  return result;
+}
+
+/**
+ * Checks whether a call expression is `<receiver>.setRequestHandler(<schemaArg>, <handler>)`.
+ * Returns the schema argument identifier name (e.g. "ListToolsRequestSchema") and the handler
+ * node, or null if this is not a matching call.
+ */
+function parseSetRequestHandlerCall(
+  node: ts.CallExpression,
+): { schemaName: string; handler: ts.Node } | null {
+  const callee = node.expression;
+  if (!ts.isPropertyAccessExpression(callee)) return null;
+  if (callee.name.text !== "setRequestHandler") return null;
+  if (node.arguments.length < 2) return null;
+
+  const schemaArg = node.arguments[0];
+  let schemaName: string | null = null;
+  if (ts.isIdentifier(schemaArg)) {
+    schemaName = schemaArg.text;
+  } else if (ts.isPropertyAccessExpression(schemaArg) && ts.isIdentifier(schemaArg.name)) {
+    schemaName = schemaArg.name.text;
+  }
+  if (schemaName === null) return null;
+
+  const handler = node.arguments[1];
+  if (!ts.isFunctionExpression(handler) && !ts.isArrowFunction(handler)) return null;
+
+  return { schemaName, handler };
+}
+
+/**
+ * Collect tool handlers from `server.setRequestHandler(ListToolsRequestSchema, …)` /
+ * `server.setRequestHandler(CallToolRequestSchema, …)` pairs in `sf`, registering
+ * them into `graph`.
+ */
+function collectSetRequestHandlerTools(
+  sf: ts.SourceFile,
+  graph: CallGraph,
+  registerNode: (node: ts.Node, name: string) => CallGraphNode,
+): void {
+  let listToolsHandler: ts.Node | null = null;
+  let callToolHandler: ts.Node | null = null;
+
+  function walk(node: ts.Node) {
+    if (ts.isCallExpression(node)) {
+      const parsed = parseSetRequestHandlerCall(node);
+      if (parsed) {
+        if (
+          parsed.schemaName === "ListToolsRequestSchema" ||
+          parsed.schemaName === "ListTools"
+        ) {
+          listToolsHandler = parsed.handler;
+        } else if (
+          parsed.schemaName === "CallToolRequestSchema" ||
+          parsed.schemaName === "CallTool"
+        ) {
+          callToolHandler = parsed.handler;
+        }
+      }
+    }
+    ts.forEachChild(node, walk);
+  }
+  walk(sf);
+
+  if (!listToolsHandler) return;
+
+  // Extract tool names + descriptions from the ListTools handler body
+  const toolsMap = extractToolsFromListHandler(listToolsHandler);
+  if (toolsMap.size === 0) {
+    (graph as CallGraphExt).toolDescriptions ??= new Map();
+    return;
+  }
+
+  // Ensure the toolDescriptions side-channel exists
+  const ext = graph as CallGraphExt;
+  ext.toolDescriptions ??= new Map();
+
+  if (callToolHandler) {
+    const cases = extractCasesFromCallHandler(
+      callToolHandler,
+      new Set(toolsMap.keys()),
+    );
+
+    for (const [toolName, description] of toolsMap) {
+      ext.toolDescriptions.set(toolName, description);
+      const caseClause = cases.get(toolName);
+      if (caseClause) {
+        // Use the CaseClause itself as the handler entry node.
+        const handlerName = `<handler:${toolName}>`;
+        registerNode(caseClause, handlerName);
+        graph.toolHandlers.set(toolName, caseClause);
+      } else {
+        // No switch / no matching case — fall back to the entire CallTool handler body.
+        // This is conservative: all sinks reachable anywhere in the handler body will be
+        // attributed to this tool.
+        const handlerName = `<handler:${toolName}>`;
+        registerNode(callToolHandler, handlerName);
+        graph.toolHandlers.set(toolName, callToolHandler);
+        graph.notes.push(
+          `setRequestHandler: no switch case for "${toolName}" — using full CallTool body (over-approximation)`,
+        );
+      }
+    }
+  } else {
+    // No CallToolRequestSchema handler found — register tools with no handler.
+    for (const [toolName, description] of toolsMap) {
+      ext.toolDescriptions.set(toolName, description);
+      graph.notes.push(
+        `setRequestHandler: no CallToolRequestSchema handler found for "${toolName}" — skipping`,
+      );
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Shape adapter A2: server.addTool({ name, description, execute: handler })
+// ---------------------------------------------------------------------------
+
+/**
+ * Collect tool handlers from `<receiver>.addTool({ name, description, execute: fn })` calls.
+ */
+function collectAddToolHandlers(
+  sf: ts.SourceFile,
+  graph: CallGraph,
+  registerNode: (node: ts.Node, name: string) => CallGraphNode,
+): void {
+  const ext = graph as CallGraphExt;
+
+  function walk(node: ts.Node) {
+    if (ts.isCallExpression(node)) {
+      const callee = node.expression;
+      if (
+        ts.isPropertyAccessExpression(callee) &&
+        callee.name.text === "addTool" &&
+        node.arguments.length >= 1 &&
+        ts.isObjectLiteralExpression(node.arguments[0])
+      ) {
+        const obj = node.arguments[0] as ts.ObjectLiteralExpression;
+        let name: string | null = null;
+        let description = "";
+        let executeFn: ts.Node | null = null;
+
+        for (const prop of obj.properties) {
+          if (!ts.isPropertyAssignment(prop) || !ts.isIdentifier(prop.name)) continue;
+          const propName = prop.name.text;
+
+          if (propName === "name") {
+            const folded = foldStringExpr(prop.initializer as ts.Expression);
+            if (folded !== null) name = folded;
+          } else if (propName === "description") {
+            const folded = foldStringExpr(prop.initializer as ts.Expression);
+            if (folded !== null) description = folded;
+          } else if (propName === "execute" || propName === "handler") {
+            const init = prop.initializer;
+            if (ts.isFunctionExpression(init) || ts.isArrowFunction(init)) {
+              executeFn = init;
+            }
+          }
+        }
+
+        if (name !== null && executeFn !== null) {
+          ext.toolDescriptions ??= new Map();
+          ext.toolDescriptions.set(name, description);
+          const handlerName = `<handler:${name}>`;
+          registerNode(executeFn, handlerName);
+          graph.toolHandlers.set(name, executeFn);
+        }
+      }
+    }
+    ts.forEachChild(node, walk);
+  }
+  walk(sf);
 }
 
 function parseServerToolCall(
