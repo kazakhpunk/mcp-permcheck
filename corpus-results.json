@@ -1,0 +1,504 @@
+{
+  "ranAt": "2026-05-05T12:47:21.408Z",
+  "totalAttempted": 80,
+  "outcomes": {
+    "SUCCESS": 9,
+    "NO_ENTRY_FILE": 41,
+    "NO_TOOLS_FOUND": 30
+  },
+  "results": [
+    {
+      "name": "modelcontextprotocol/servers#filesystem",
+      "outcome": "SUCCESS",
+      "tools": 14,
+      "ok": 13,
+      "violation": 1,
+      "violationDetails": [
+        {
+          "tool": "edit_file",
+          "undeclared": [
+            "WRITE_FS"
+          ],
+          "witnessCount": 3
+        }
+      ],
+      "analysedAt": "2026-05-05T12:21:37.108Z"
+    },
+    {
+      "name": "modelcontextprotocol/servers#memory",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "modelcontextprotocol/servers#sequentialthinking",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "n8n-io/n8n",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "google-gemini/gemini-cli",
+      "outcome": "SUCCESS",
+      "tools": 2,
+      "ok": 1,
+      "violation": 1,
+      "violationDetails": [
+        {
+          "tool": "closeDiff",
+          "undeclared": [
+            "WRITE_DB"
+          ],
+          "witnessCount": 2
+        }
+      ],
+      "analysedAt": "2026-05-05T12:22:45.115Z"
+    },
+    {
+      "name": "upstash/context7",
+      "outcome": "SUCCESS",
+      "tools": 2,
+      "ok": 1,
+      "violation": 1,
+      "violationDetails": [
+        {
+          "tool": "query-docs",
+          "undeclared": [
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 1
+        }
+      ],
+      "analysedAt": "2026-05-05T12:22:55.450Z"
+    },
+    {
+      "name": "ruvnet/ruflo",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "ChromeDevTools/chrome-devtools-mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "microsoft/playwright-mcp",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "bytedance/UI-TARS-desktop",
+      "outcome": "SUCCESS",
+      "tools": 1,
+      "ok": 1,
+      "violation": 0,
+      "violationDetails": [],
+      "analysedAt": "2026-05-05T12:24:41.112Z"
+    },
+    {
+      "name": "activepieces/activepieces",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "czlonkowski/n8n-mcp",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "nukeop/nuclear",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "triggerdotdev/trigger.dev",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "GLips/Figma-Context-MCP",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "open-metadata/OpenMetadata",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "mksglu/context-mode",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "hangwin/mcp-chrome",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "mcp-use/mcp-use",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "modelcontextprotocol/inspector",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "idosal/git-mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "webiny/webiny-js",
+      "outcome": "SUCCESS",
+      "tools": 2,
+      "ok": 2,
+      "violation": 0,
+      "violationDetails": [],
+      "analysedAt": "2026-05-05T12:29:54.034Z"
+    },
+    {
+      "name": "BrowserMCP/mcp",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "wonderwhy-er/DesktopCommanderMCP",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "getsentry/XcodeBuildMCP",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "google-labs-code/stitch-skills",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "nanbingxyz/5ire",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "epiral/bb-browser",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "21st-dev/magic-mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "exa-labs/exa-mcp-server",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "makenotion/notion-mcp-server",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "Pimzino/spec-workflow-mcp",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "antvis/mcp-server-chart",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "leerob/directories",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "cloudflare/mcp-server-cloudflare",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "opensumi/core",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "archestra-ai/archestra",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "browserbase/mcp-server-browserbase",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "punkpeye/fastmcp",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "Jpisnice/shadcn-ui-mcp-server",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "bytebase/dbhub",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "supercorp-ai/supergateway",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "metatool-ai/metamcp",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "PleasePrompto/notebooklm-mcp",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "microsoft/skills",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "Mouseww/anything-analyzer",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "jamubc/gemini-mcp-tool",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "modelcontextprotocol/ext-apps",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "perplexityai/modelcontextprotocol",
+      "outcome": "SUCCESS",
+      "tools": 4,
+      "ok": 0,
+      "violation": 4,
+      "violationDetails": [
+        {
+          "tool": "perplexity_ask",
+          "undeclared": [
+            "ENV",
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 6
+        },
+        {
+          "tool": "perplexity_research",
+          "undeclared": [
+            "ENV",
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 6
+        },
+        {
+          "tool": "perplexity_reason",
+          "undeclared": [
+            "ENV",
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 6
+        },
+        {
+          "tool": "perplexity_search",
+          "undeclared": [
+            "ENV",
+            "NETWORK_OUTBOUND"
+          ],
+          "witnessCount": 6
+        }
+      ],
+      "analysedAt": "2026-05-05T12:33:17.257Z"
+    },
+    {
+      "name": "AmoyLab/Unla",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "crbnos/carbon",
+      "outcome": "SUCCESS",
+      "tools": 10,
+      "ok": 10,
+      "violation": 0,
+      "violationDetails": [],
+      "analysedAt": "2026-05-05T12:33:34.883Z"
+    },
+    {
+      "name": "cyberagiinc/DevDocs",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "samanhappy/mcphub",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "chatmcp/mcpso",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "mcp-router/mcp-router",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "Vexa-ai/vexa",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "agentset-ai/agentset",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "MCPJam/inspector",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "modelcontextprotocol/mcpb",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "OpenAgentPlatform/Dive",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "forloopcodes/contextplus",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "chrisryugj/korean-law-mcp",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "microsoft/azure-devops-mcp",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "skyhook-io/radar",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "leonardsellem/n8n-mcp-server",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "MicrosoftDocs/mcp",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "PaperDebugger/paperdebugger",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "ghostwright/phantom",
+      "outcome": "SUCCESS",
+      "tools": 3,
+      "ok": 3,
+      "violation": 0,
+      "violationDetails": [],
+      "analysedAt": "2026-05-05T12:35:50.284Z"
+    },
+    {
+      "name": "Flux159/mcp-server-kubernetes",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "regenrek/deepwiki-mcp",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "Prismer-AI/PrismerCloud",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "arabold/docs-mcp-server",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "kimsungwhee/apple-docs-mcp",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "TanStack/cli",
+      "outcome": "SUCCESS",
+      "tools": 1,
+      "ok": 1,
+      "violation": 0,
+      "violationDetails": [],
+      "analysedAt": "2026-05-05T12:37:01.740Z"
+    },
+    {
+      "name": "Devin-AXIS/A2V",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "lgazo/drawio-mcp-server",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "sceneview/sceneview",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "apify/apify-mcp-server",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    },
+    {
+      "name": "higress-group/himarket",
+      "outcome": "NO_ENTRY_FILE",
+      "error": "no .ts file with server.tool() or server.registerTool() found"
+    },
+    {
+      "name": "philschmid/mcp-cli",
+      "outcome": "NO_TOOLS_FOUND",
+      "error": "pipeline ran but no server.tool() or registerTool() calls detected"
+    }
+  ]
+}

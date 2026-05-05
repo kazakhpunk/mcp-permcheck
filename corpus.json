@@ -1,0 +1,566 @@
+{
+  "generated": "2026-05-05T12:21:30.402Z",
+  "totalCount": 80,
+  "servers": [
+    {
+      "name": "modelcontextprotocol/servers#filesystem",
+      "cloneUrl": "https://github.com/modelcontextprotocol/servers.git",
+      "subpath": "src/filesystem",
+      "stars": null,
+      "source": "modelcontextprotocol-servers"
+    },
+    {
+      "name": "modelcontextprotocol/servers#memory",
+      "cloneUrl": "https://github.com/modelcontextprotocol/servers.git",
+      "subpath": "src/memory",
+      "stars": null,
+      "source": "modelcontextprotocol-servers"
+    },
+    {
+      "name": "modelcontextprotocol/servers#sequentialthinking",
+      "cloneUrl": "https://github.com/modelcontextprotocol/servers.git",
+      "subpath": "src/sequentialthinking",
+      "stars": null,
+      "source": "modelcontextprotocol-servers"
+    },
+    {
+      "name": "n8n-io/n8n",
+      "cloneUrl": "https://github.com/n8n-io/n8n.git",
+      "subpath": null,
+      "stars": 186743,
+      "source": "github-search"
+    },
+    {
+      "name": "google-gemini/gemini-cli",
+      "cloneUrl": "https://github.com/google-gemini/gemini-cli.git",
+      "subpath": null,
+      "stars": 103178,
+      "source": "github-search"
+    },
+    {
+      "name": "upstash/context7",
+      "cloneUrl": "https://github.com/upstash/context7.git",
+      "subpath": null,
+      "stars": 54487,
+      "source": "github-search"
+    },
+    {
+      "name": "ruvnet/ruflo",
+      "cloneUrl": "https://github.com/ruvnet/ruflo.git",
+      "subpath": null,
+      "stars": 42553,
+      "source": "github-search"
+    },
+    {
+      "name": "ChromeDevTools/chrome-devtools-mcp",
+      "cloneUrl": "https://github.com/ChromeDevTools/chrome-devtools-mcp.git",
+      "subpath": null,
+      "stars": 38129,
+      "source": "github-search"
+    },
+    {
+      "name": "microsoft/playwright-mcp",
+      "cloneUrl": "https://github.com/microsoft/playwright-mcp.git",
+      "subpath": null,
+      "stars": 32026,
+      "source": "github-search"
+    },
+    {
+      "name": "bytedance/UI-TARS-desktop",
+      "cloneUrl": "https://github.com/bytedance/UI-TARS-desktop.git",
+      "subpath": null,
+      "stars": 29611,
+      "source": "github-search"
+    },
+    {
+      "name": "activepieces/activepieces",
+      "cloneUrl": "https://github.com/activepieces/activepieces.git",
+      "subpath": null,
+      "stars": 22049,
+      "source": "github-search"
+    },
+    {
+      "name": "czlonkowski/n8n-mcp",
+      "cloneUrl": "https://github.com/czlonkowski/n8n-mcp.git",
+      "subpath": null,
+      "stars": 20062,
+      "source": "github-search"
+    },
+    {
+      "name": "nukeop/nuclear",
+      "cloneUrl": "https://github.com/nukeop/nuclear.git",
+      "subpath": null,
+      "stars": 17418,
+      "source": "github-search"
+    },
+    {
+      "name": "triggerdotdev/trigger.dev",
+      "cloneUrl": "https://github.com/triggerdotdev/trigger.dev.git",
+      "subpath": null,
+      "stars": 14777,
+      "source": "github-search"
+    },
+    {
+      "name": "GLips/Figma-Context-MCP",
+      "cloneUrl": "https://github.com/GLips/Figma-Context-MCP.git",
+      "subpath": null,
+      "stars": 14619,
+      "source": "github-search"
+    },
+    {
+      "name": "open-metadata/OpenMetadata",
+      "cloneUrl": "https://github.com/open-metadata/OpenMetadata.git",
+      "subpath": null,
+      "stars": 13797,
+      "source": "github-search"
+    },
+    {
+      "name": "mksglu/context-mode",
+      "cloneUrl": "https://github.com/mksglu/context-mode.git",
+      "subpath": null,
+      "stars": 12717,
+      "source": "github-search"
+    },
+    {
+      "name": "hangwin/mcp-chrome",
+      "cloneUrl": "https://github.com/hangwin/mcp-chrome.git",
+      "subpath": null,
+      "stars": 11377,
+      "source": "github-search"
+    },
+    {
+      "name": "mcp-use/mcp-use",
+      "cloneUrl": "https://github.com/mcp-use/mcp-use.git",
+      "subpath": null,
+      "stars": 9887,
+      "source": "github-search"
+    },
+    {
+      "name": "modelcontextprotocol/inspector",
+      "cloneUrl": "https://github.com/modelcontextprotocol/inspector.git",
+      "subpath": null,
+      "stars": 9661,
+      "source": "github-search"
+    },
+    {
+      "name": "idosal/git-mcp",
+      "cloneUrl": "https://github.com/idosal/git-mcp.git",
+      "subpath": null,
+      "stars": 8024,
+      "source": "github-search"
+    },
+    {
+      "name": "webiny/webiny-js",
+      "cloneUrl": "https://github.com/webiny/webiny-js.git",
+      "subpath": null,
+      "stars": 7969,
+      "source": "github-search"
+    },
+    {
+      "name": "BrowserMCP/mcp",
+      "cloneUrl": "https://github.com/BrowserMCP/mcp.git",
+      "subpath": null,
+      "stars": 6449,
+      "source": "github-search"
+    },
+    {
+      "name": "wonderwhy-er/DesktopCommanderMCP",
+      "cloneUrl": "https://github.com/wonderwhy-er/DesktopCommanderMCP.git",
+      "subpath": null,
+      "stars": 5995,
+      "source": "github-search"
+    },
+    {
+      "name": "getsentry/XcodeBuildMCP",
+      "cloneUrl": "https://github.com/getsentry/XcodeBuildMCP.git",
+      "subpath": null,
+      "stars": 5415,
+      "source": "github-search"
+    },
+    {
+      "name": "google-labs-code/stitch-skills",
+      "cloneUrl": "https://github.com/google-labs-code/stitch-skills.git",
+      "subpath": null,
+      "stars": 5208,
+      "source": "github-search"
+    },
+    {
+      "name": "nanbingxyz/5ire",
+      "cloneUrl": "https://github.com/nanbingxyz/5ire.git",
+      "subpath": null,
+      "stars": 5195,
+      "source": "github-search"
+    },
+    {
+      "name": "epiral/bb-browser",
+      "cloneUrl": "https://github.com/epiral/bb-browser.git",
+      "subpath": null,
+      "stars": 4963,
+      "source": "github-search"
+    },
+    {
+      "name": "21st-dev/magic-mcp",
+      "cloneUrl": "https://github.com/21st-dev/magic-mcp.git",
+      "subpath": null,
+      "stars": 4834,
+      "source": "github-search"
+    },
+    {
+      "name": "exa-labs/exa-mcp-server",
+      "cloneUrl": "https://github.com/exa-labs/exa-mcp-server.git",
+      "subpath": null,
+      "stars": 4385,
+      "source": "github-search"
+    },
+    {
+      "name": "makenotion/notion-mcp-server",
+      "cloneUrl": "https://github.com/makenotion/notion-mcp-server.git",
+      "subpath": null,
+      "stars": 4296,
+      "source": "github-search"
+    },
+    {
+      "name": "Pimzino/spec-workflow-mcp",
+      "cloneUrl": "https://github.com/Pimzino/spec-workflow-mcp.git",
+      "subpath": null,
+      "stars": 4156,
+      "source": "github-search"
+    },
+    {
+      "name": "antvis/mcp-server-chart",
+      "cloneUrl": "https://github.com/antvis/mcp-server-chart.git",
+      "subpath": null,
+      "stars": 4035,
+      "source": "github-search"
+    },
+    {
+      "name": "leerob/directories",
+      "cloneUrl": "https://github.com/leerob/directories.git",
+      "subpath": null,
+      "stars": 3926,
+      "source": "github-search"
+    },
+    {
+      "name": "cloudflare/mcp-server-cloudflare",
+      "cloneUrl": "https://github.com/cloudflare/mcp-server-cloudflare.git",
+      "subpath": null,
+      "stars": 3697,
+      "source": "github-search"
+    },
+    {
+      "name": "opensumi/core",
+      "cloneUrl": "https://github.com/opensumi/core.git",
+      "subpath": null,
+      "stars": 3630,
+      "source": "github-search"
+    },
+    {
+      "name": "archestra-ai/archestra",
+      "cloneUrl": "https://github.com/archestra-ai/archestra.git",
+      "subpath": null,
+      "stars": 3630,
+      "source": "github-search"
+    },
+    {
+      "name": "browserbase/mcp-server-browserbase",
+      "cloneUrl": "https://github.com/browserbase/mcp-server-browserbase.git",
+      "subpath": null,
+      "stars": 3311,
+      "source": "github-search"
+    },
+    {
+      "name": "punkpeye/fastmcp",
+      "cloneUrl": "https://github.com/punkpeye/fastmcp.git",
+      "subpath": null,
+      "stars": 3096,
+      "source": "github-search"
+    },
+    {
+      "name": "Jpisnice/shadcn-ui-mcp-server",
+      "cloneUrl": "https://github.com/Jpisnice/shadcn-ui-mcp-server.git",
+      "subpath": null,
+      "stars": 2760,
+      "source": "github-search"
+    },
+    {
+      "name": "bytebase/dbhub",
+      "cloneUrl": "https://github.com/bytebase/dbhub.git",
+      "subpath": null,
+      "stars": 2688,
+      "source": "github-search"
+    },
+    {
+      "name": "supercorp-ai/supergateway",
+      "cloneUrl": "https://github.com/supercorp-ai/supergateway.git",
+      "subpath": null,
+      "stars": 2609,
+      "source": "github-search"
+    },
+    {
+      "name": "metatool-ai/metamcp",
+      "cloneUrl": "https://github.com/metatool-ai/metamcp.git",
+      "subpath": null,
+      "stars": 2286,
+      "source": "github-search"
+    },
+    {
+      "name": "PleasePrompto/notebooklm-mcp",
+      "cloneUrl": "https://github.com/PleasePrompto/notebooklm-mcp.git",
+      "subpath": null,
+      "stars": 2285,
+      "source": "github-search"
+    },
+    {
+      "name": "microsoft/skills",
+      "cloneUrl": "https://github.com/microsoft/skills.git",
+      "subpath": null,
+      "stars": 2213,
+      "source": "github-search"
+    },
+    {
+      "name": "Mouseww/anything-analyzer",
+      "cloneUrl": "https://github.com/Mouseww/anything-analyzer.git",
+      "subpath": null,
+      "stars": 2197,
+      "source": "github-search"
+    },
+    {
+      "name": "jamubc/gemini-mcp-tool",
+      "cloneUrl": "https://github.com/jamubc/gemini-mcp-tool.git",
+      "subpath": null,
+      "stars": 2190,
+      "source": "github-search"
+    },
+    {
+      "name": "modelcontextprotocol/ext-apps",
+      "cloneUrl": "https://github.com/modelcontextprotocol/ext-apps.git",
+      "subpath": null,
+      "stars": 2158,
+      "source": "github-search"
+    },
+    {
+      "name": "perplexityai/modelcontextprotocol",
+      "cloneUrl": "https://github.com/perplexityai/modelcontextprotocol.git",
+      "subpath": null,
+      "stars": 2145,
+      "source": "github-search"
+    },
+    {
+      "name": "AmoyLab/Unla",
+      "cloneUrl": "https://github.com/AmoyLab/Unla.git",
+      "subpath": null,
+      "stars": 2103,
+      "source": "github-search"
+    },
+    {
+      "name": "crbnos/carbon",
+      "cloneUrl": "https://github.com/crbnos/carbon.git",
+      "subpath": null,
+      "stars": 2087,
+      "source": "github-search"
+    },
+    {
+      "name": "cyberagiinc/DevDocs",
+      "cloneUrl": "https://github.com/cyberagiinc/DevDocs.git",
+      "subpath": null,
+      "stars": 2063,
+      "source": "github-search"
+    },
+    {
+      "name": "samanhappy/mcphub",
+      "cloneUrl": "https://github.com/samanhappy/mcphub.git",
+      "subpath": null,
+      "stars": 2052,
+      "source": "github-search"
+    },
+    {
+      "name": "chatmcp/mcpso",
+      "cloneUrl": "https://github.com/chatmcp/mcpso.git",
+      "subpath": null,
+      "stars": 2002,
+      "source": "github-search"
+    },
+    {
+      "name": "mcp-router/mcp-router",
+      "cloneUrl": "https://github.com/mcp-router/mcp-router.git",
+      "subpath": null,
+      "stars": 1992,
+      "source": "github-search"
+    },
+    {
+      "name": "Vexa-ai/vexa",
+      "cloneUrl": "https://github.com/Vexa-ai/vexa.git",
+      "subpath": null,
+      "stars": 1991,
+      "source": "github-search"
+    },
+    {
+      "name": "agentset-ai/agentset",
+      "cloneUrl": "https://github.com/agentset-ai/agentset.git",
+      "subpath": null,
+      "stars": 1980,
+      "source": "github-search"
+    },
+    {
+      "name": "MCPJam/inspector",
+      "cloneUrl": "https://github.com/MCPJam/inspector.git",
+      "subpath": null,
+      "stars": 1913,
+      "source": "github-search"
+    },
+    {
+      "name": "modelcontextprotocol/mcpb",
+      "cloneUrl": "https://github.com/modelcontextprotocol/mcpb.git",
+      "subpath": null,
+      "stars": 1895,
+      "source": "github-search"
+    },
+    {
+      "name": "OpenAgentPlatform/Dive",
+      "cloneUrl": "https://github.com/OpenAgentPlatform/Dive.git",
+      "subpath": null,
+      "stars": 1785,
+      "source": "github-search"
+    },
+    {
+      "name": "forloopcodes/contextplus",
+      "cloneUrl": "https://github.com/forloopcodes/contextplus.git",
+      "subpath": null,
+      "stars": 1783,
+      "source": "github-search"
+    },
+    {
+      "name": "chrisryugj/korean-law-mcp",
+      "cloneUrl": "https://github.com/chrisryugj/korean-law-mcp.git",
+      "subpath": null,
+      "stars": 1651,
+      "source": "github-search"
+    },
+    {
+      "name": "microsoft/azure-devops-mcp",
+      "cloneUrl": "https://github.com/microsoft/azure-devops-mcp.git",
+      "subpath": null,
+      "stars": 1647,
+      "source": "github-search"
+    },
+    {
+      "name": "skyhook-io/radar",
+      "cloneUrl": "https://github.com/skyhook-io/radar.git",
+      "subpath": null,
+      "stars": 1639,
+      "source": "github-search"
+    },
+    {
+      "name": "leonardsellem/n8n-mcp-server",
+      "cloneUrl": "https://github.com/leonardsellem/n8n-mcp-server.git",
+      "subpath": null,
+      "stars": 1612,
+      "source": "github-search"
+    },
+    {
+      "name": "MicrosoftDocs/mcp",
+      "cloneUrl": "https://github.com/MicrosoftDocs/mcp.git",
+      "subpath": null,
+      "stars": 1607,
+      "source": "github-search"
+    },
+    {
+      "name": "PaperDebugger/paperdebugger",
+      "cloneUrl": "https://github.com/PaperDebugger/paperdebugger.git",
+      "subpath": null,
+      "stars": 1450,
+      "source": "github-search"
+    },
+    {
+      "name": "ghostwright/phantom",
+      "cloneUrl": "https://github.com/ghostwright/phantom.git",
+      "subpath": null,
+      "stars": 1412,
+      "source": "github-search"
+    },
+    {
+      "name": "Flux159/mcp-server-kubernetes",
+      "cloneUrl": "https://github.com/Flux159/mcp-server-kubernetes.git",
+      "subpath": null,
+      "stars": 1386,
+      "source": "github-search"
+    },
+    {
+      "name": "regenrek/deepwiki-mcp",
+      "cloneUrl": "https://github.com/regenrek/deepwiki-mcp.git",
+      "subpath": null,
+      "stars": 1339,
+      "source": "github-search"
+    },
+    {
+      "name": "Prismer-AI/PrismerCloud",
+      "cloneUrl": "https://github.com/Prismer-AI/PrismerCloud.git",
+      "subpath": null,
+      "stars": 1335,
+      "source": "github-search"
+    },
+    {
+      "name": "arabold/docs-mcp-server",
+      "cloneUrl": "https://github.com/arabold/docs-mcp-server.git",
+      "subpath": null,
+      "stars": 1304,
+      "source": "github-search"
+    },
+    {
+      "name": "kimsungwhee/apple-docs-mcp",
+      "cloneUrl": "https://github.com/kimsungwhee/apple-docs-mcp.git",
+      "subpath": null,
+      "stars": 1245,
+      "source": "github-search"
+    },
+    {
+      "name": "TanStack/cli",
+      "cloneUrl": "https://github.com/TanStack/cli.git",
+      "subpath": null,
+      "stars": 1244,
+      "source": "github-search"
+    },
+    {
+      "name": "Devin-AXIS/A2V",
+      "cloneUrl": "https://github.com/Devin-AXIS/A2V.git",
+      "subpath": null,
+      "stars": 1200,
+      "source": "github-search"
+    },
+    {
+      "name": "lgazo/drawio-mcp-server",
+      "cloneUrl": "https://github.com/lgazo/drawio-mcp-server.git",
+      "subpath": null,
+      "stars": 1194,
+      "source": "github-search"
+    },
+    {
+      "name": "sceneview/sceneview",
+      "cloneUrl": "https://github.com/sceneview/sceneview.git",
+      "subpath": null,
+      "stars": 1191,
+      "source": "github-search"
+    },
+    {
+      "name": "apify/apify-mcp-server",
+      "cloneUrl": "https://github.com/apify/apify-mcp-server.git",
+      "subpath": null,
+      "stars": 1185,
+      "source": "github-search"
+    },
+    {
+      "name": "higress-group/himarket",
+      "cloneUrl": "https://github.com/higress-group/himarket.git",
+      "subpath": null,
+      "stars": 1140,
+      "source": "github-search"
+    },
+    {
+      "name": "philschmid/mcp-cli",
+      "cloneUrl": "https://github.com/philschmid/mcp-cli.git",
+      "subpath": null,
+      "stars": 1126,
+      "source": "github-search"
+    }
+  ]
+}
