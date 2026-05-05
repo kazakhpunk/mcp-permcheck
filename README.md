@@ -113,9 +113,306 @@ The graph is exposed on `AnalyseResult.graph` and rendered by `src/renderGraph.t
 - **Explainable** — every undeclared leaf reports its source-line witnesses (file, line number, symbol).
 - **Fast** — one `ts.createProgram` pass per server, deterministic, milliseconds.
 
-### Architecture
+### Stats
 - **8 small modules**, ~700 source LOC total, each independently testable.
 - **91 tests, 0 failures** covering each module in isolation plus end-to-end pipeline.
+
+See [Architecture](#architecture) below for the full module-by-module breakdown.
+
+---
+
+## Architecture
+
+The tool takes an MCP server's source and produces, per tool, a verdict answering: *do the capabilities the code exercises stay within what the description declares?*
+
+It runs as a four-stage pipeline. Each stage is a small focused module that produces a typed value consumed by the next.
+
+```
+                        ┌─────────────────────────────────────────┐
+                        │  Input: TypeScript MCP server source    │
+                        │       (one or more .ts files)           │
+                        └─────────────────────────────────────────┘
+                                          │
+                  ┌───────────────────────┴───────────────────────┐
+                  │                                               │
+                  ▼                                               ▼
+       ┌───────────────────────┐                    ┌──────────────────────────┐
+       │  Stage 1              │                    │  Stage 2                 │
+       │  Description Parser   │                    │  Call Graph Construction │
+       │                       │                    │                          │
+       │  parseDescription.ts  │                    │  analyze.ts              │
+       │                       │                    │  + sinks.ts              │
+       │  regex/keyword map    │                    │  + types.ts              │
+       │  over the JSON        │                    │                          │
+       │  description string   │                    │  TS Compiler API +       │
+       │                       │                    │  cross-file resolution + │
+       │  Output: Set<Leaf>    │                    │  CHA dispatch + async    │
+       │  = P_Declared         │                    │  callback edges          │
+       └───────────┬───────────┘                    └─────────────┬────────────┘
+                   │                                              │
+                   │                                              ▼
+                   │                                  ┌──────────────────────┐
+                   │                                  │  Stage 3             │
+                   │                                  │  Reachability        │
+                   │                                  │  Analysis            │
+                   │                                  │                      │
+                   │                                  │  DFS in CallGraph    │
+                   │                                  │  from each tool's    │
+                   │                                  │  handler entry node  │
+                   │                                  │                      │
+                   │                                  │  Output: Set<Leaf>   │
+                   │                                  │  = P_Actual          │
+                   │                                  └─────────────┬────────┘
+                   │                                                │
+                   └──────────────────────┬─────────────────────────┘
+                                          │
+                                          ▼
+                              ┌─────────────────────────┐
+                              │  Stage 4                │
+                              │  Containment Checker    │
+                              │                         │
+                              │  check.ts               │
+                              │  + lattice.ts           │
+                              │                         │
+                              │  hierarchy-aware:       │
+                              │  P_Actual ⊆ P_Declared? │
+                              └────────────┬────────────┘
+                                           │
+                                           ▼
+                                  ┌────────────────┐
+                                  │  Verdict       │
+                                  │  + witnesses   │
+                                  │                │
+                                  │  report.ts     │
+                                  └────────────────┘
+```
+
+`runPipeline.ts` wires the stages together; everything else is data and pure functions over data.
+
+### The 8 modules
+
+| # | File | LOC | Responsibility |
+|---|---|---|---|
+| 1 | `types.ts` | ~30 | The lattice as a TypeScript type. `Leaf` union (13 members), `ALL_LEAVES`, `PARENT_OF` map, `CallSite`, and the `Verdict` discriminated union. |
+| 2 | `lattice.ts` | ~30 | Pure set/lattice operations. `subseteq(a, b)` walks the `PARENT_OF` chain so a child leaf is "covered" by an ancestor in the declared set. `join` and `meet` for completeness. |
+| 3 | `sinks.ts` | ~70 entries | Static catalog. `Map<FQN, Leaf>` mapping fully-qualified function names to the leaf they exercise. Seeded from Node 20+'s Permission Model API mapping; network rows hand-curated. |
+| 4 | `parseDescription.ts` | ~40 | Stage 1. Regex/keyword map over the description string emitting `Set<Leaf>` at the parent level (`READ`, `WRITE`, `EXEC`, `NETWORK`, `ENV`). |
+| 5 | `analyze.ts` | ~470 | Stages 2 + 3. Builds the `CallGraph` and exposes per-tool `ToolEntry` (actual + witnesses). The largest module by far — handles all the static-analysis judgement calls. |
+| 6 | `renderGraph.ts` | ~60 | Renders a `CallGraph` for a given tool as an ASCII tree. Used by the notebook. |
+| 7 | `check.ts` | ~30 | Stage 4. Pure function `check(tool, declared, actual, witnesses)` returning a `Verdict`. |
+| 8 | `report.ts` | ~40 | Pretty-prints a verdict. Sorts leaves alphabetically, includes per-leaf witness lines for violations. |
+| — | `runPipeline.ts` | ~25 | Glue. `runPipeline(srcPath)` returns `Verdict[]`. |
+
+### Stage 1 — Description Parser (`parseDescription.ts`)
+
+Input: the description string from `server.tool(name, { description }, handler)`.
+Output: `P_Declared: Set<Leaf>`.
+
+Implementation: an ordered list of `[RegExp, Leaf]` pairs. Every rule whose regex matches contributes its leaf to the result set; multiple rules may match. Keywords are at the parent level only (`READ`, not `READ_FS`) — descriptions don't reliably distinguish "reads files" vs "reads from db" — and the hierarchical lattice means a parent declaration covers the children.
+
+The five rules:
+
+| Leaf | Sample keywords |
+|---|---|
+| `EXEC` | execute, run, spawn, kill, terminate, shell |
+| `NETWORK` | http, fetch, request, api, webhook, download, upload |
+| `ENV` | env, environment, config, credential, secret, api[-_ ]key, access[-_ ]token |
+| `WRITE` | write, delete, remove, update, insert, modify, create, drop, save, store |
+| `READ` | read, fetch, query, get, list, retrieve, load, view, show, return |
+
+This is admitted-to-be the simplest form of NLP. Future work replaces it with an AutoCog-style pipeline; the interface (`parse(string) → Set<Leaf>`) doesn't change.
+
+### Stage 2 — Call Graph Construction (`analyze.ts`)
+
+This is the heart of the analyser. It runs in two sub-phases: pre-registration of every analysable function, then edge construction over those functions' bodies.
+
+#### The `CallGraph` data structure
+
+```ts
+type CallEdgeTarget =
+  | { kind: "fn"; node: ts.Node; name: string }
+  | { kind: "sink"; fqn: string; leaf: Leaf };
+
+interface CallEdge {
+  target: CallEdgeTarget;
+  site: CallSite;       // file, line, col, symbol
+}
+
+interface CallGraphNode {
+  fn: ts.Node;          // the function-like AST node
+  name: string;         // declared name, "Class.method", "<handler:toolName>", or "<callback@N>"
+  file: string;
+  line: number;
+  edges: CallEdge[];    // outgoing edges (calls + sink terminals)
+}
+
+interface CallGraph {
+  nodes: Map<ts.Node, CallGraphNode>;
+  toolHandlers: Map<string /* tool name */, ts.Node /* handler entry */>;
+  notes: string[];
+}
+```
+
+#### Sub-phase 2A — pre-registration
+
+Walk every user-code source file in `program.getSourceFiles()` (excluding declaration files, `node_modules`, and anything outside the project root). For every function-like construct, register a `CallGraphNode`:
+
+| AST node | Registered name |
+|---|---|
+| `FunctionDeclaration` | declared name |
+| `MethodDeclaration` on a class | `<ClassName>.<methodName>` |
+| `VariableDeclaration` whose initializer is `FunctionExpression`/`ArrowFunction` | variable name |
+| `ArrowFunction` passed as 3rd arg of `server.tool(...)` / `server.registerTool(...)` | `<handler:toolName>`, also added to `toolHandlers` |
+| `FunctionExpression`/`ArrowFunction` passed as a callback arg to `.then`/`setTimeout`/etc. | `<callback@N>` |
+
+Tool registration shapes recognised: both `server.tool(...)` (older SDK) and `server.registerTool(...)` (current SDK). Description argument is parsed via `foldStringExpr`, which handles literal strings, no-substitution template literals, and binary `+` concatenation chains.
+
+#### Sub-phase 2B — edge construction
+
+For each registered node, walk its body (stopping at nested function boundaries — those are walked in their own pass). For every `CallExpression` and every `process.env` access, emit at most one edge.
+
+Edge resolution is a precedence chain — the first matching shape wins:
+
+1. **Prisma-shaped** call (`<receiver>.<model>.<verb>` where verb is in the curated read/write set): emit a `sink` edge with `READ_DB` or `WRITE_DB`.
+2. **SQL-shaped** call (`*.query`, `*.execute`, or bare `pgQuery`/`query`/`execute`): inspect the first argument:
+   - String literal starting with `SELECT` → `READ_DB`
+   - Starting with mutating verb (`INSERT|UPDATE|DELETE|DROP|TRUNCATE|CREATE|ALTER`) → `WRITE_DB`
+   - Otherwise (template/variable/computed) → both `READ_DB ∪ WRITE_DB` (sound over-approximation)
+3. **Function-call edge** to a node already in the graph. Resolution order:
+   - For `Identifier` callees: file-local name lookup in `fnsByName`, then TS type-checker `getSymbolAtLocation` + `getAliasedSymbol` (handles `import { foo } from "./helper"`).
+   - For `PropertyAccessExpression` callees: `getSymbolAtLocation` on the property name → `MethodDeclaration` (monomorphic CHA — handles `this.method()` and `instance.method()`).
+   - If the resolved node is in `graph.nodes`, emit an `fn` edge.
+4. **Sink lookup via FQN**. Use `fqnOfCallee` to compute a canonical FQN from the call expression:
+   - Per-file import-alias table built from `buildImportAliases(sf)` translates named/aliased/namespace/default imports into canonical sink-catalog keys (`import { readFile } from "node:fs/promises"; readFile(p)` resolves to `fs.promises.readFile`).
+   - For `PropertyAccess` whose receiver isn't an aliased namespace, fall back to source text (`process.kill`).
+   - For bare-name callees not in `fnsByName`, check the `globalThis.<name>` namespace (`fetch`, `eval`).
+   - Look the FQN up in `SINKS`. If it hits, emit a sink edge.
+5. **Async-shape callbacks**. Independently of the above, if the call is a known async pattern, register inline function/arrow arguments as graph nodes and add `fn` edges:
+   - `.then(cb)`, `.catch(cb)`, `.finally(cb)` — both positional args
+   - `setTimeout(cb, ...)`, `setInterval(cb, ...)`, `setImmediate(cb, ...)`, `queueMicrotask(cb)`, `process.nextTick(cb, ...)` — first arg
+   - **Intentionally NOT followed**: `.map`, `.forEach`, `.filter`, `.reduce`, `.find`, etc. (false-positive cost too high without type narrowing)
+6. **`process.env.X` access** (a `PropertyAccessExpression` or `ElementAccessExpression`, not a call): emit a sink edge with leaf `ENV`.
+
+#### What this stage is *sound* on, and what it isn't
+
+**Sound for:**
+- Same-file function declarations and arrow-function variables
+- Cross-module imports of named functions (resolved via TS type checker)
+- Class methods called on a typed receiver (`this.method`, `instance.method` where the type checker has a single `MethodDeclaration` for the symbol)
+- `await`-ed calls (treated as ordinary calls)
+- Promise-chain and timer-scheduler callbacks
+- SQL classification when the query string is a literal
+- Per-file import-alias resolution for the modules in `MODULE_NS` (Node built-ins + axios/undici/ws/node-fetch/mongodb/mongoose/nodemailer/redis/ioredis/@prisma/client)
+
+**Not sound for:**
+- Cross-module recursion *into* user functions whose names aren't in `fnsByName` and whose symbol resolution returns no matching declaration
+- `any`-typed receivers (no type info to resolve a method)
+- Computed property access (`obj[name]()`)
+- Subclass overrides of methods (only the type-resolved declaration is followed)
+- Array iteration callbacks
+- Opaque-handle flow (`fs.promises.open(p).read()`)
+- `eval`-constructed code (caught only by the `eval` sink itself, not its arguments)
+
+### Stage 3 — Reachability Analysis (`analyze.ts`, in `extractActual`)
+
+Once the graph exists, each tool's `P_Actual` is computed by DFS from its handler:
+
+```
+function dfsCollectSinks(handler, graph) {
+  const visited = new Set()
+  const actual: Set<Leaf> = new Set()
+  const witnesses: Map<Leaf, CallSite[]> = new Map()
+  function visit(node) {
+    if (visited.has(node)) return       // cycle guard
+    visited.add(node)
+    for (edge of graph.nodes.get(node).edges) {
+      if (edge.target.kind === "sink") {
+        actual.add(edge.target.leaf)
+        witnesses[edge.target.leaf].push(edge.site)
+      } else {
+        visit(edge.target.node)
+      }
+    }
+  }
+  visit(handler)
+  return { actual, witnesses }
+}
+```
+
+Output: `byTool: Map<toolName, { description, actual: Set<Leaf>, witnesses: Map<Leaf, CallSite[]> }>`.
+
+This is the part where MCPDiFF would feed the call-chain into an LLM for embedding. We don't.
+
+### Stage 4 — Containment Checker (`check.ts` + `lattice.ts`)
+
+Pure function:
+
+```ts
+check(tool, declared, actual, witnesses) → Verdict
+```
+
+It calls `subseteq(actual, declared)` from `lattice.ts`. The hierarchy-aware version:
+
+```
+subseteq(A, B):
+  for x in A:
+    if any ancestor(x, including x itself) is in B: continue
+    else: return false
+  return true
+```
+
+Where `ancestor` walks `PARENT_OF`:
+
+```
+PARENT_OF = {
+  READ_FS: READ,        WRITE_FS: WRITE,
+  READ_DB: READ,        WRITE_DB: WRITE,
+                        EXEC_PROCESS: EXEC,
+                        EXEC_SHELL: EXEC,
+                        EXEC_EVAL: EXEC,
+                        NETWORK_OUTBOUND: NETWORK,
+}
+```
+
+Three verdict shapes:
+
+```ts
+| { kind: "OK", tool, declared, actual }
+| { kind: "VIOLATION", tool, declared, actual, undeclared, witnesses }
+| { kind: "UNANALYZABLE", tool, reason }
+```
+
+The `undeclared` set is exactly `{ x ∈ actual : ¬covered(x, declared) }`. Every leaf in it has at least one source-line witness from Stage 2.
+
+### Reporting (`report.ts`) and rendering (`renderGraph.ts`)
+
+Two pretty-printers, both pure:
+
+- **`format(verdict)`** — produces the human-readable report block with `declared = {...}`, `actual = {...}`, `Undeclared:` listing, and per-leaf witness lines. Used by the demo cells and Demo 5's batch loop.
+- **`renderCallGraph(graph, toolName)`** — produces an ASCII tree from the tool's handler. `├──` and `└──` connectors; sink edges annotated `[LEAF]`; cycles marked `↻`. Used by the notebook's call-graph cell.
+
+### Test architecture (`tests/`)
+
+One test file per source module plus end-to-end coverage. **91 tests total.**
+
+| Test file | Coverage |
+|---|---|
+| `lattice_test.ts` | `subseteq`/`join`/`meet`, hierarchy edge cases (parent covers child, siblings disjoint, equal sets) |
+| `sinks_test.ts` | Catalog presence: Node Permission Model entries, npm libs, exclusions (`console.log` etc.) |
+| `parseDescription_test.ts` | Each leaf's keywords, multi-leaf descriptions, case insensitivity, ENV+READ overlap |
+| `check_test.ts` | OK / VIOLATION construction, witnesses pass-through, empty sets |
+| `report_test.ts` | Format includes leaf names, sort order, witness lines, UNANALYZABLE reason |
+| `analyze_test.ts` | Tool collection, sink resolution, intra-file reachability, cross-module, SQL/Prisma/env special cases, async/timer callbacks, class method dispatch, **call-graph node + edge correctness** |
+| `renderGraph_test.ts` | Renderer includes handler name, sink leaves, cross-file file names |
+| `runPipeline_test.ts` | End-to-end on each demo server, full verdicts (OK / VIOLATION / undeclared sets) |
+
+Tests use Deno's standard test runner; integration tests use `Deno.makeTempFile` to spin up synthetic fixtures.
+
+### Why this shape
+
+Each module has one clear responsibility behind a small interface; you can hold any one of them in your head independently. The largest by far is `analyze.ts` because the static-analysis judgement calls are inherently entangled — but even there, the pre-registration / edge-emission / DFS phases are separable and the helpers (`fqnOfCallee`, `isPrismaShapedCall`, `classifySql`, `buildImportAliases`, `getCalleeAsyncShape`) are pure.
+
+The pipeline shape — *parse / build graph / traverse / check* — matches both the project proposal's slide 7 and what the MCPDiFF paper does internally; the difference is what we do *after* the graph traversal: a deterministic, hierarchy-aware set-containment check, instead of an LLM summary feeding a cosine similarity score.
 
 ---
 
