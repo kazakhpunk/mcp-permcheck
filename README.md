@@ -40,12 +40,12 @@ Every undeclared capability points at a concrete source-line site — no thresho
 
 `walkthrough.ipynb` is the runnable, presentation-ready artefact. Open it with the Deno Jupyter kernel and step through the cells from top to bottom.
 
-**Structure (9 sections):**
+**Structure (9 sections + call-graph cell):**
 
 1. **The Problem** — scale, the description-vs-code gap, the motivating example.
 2. **Existing Approach (MCPDiFF)** — why embedding similarity is unsound, unexplainable, and LLM-dependent.
 3. **Our Approach** — the formal containment rule and the 13-leaf hierarchical lattice (aligned with Deno's permission model).
-4. **Pipeline** — ASCII diagram of the analyser pipeline.
+4. **Pipeline** — ASCII diagram of the four-stage analyser pipeline (Description Parser → Call Graph Construction → Reachability Analysis → Containment Checker), matching the project proposal's slide-7 design and what MCPDiFF does internally.
 5. **Demonstrations** — five servers analysed end-to-end:
    - **Demo 1** *(compliant.ts)* — negative control: a clean tool that declares `READ` and only does a SELECT. Verdict: `OK`.
    - **Demo 2** *(obvious.ts)* — slide-3 reproduction: declares `READ`, body deletes from DB and kills processes. Verdict: `VIOLATION undeclared = {WRITE_DB, EXEC_PROCESS}`.
@@ -53,15 +53,33 @@ Every undeclared capability points at a concrete source-line site — no thresho
    - **Demo 4** *(subtle-multifile.ts)* — cross-module helper: the helper lives in another file. Tests cross-module reachability via the TS type checker.
    - **Demo 5** — a real public MCP server (the official `filesystem` server from `modelcontextprotocol/servers`). 14 tools analysed; **13 verify as OK and 1 is flagged as a real description-vs-code gap** (`edit_file` declares `{READ}` but writes/unlinks).
 6. **Anatomy of a verdict** — drill-down on Demo 2 showing `P_Declared`, `P_Actual`, and per-leaf source-line witnesses.
-7. **Comparison vs MCPDiFF** — table contrasting soundness, explainability, LLM-freeness, speed, determinism.
-8. **What the analyser handles** — full feature inventory.
-9. **Honest limitations** — what's deferred (real NLP, full subclass dispatch, array iteration, opaque-receiver flow, Python adapter, full corpus eval).
+7. **Call graph visualisation** — renders the constructed call graph as an ASCII tree for `query_data` (Demo 2) and `get_weather` (Demo 4). Each edge is either a function-to-function call or a function-to-sink terminal, with the leaf annotated in `[BRACKETS]`. Example for the cross-file Demo 4:
+
+   ```
+   [<handler:get_weather>] subtle-multifile.ts:18
+   └── exfilHelper  subtle-multifile-helper.ts:4
+       └── globalThis.fetch [NETWORK_OUTBOUND]  subtle-multifile-helper.ts:5
+   ```
+
+8. **Comparison vs MCPDiFF** — table contrasting soundness, explainability, LLM-freeness, speed, determinism.
+9. **What the analyser handles** — full feature inventory.
+10. **Honest limitations** — what's deferred (real NLP, full subclass dispatch, array iteration, opaque-receiver flow, Python adapter, full corpus eval).
 
 The code cells contain `assertEquals` calls that double as test assertions — re-running the notebook validates the analyser end-to-end.
 
 ---
 
 ## What the analyser handles
+
+### Pipeline
+The analyser runs in four explicit stages, matching the project proposal's slide-7 design:
+
+1. **Description Parser** — keyword/regex map over the JSON description → `P_Declared`.
+2. **Call Graph Construction** — single pass over every user-code function in the program, emitting a directed graph of `CallEdge`s. Each edge's target is either another function (`{ kind: "fn" }`) or a terminal capability sink (`{ kind: "sink", leaf }`).
+3. **Reachability Analysis** — DFS from each tool's handler entry over the materialised graph; sink edges encountered along the way contribute to `P_Actual`.
+4. **Containment Checker** — hierarchy-aware `subseteq(P_Actual, P_Declared)` decides the verdict.
+
+The graph is exposed on `AnalyseResult.graph` and rendered by `src/renderGraph.ts` as an ASCII tree for the notebook.
 
 ### Static analysis
 - **Cross-module reachability** — function calls across imports are followed via TS type-checker symbol resolution.
@@ -96,8 +114,8 @@ The code cells contain `assertEquals` calls that double as test assertions — r
 - **Fast** — one `ts.createProgram` pass per server, deterministic, milliseconds.
 
 ### Architecture
-- **7 small modules**, ~550 source LOC total, each independently testable.
-- **84 tests, 0 failures** covering each module in isolation plus end-to-end pipeline.
+- **8 small modules**, ~700 source LOC total, each independently testable.
+- **91 tests, 0 failures** covering each module in isolation plus end-to-end pipeline.
 
 ---
 
@@ -114,7 +132,7 @@ The code cells contain `assertEquals` calls that double as test assertions — r
 deno task test
 ```
 
-Expected: `ok | 84 passed | 0 failed`.
+Expected: `ok | 91 passed | 0 failed`.
 
 ### Open the walkthrough notebook
 
@@ -170,16 +188,17 @@ deno run --allow-read --allow-env -e '
 ```
 sound-permissions/
 ├── walkthrough.ipynb              ← presentation-ready notebook (open this first)
-├── src/                           ~550 LOC, 7 modules
+├── src/                           ~700 LOC, 8 modules
 │   ├── types.ts                   13-leaf hierarchical lattice + PARENT_OF map
 │   ├── lattice.ts                 hierarchy-aware subseteq via ancestor walk
 │   ├── sinks.ts                   ~70-entry catalog (Node + popular npm libs)
 │   ├── parseDescription.ts        keyword/regex map → P_Declared
-│   ├── analyze.ts                 TS Compiler API + AST + cross-module + async + CHA + SQL/Prisma/env
+│   ├── analyze.ts                 explicit CallGraph build + DFS reachability
+│   ├── renderGraph.ts             ASCII-tree renderer for call graphs
 │   ├── check.ts                   containment verdict
 │   ├── report.ts                  human-readable formatting
 │   └── runPipeline.ts             orchestrator
-├── tests/                         84 passing
+├── tests/                         91 passing
 ├── demo-servers/                  hand-authored fixtures used by the notebook
 │   ├── compliant.ts               negative control
 │   ├── obvious.ts                 slide-3 reproduction
