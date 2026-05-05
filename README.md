@@ -519,6 +519,26 @@ The approach adapts three Android-security techniques from 2011–2014 to a new 
 
 ---
 
+## Corpus evaluation
+
+To replicate the SHAPE of MCPDiFF's 10,240-server study at the scale reachable from public sources without a Python adapter, this repo includes batch infrastructure under `scripts/`:
+
+- `scripts/crawl-corpus.ts` — assembles a TS MCP corpus from `modelcontextprotocol/servers` plus GitHub Search.
+- `scripts/batch-analyze.ts` — sparse-clones each, runs the pipeline, aggregates verdicts.
+- `scripts/summarize.ts` — reads results, emits `CORPUS_RESULTS.md`.
+
+Run all three sequentially:
+
+```bash
+deno run --allow-net --allow-write scripts/crawl-corpus.ts
+deno run --allow-read --allow-write --allow-net --allow-run --allow-env scripts/batch-analyze.ts
+deno run --allow-read --allow-write scripts/summarize.ts
+```
+
+Results from the most recent run are committed at `corpus-results.json` and `CORPUS_RESULTS.md`. **This is not the full 10,240-server reproduction** (that requires the Python adapter that is on the v1 roadmap) — it's the path to 10k, demonstrated at the scale we can crawl publicly.
+
+---
+
 ## Honest limitations
 
 The analyser is sound on the language fragment it supports. It is *not* a general-purpose program analyser. Known gaps, each with a clear interface to swap when addressed:
