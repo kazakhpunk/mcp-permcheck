@@ -115,7 +115,7 @@ The graph is exposed on `AnalyseResult.graph` and rendered by `src/renderGraph.t
 
 ### Stats
 - **8 small modules**, ~700 source LOC total, each independently testable.
-- **91 tests, 0 failures** covering each module in isolation plus end-to-end pipeline.
+- **97 tests, 0 failures** covering each module in isolation plus end-to-end pipeline.
 
 See [Architecture](#architecture) below for the full module-by-module breakdown.
 
@@ -263,9 +263,20 @@ Walk every user-code source file in `program.getSourceFiles()` (excluding declar
 | `MethodDeclaration` on a class | `<ClassName>.<methodName>` |
 | `VariableDeclaration` whose initializer is `FunctionExpression`/`ArrowFunction` | variable name |
 | `ArrowFunction` passed as 3rd arg of `server.tool(...)` / `server.registerTool(...)` | `<handler:toolName>`, also added to `toolHandlers` |
+| `CaseClause` in a switch inside `setRequestHandler(CallToolRequestSchema, …)` for a named tool | `<handler:toolName>`, also added to `toolHandlers` |
+| `FunctionExpression`/`ArrowFunction` assigned to `execute` or `handler` in `server.addTool({…})` | `<handler:toolName>`, also added to `toolHandlers` |
 | `FunctionExpression`/`ArrowFunction` passed as a callback arg to `.then`/`setTimeout`/etc. | `<callback@N>` |
 
-Tool registration shapes recognised: both `server.tool(...)` (older SDK) and `server.registerTool(...)` (current SDK). Description argument is parsed via `foldStringExpr`, which handles literal strings, no-substitution template literals, and binary `+` concatenation chains.
+Tool registration shapes recognised:
+
+| Shape | Pattern |
+|---|---|
+| `server.tool(name, {description}, handler)` | Older MCP SDK |
+| `server.registerTool(name, {description}, handler)` | Current MCP SDK |
+| `server.setRequestHandler(ListToolsRequestSchema, …)` + `setRequestHandler(CallToolRequestSchema, …)` | Raw SDK handler pair — tools must be declared as a literal inline `[{name, description}, …]` array in the ListTools handler; dispatch via `switch` in the CallTool handler gives per-tool entry nodes; no-switch falls back to the whole CallTool body (conservative over-approximation) |
+| `server.addTool({name, description, execute: fn})` | fastmcp style; also accepts `handler` instead of `execute` |
+
+Description argument is parsed via `foldStringExpr`, which handles literal strings, no-substitution template literals, and binary `+` concatenation chains.
 
 #### Sub-phase 2B — edge construction
 
@@ -402,7 +413,7 @@ One test file per source module plus end-to-end coverage. **91 tests total.**
 | `parseDescription_test.ts` | Each leaf's keywords, multi-leaf descriptions, case insensitivity, ENV+READ overlap |
 | `check_test.ts` | OK / VIOLATION construction, witnesses pass-through, empty sets |
 | `report_test.ts` | Format includes leaf names, sort order, witness lines, UNANALYZABLE reason |
-| `analyze_test.ts` | Tool collection, sink resolution, intra-file reachability, cross-module, SQL/Prisma/env special cases, async/timer callbacks, class method dispatch, **call-graph node + edge correctness** |
+| `analyze_test.ts` | Tool collection, sink resolution, intra-file reachability, cross-module, SQL/Prisma/env special cases, async/timer callbacks, class method dispatch, **call-graph node + edge correctness**, **setRequestHandler adapter**, **addTool adapter** |
 | `renderGraph_test.ts` | Renderer includes handler name, sink leaves, cross-file file names |
 | `runPipeline_test.ts` | End-to-end on each demo server, full verdicts (OK / VIOLATION / undeclared sets) |
 
@@ -429,7 +440,7 @@ The pipeline shape — *parse / build graph / traverse / check* — matches both
 deno task test
 ```
 
-Expected: `ok | 91 passed | 0 failed`.
+Expected: `ok | 97 passed | 0 failed`.
 
 ### Open the walkthrough notebook
 
@@ -537,6 +548,8 @@ deno run --allow-read --allow-write scripts/summarize.ts
 
 Results from the most recent run are committed at `corpus-results.json` and `CORPUS_RESULTS.md`. **This is not the full 10,240-server reproduction** (that requires the Python adapter that is on the v1 roadmap) — it's the path to 10k, demonstrated at the scale we can crawl publicly.
 
+Most recent run (N=80, four registration shapes recognised): **SUCCESS=10, NO_TOOLS_FOUND=46, NO_ENTRY_FILE=24** (46 tools, 7 violations). Entry-file detection improved substantially vs. the prior run (NO_ENTRY_FILE: 41→24). The main remaining gap is that `setRequestHandler` servers often build their tools array dynamically from imported schema objects, which the literal-array adapter cannot resolve.
+
 ---
 
 ## Honest limitations
@@ -549,6 +562,7 @@ The analyser is sound on the language fragment it supports. It is *not* a genera
 4. **Computed property access.** `obj[name]()` where `name` is a runtime string is not resolved.
 5. **Opaque-receiver flow.** `fs.promises.open(path)` returns a `FileHandle` whose subsequent `.read()` is a sink. The analyser does not currently track returned handles to their use sites.
 6. **Single-language coverage.** TypeScript only.
-7. **Single-server demo on real-world code.** Reproducing the prior 10,240-server study at scale is future work.
+7. **Registration shape coverage.** Four shapes are now recognised: `server.tool()`, `server.registerTool()`, `setRequestHandler(ListToolsRequestSchema, …)`, and `server.addTool({execute})`. The `setRequestHandler` adapter requires tools to be declared as a **literal inline array** — arrays built at runtime (e.g. from imported schema objects, filter chains, or dynamic `push` calls) are not resolved. This is the dominant cause of the remaining NO_TOOLS_FOUND outcomes in the corpus.
+8. **Broader corpus coverage.** Reproducing the prior 10,240-server study at scale requires the Python adapter and is on the v1 roadmap.
 
 Each limitation is structural, not arbitrary — fixing any one is a bounded engineering task that does not require redesigning the rest of the pipeline.
