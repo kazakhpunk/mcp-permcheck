@@ -17,10 +17,7 @@ jobs:
       - name: Setup Deno
         uses: denoland/setup-deno@v2
         with:
-          deno-version: v2.1.4
-
-      - name: Cache deps
-        run: deno cache tests/*_test.ts src/runPipeline.ts
+          deno-version: v2.x
 
       - name: Run tests
         run: deno task test
