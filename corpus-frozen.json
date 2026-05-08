@@ -1,0 +1,595 @@
+{
+  "generated": "2026-05-08T11:20:18.099Z",
+  "pinnedAgainstResultsRanAt": "2026-05-05T14:21:07.368Z",
+  "totalCount": 84,
+  "servers": [
+    {
+      "name": "modelcontextprotocol/servers#filesystem",
+      "cloneUrl": "https://github.com/modelcontextprotocol/servers.git",
+      "subpath": "src/filesystem",
+      "sha": "4503e2d12b799448cd05f789dd40f9643a8d1a6c",
+      "entryRelativePath": "src/filesystem/index.ts"
+    },
+    {
+      "name": "metorial/mcp-containers",
+      "cloneUrl": "https://github.com/metorial/mcp-containers.git",
+      "subpath": null,
+      "sha": "c4c38f74f75a577e4458b4fe38827aa8a13eaad7",
+      "entryRelativePath": "servers/google-docs/server.ts"
+    },
+    {
+      "name": "mobile-next/mobile-mcp",
+      "cloneUrl": "https://github.com/mobile-next/mobile-mcp.git",
+      "subpath": null,
+      "sha": "227e961d131be76b036bab91c5da6e6d0a0347e1",
+      "entryRelativePath": "src/server.ts"
+    },
+    {
+      "name": "benborla/mcp-server-mysql",
+      "cloneUrl": "https://github.com/benborla/mcp-server-mysql.git",
+      "subpath": null,
+      "sha": "d17bd4ec895e63393a588530fa4c33421bed6c07",
+      "entryRelativePath": "index.ts"
+    },
+    {
+      "name": "zcaceres/fetch-mcp",
+      "cloneUrl": "https://github.com/zcaceres/fetch-mcp.git",
+      "subpath": null,
+      "sha": "1ddb1a59cb09a2d38e759f2d7a97829680cbe514",
+      "entryRelativePath": "src/index.ts"
+    },
+    {
+      "name": "cjo4m06/mcp-shrimp-task-manager",
+      "cloneUrl": "https://github.com/cjo4m06/mcp-shrimp-task-manager.git",
+      "subpath": null,
+      "sha": "8a3be6bced310c7b660e5cfc3f42e4e5e45f2f61",
+      "entryRelativePath": "src/index.ts"
+    },
+    {
+      "name": "resend/mcp-send-email",
+      "cloneUrl": "https://github.com/resend/mcp-send-email.git",
+      "subpath": null,
+      "sha": "c90b062624c3ce992634cce9597b93818320283a",
+      "entryRelativePath": "src/tools/editor.ts"
+    },
+    {
+      "name": "ykhli/mcp-send-email",
+      "cloneUrl": "https://github.com/ykhli/mcp-send-email.git",
+      "subpath": null,
+      "sha": "c90b062624c3ce992634cce9597b93818320283a",
+      "entryRelativePath": "src/tools/editor.ts"
+    },
+    {
+      "name": "ferrislucas/iterm-mcp",
+      "cloneUrl": "https://github.com/ferrislucas/iterm-mcp.git",
+      "subpath": null,
+      "sha": "936182b2bbcdada70cf93d0284a48ab227d06a02",
+      "entryRelativePath": "src/index.ts"
+    },
+    {
+      "name": "RafalWilinski/aws-mcp",
+      "cloneUrl": "https://github.com/RafalWilinski/aws-mcp.git",
+      "subpath": null,
+      "sha": "6dfb4160159b4df8015580795cfc605f5abef876",
+      "entryRelativePath": "index.ts"
+    },
+    {
+      "name": "mcpdotdirect/evm-mcp-server",
+      "cloneUrl": "https://github.com/mcpdotdirect/evm-mcp-server.git",
+      "subpath": null,
+      "sha": "e87a8c3ab1d3b45bc74cb8c8a197278088e8b1c3",
+      "entryRelativePath": "src/core/tools.ts"
+    },
+    {
+      "name": "RafalWilinski/mcp-apple-notes",
+      "cloneUrl": "https://github.com/RafalWilinski/mcp-apple-notes.git",
+      "subpath": null,
+      "sha": "b95a40ae858d791cd54e2a52700041bb2728fbe6",
+      "entryRelativePath": "index.ts"
+    },
+    {
+      "name": "Jacck/mcp-reasoner",
+      "cloneUrl": "https://github.com/Jacck/mcp-reasoner.git",
+      "subpath": null,
+      "sha": "ee93c70d31a1611d0db9ac4f93592d6e15a98be2",
+      "entryRelativePath": "src/index.ts"
+    },
+    {
+      "name": "ZubeidHendricks/youtube-mcp-server",
+      "cloneUrl": "https://github.com/ZubeidHendricks/youtube-mcp-server.git",
+      "subpath": null,
+      "sha": "fafa8bbe3bd34f141a00bd04bf34ba22b38745e7",
+      "entryRelativePath": "src/server.ts"
+    },
+    {
+      "name": "gannonh/firebase-mcp",
+      "cloneUrl": "https://github.com/gannonh/firebase-mcp.git",
+      "subpath": null,
+      "sha": "43272314daf5a0574e570e84cd523ccc2e8c40ca",
+      "entryRelativePath": "src/index.ts"
+    },
+    {
+      "name": "domdomegg/airtable-mcp-server",
+      "cloneUrl": "https://github.com/domdomegg/airtable-mcp-server.git",
+      "subpath": null,
+      "sha": "bbb88b457dc71e7c282465bfaa1947b23f025df3",
+      "entryRelativePath": "src/tools/create-field.ts"
+    },
+    {
+      "name": "g0t4/mcp-server-commands",
+      "cloneUrl": "https://github.com/g0t4/mcp-server-commands.git",
+      "subpath": null,
+      "sha": "bc62283f43f8eeb5d974497826395469b8a2afa5",
+      "entryRelativePath": "src/tools.ts"
+    },
+    {
+      "name": "lucasmontano/mcp-montano-server",
+      "cloneUrl": "https://github.com/lucasmontano/mcp-montano-server.git",
+      "subpath": null,
+      "sha": "b9a7585f096e1984119c1c729c99b06c14cb2148",
+      "entryRelativePath": "src/index.ts"
+    },
+    {
+      "name": "Cheffromspace/MCPControl",
+      "cloneUrl": "https://github.com/Cheffromspace/MCPControl.git",
+      "subpath": null,
+      "sha": "f90024255aa6ff9b2e9f7efd03b209ccb95baa08",
+      "entryRelativePath": "src/handlers/tools.zod.ts"
+    },
+    {
+      "name": "34892002/bilibili-mcp-js",
+      "cloneUrl": "https://github.com/34892002/bilibili-mcp-js.git",
+      "subpath": null,
+      "sha": "3537650dc180a1dfb7421d8c34bda40a97f6c2d0",
+      "entryRelativePath": "index.ts"
+    },
+    {
+      "name": "eniayomi/gcp-mcp",
+      "cloneUrl": "https://github.com/eniayomi/gcp-mcp.git",
+      "subpath": null,
+      "sha": "acfc8c173e9a53980231c4a1eccef34fc438c6f4",
+      "entryRelativePath": "index.ts"
+    },
+    {
+      "name": "jazelly/next-mcp-server",
+      "cloneUrl": "https://github.com/jazelly/next-mcp-server.git",
+      "subpath": null,
+      "sha": "382983e3b689ee0c7e3e74bd79fd6759ae30f747",
+      "entryRelativePath": "index.ts"
+    },
+    {
+      "name": "illuminaresolutions/n8n-mcp-server",
+      "cloneUrl": "https://github.com/illuminaresolutions/n8n-mcp-server.git",
+      "subpath": null,
+      "sha": "5fc73cee2504ac84d8d65f95353bc962f8b5962c",
+      "entryRelativePath": "src/index.ts"
+    },
+    {
+      "name": "v-3/discordmcp",
+      "cloneUrl": "https://github.com/v-3/discordmcp.git",
+      "subpath": null,
+      "sha": "39622af0333bcd324e811a2390146927517fb03d",
+      "entryRelativePath": "src/index.ts"
+    },
+    {
+      "name": "aaronjmars/web3-research-mcp",
+      "cloneUrl": "https://github.com/aaronjmars/web3-research-mcp.git",
+      "subpath": null,
+      "sha": "6afbe82297220ea9030a36ed9271667c4b4363f6",
+      "entryRelativePath": "src/tools/researchTools.ts"
+    },
+    {
+      "name": "TencentCloudBase/cloudbase-ai-deploy-mcp",
+      "cloneUrl": "https://github.com/TencentCloudBase/cloudbase-ai-deploy-mcp.git",
+      "subpath": null,
+      "sha": "697e64529b57425eb238df56802bd6204d68a5f4",
+      "entryRelativePath": "mcp/src/tools/invite-code.ts"
+    },
+    {
+      "name": "DMontgomery40/mcp-3D-printer-server",
+      "cloneUrl": "https://github.com/DMontgomery40/mcp-3D-printer-server.git",
+      "subpath": null,
+      "sha": "a2419c6a03e44e21d1e83c8760db483df49ba393",
+      "entryRelativePath": "src/index.ts"
+    },
+    {
+      "name": "mario-andreschak/mcp-windows-desktop-automation",
+      "cloneUrl": "https://github.com/mario-andreschak/mcp-windows-desktop-automation.git",
+      "subpath": null,
+      "sha": "255148427352aa3d3e1695a4013a7a0157b1cf1e",
+      "entryRelativePath": "src/tools/keyboard.ts"
+    },
+    {
+      "name": "PV-Bhat/vibe-check-mcp-server",
+      "cloneUrl": "https://github.com/PV-Bhat/vibe-check-mcp-server.git",
+      "subpath": null,
+      "sha": "e8b3045e58eb4d673e30cb591d07a5ccad57a58b",
+      "entryRelativePath": "src/index.ts"
+    },
+    {
+      "name": "tuncer-byte/memory-bank-MCP",
+      "cloneUrl": "https://github.com/tuncer-byte/memory-bank-MCP.git",
+      "subpath": null,
+      "sha": "c97d3cce0b312f2696e00de3ee6d7963b6c288a1",
+      "entryRelativePath": "src/mcp/memoryBankMcp.ts"
+    },
+    {
+      "name": "mixelpixx/Google-Search-MCP-Server",
+      "cloneUrl": "https://github.com/mixelpixx/Google-Search-MCP-Server.git",
+      "subpath": null,
+      "sha": "f7d7e7a616a9854327db7d909075ab36e5855ac2",
+      "entryRelativePath": "src/google-search-v3.ts"
+    },
+    {
+      "name": "mixelpixx/GoogleSearch_McpServer",
+      "cloneUrl": "https://github.com/mixelpixx/GoogleSearch_McpServer.git",
+      "subpath": null,
+      "sha": "f7d7e7a616a9854327db7d909075ab36e5855ac2",
+      "entryRelativePath": "src/google-search-v3.ts"
+    },
+    {
+      "name": "shannonlal/mcp-postman",
+      "cloneUrl": "https://github.com/shannonlal/mcp-postman.git",
+      "subpath": null,
+      "sha": "fd551a4ed029ccee08c0292e0efb226b6b3d8420",
+      "entryRelativePath": "src/server/server.ts"
+    },
+    {
+      "name": "BurtTheCoder/mcp-virustotal",
+      "cloneUrl": "https://github.com/BurtTheCoder/mcp-virustotal.git",
+      "subpath": null,
+      "sha": "359267b89d743ac11d46ff11bd8e26bbdc4781fd",
+      "entryRelativePath": "src/index.ts"
+    },
+    {
+      "name": "zcaceres/gtasks-mcp",
+      "cloneUrl": "https://github.com/zcaceres/gtasks-mcp.git",
+      "subpath": null,
+      "sha": "096d04136b3167592b3aa9767083f382a1163225",
+      "entryRelativePath": "src/index.ts"
+    },
+    {
+      "name": "evalstate/mcp-miro",
+      "cloneUrl": "https://github.com/evalstate/mcp-miro.git",
+      "subpath": null,
+      "sha": "a8be11ed8794f420375093931224a598e91a39d3",
+      "entryRelativePath": "src/index.ts"
+    },
+    {
+      "name": "mclenhard/mcp-evals",
+      "cloneUrl": "https://github.com/mclenhard/mcp-evals.git",
+      "subpath": null,
+      "sha": "97379638792b2b66bb3278493e2e495501ede39e",
+      "entryRelativePath": "example-server/index.ts"
+    },
+    {
+      "name": "delorenj/mcp-server-trello",
+      "cloneUrl": "https://github.com/delorenj/mcp-server-trello.git",
+      "subpath": null,
+      "sha": "12bf0f2e1d8ce03ee284aa4fa5c49c8662c06fa7",
+      "entryRelativePath": "src/index.ts"
+    },
+    {
+      "name": "cliffhall/GooseTeam",
+      "cloneUrl": "https://github.com/cliffhall/GooseTeam.git",
+      "subpath": null,
+      "sha": "a67e5b23fa379f9fb6bcf0eb8b0e55087e527485",
+      "entryRelativePath": "src/goose-team.ts"
+    },
+    {
+      "name": "da-okazaki/mcp-neo4j-server",
+      "cloneUrl": "https://github.com/da-okazaki/mcp-neo4j-server.git",
+      "subpath": null,
+      "sha": "8a93b901ebbbde985c5357cff222f04feb6ac859",
+      "entryRelativePath": "src/server.ts"
+    },
+    {
+      "name": "apinetwork/piapi-mcp-server",
+      "cloneUrl": "https://github.com/apinetwork/piapi-mcp-server.git",
+      "subpath": null,
+      "sha": "0101e924938de8e52694563d8cdf255f2372d71d",
+      "entryRelativePath": "src/index.ts"
+    },
+    {
+      "name": "bankless/onchain-mcp",
+      "cloneUrl": "https://github.com/bankless/onchain-mcp.git",
+      "subpath": null,
+      "sha": "f81f69a14560caf3394d0aeff0395958308e4fea",
+      "entryRelativePath": "src/index.ts"
+    },
+    {
+      "name": "playcanvas/editor-mcp-server",
+      "cloneUrl": "https://github.com/playcanvas/editor-mcp-server.git",
+      "subpath": null,
+      "sha": "d1461c11d6313c4f9c2e000d86aef15f0d7e8982",
+      "entryRelativePath": "src/tools/entity.ts"
+    },
+    {
+      "name": "playcanvas/mcp-editor",
+      "cloneUrl": "https://github.com/playcanvas/mcp-editor.git",
+      "subpath": null,
+      "sha": "d1461c11d6313c4f9c2e000d86aef15f0d7e8982",
+      "entryRelativePath": "src/tools/entity.ts"
+    },
+    {
+      "name": "PolarVista/Xcode-mcp-server",
+      "cloneUrl": "https://github.com/PolarVista/Xcode-mcp-server.git",
+      "subpath": null,
+      "sha": "751adea38ae4543748f76ac0715bc63cbcdf6208",
+      "entryRelativePath": "src/index.ts"
+    },
+    {
+      "name": "webflow/mcp-server",
+      "cloneUrl": "https://github.com/webflow/mcp-server.git",
+      "subpath": null,
+      "sha": "c4fa339cd9ba7a93d771e710db89302fc443c447",
+      "entryRelativePath": "src/tools/comments.ts"
+    },
+    {
+      "name": "joelhooks/logseq-mcp-tools",
+      "cloneUrl": "https://github.com/joelhooks/logseq-mcp-tools.git",
+      "subpath": null,
+      "sha": "d3c0d806522a7cf2044d8313db0777a8a73863f5",
+      "entryRelativePath": "index.ts"
+    },
+    {
+      "name": "ssdeanx/deep-research-mcp-server",
+      "cloneUrl": "https://github.com/ssdeanx/deep-research-mcp-server.git",
+      "subpath": null,
+      "sha": "3b9d7171eaa0ecda735bb28943f750401c5d7e72",
+      "entryRelativePath": "src/mcp-server.ts"
+    },
+    {
+      "name": "r-huijts/ns-mcp-server",
+      "cloneUrl": "https://github.com/r-huijts/ns-mcp-server.git",
+      "subpath": null,
+      "sha": "e72ded64f2f36f4ddcb8c089b105ce476f336384",
+      "entryRelativePath": "src/index.ts"
+    },
+    {
+      "name": "krzko/google-cloud-mcp",
+      "cloneUrl": "https://github.com/krzko/google-cloud-mcp.git",
+      "subpath": null,
+      "sha": "85eeb65a99f837e3fdaae6677c7287cc518d5304",
+      "entryRelativePath": "src/utils/project-tools.ts"
+    },
+    {
+      "name": "Braffolk/mcp-summarization-functions",
+      "cloneUrl": "https://github.com/Braffolk/mcp-summarization-functions.git",
+      "subpath": null,
+      "sha": "bc02da0f432304480f2ca2ef9f6eb08d02e788e8",
+      "entryRelativePath": "src/server/mcp-server.ts"
+    },
+    {
+      "name": "ruchernchong/mcp-server-google-analytics",
+      "cloneUrl": "https://github.com/ruchernchong/mcp-server-google-analytics.git",
+      "subpath": null,
+      "sha": "a138c9b2e7b3e881328e778a38194783b50309bd",
+      "entryRelativePath": "src/index.ts"
+    },
+    {
+      "name": "aiDotEngineer/aie-mcp",
+      "cloneUrl": "https://github.com/aiDotEngineer/aie-mcp.git",
+      "subpath": null,
+      "sha": "2edce781ef5abff8d9b9c6fe283a103279c3d9e0",
+      "entryRelativePath": "src/index.ts"
+    },
+    {
+      "name": "thirdstrandstudio/mcp-figma",
+      "cloneUrl": "https://github.com/thirdstrandstudio/mcp-figma.git",
+      "subpath": null,
+      "sha": "c97f31bb865f80e7c7a053718160c1e15754b646",
+      "entryRelativePath": "index.ts"
+    },
+    {
+      "name": "JayArrowz/mcp-figma",
+      "cloneUrl": "https://github.com/JayArrowz/mcp-figma.git",
+      "subpath": null,
+      "sha": "c97f31bb865f80e7c7a053718160c1e15754b646",
+      "entryRelativePath": "index.ts"
+    },
+    {
+      "name": "baranwang/mcp-tung-shing",
+      "cloneUrl": "https://github.com/baranwang/mcp-tung-shing.git",
+      "subpath": null,
+      "sha": "d5568a7368e8b8da34ff48dca02b5e370521c6dc",
+      "entryRelativePath": "src/server.ts"
+    },
+    {
+      "name": "awkoy/replicate-flux-mcp",
+      "cloneUrl": "https://github.com/awkoy/replicate-flux-mcp.git",
+      "subpath": null,
+      "sha": "6f346b7144c81af73c23db3e6eb6a1cb3aa54e7a",
+      "entryRelativePath": "src/tools/index.ts"
+    },
+    {
+      "name": "aashari/boilerplate-mcp-server",
+      "cloneUrl": "https://github.com/aashari/boilerplate-mcp-server.git",
+      "subpath": null,
+      "sha": "1c25c85c9e9b7b0a09d6cc94db010920bfaa25ca",
+      "entryRelativePath": "src/tools/ipaddress.tool.ts"
+    },
+    {
+      "name": "qianniuspace/mcp-security-audit",
+      "cloneUrl": "https://github.com/qianniuspace/mcp-security-audit.git",
+      "subpath": null,
+      "sha": "f8caea63debad0d9b0d01ce848375e8fcb66f932",
+      "entryRelativePath": "src/index.ts"
+    },
+    {
+      "name": "truss44/mcp-crypto-price",
+      "cloneUrl": "https://github.com/truss44/mcp-crypto-price.git",
+      "subpath": null,
+      "sha": "3933f6c4e2a6be9244d9c6fdfa8c4763067d7bab",
+      "entryRelativePath": "src/index.ts"
+    },
+    {
+      "name": "tokenizin-agency/mcp-npx-fetch",
+      "cloneUrl": "https://github.com/tokenizin-agency/mcp-npx-fetch.git",
+      "subpath": null,
+      "sha": "c0499be179b1bfa641c8478fdfae6ac43483470b",
+      "entryRelativePath": "src/index.ts"
+    },
+    {
+      "name": "spences10/mcp-n8n-builder",
+      "cloneUrl": "https://github.com/spences10/mcp-n8n-builder.git",
+      "subpath": null,
+      "sha": "d77555be45280e57575bc651e905f0d5d5a9b3c1",
+      "entryRelativePath": "src/tool-handlers/index.ts"
+    },
+    {
+      "name": "atom2ueki/mcp-server-ios-simulator",
+      "cloneUrl": "https://github.com/atom2ueki/mcp-server-ios-simulator.git",
+      "subpath": null,
+      "sha": "271643b452b739bc386854db16f1666a071fa5cb",
+      "entryRelativePath": "src/mcp/mcp-server.ts"
+    },
+    {
+      "name": "oakenai/mcp-edit-file-lines",
+      "cloneUrl": "https://github.com/oakenai/mcp-edit-file-lines.git",
+      "subpath": null,
+      "sha": "6d40c73c274248435072d3540ae9bd1c4faf3488",
+      "entryRelativePath": "src/index.ts"
+    },
+    {
+      "name": "a-bonus/google-docs-mcp",
+      "cloneUrl": "https://github.com/a-bonus/google-docs-mcp.git",
+      "subpath": null,
+      "sha": "36b6ddc8f292ff4427fceaa064454d34dd1041c8",
+      "entryRelativePath": "src/tools/calendar/listEvents.ts"
+    },
+    {
+      "name": "getrupt/ashra-mcp",
+      "cloneUrl": "https://github.com/getrupt/ashra-mcp.git",
+      "subpath": null,
+      "sha": "dae1ad6723ed1fc2c66131e7779ae612f432cf55",
+      "entryRelativePath": "src/index.ts"
+    },
+    {
+      "name": "marcopesani/mcp-server-serper",
+      "cloneUrl": "https://github.com/marcopesani/mcp-server-serper.git",
+      "subpath": null,
+      "sha": "f18d0b108fe38110dc15ccbfe6278bb5f45a53a1",
+      "entryRelativePath": "src/index.ts"
+    },
+    {
+      "name": "aashari/mcp-server-atlassian-bitbucket",
+      "cloneUrl": "https://github.com/aashari/mcp-server-atlassian-bitbucket.git",
+      "subpath": null,
+      "sha": "19b2b386c800c95cd7a7a44446f950ec661b0d91",
+      "entryRelativePath": "src/tools/atlassian.api.tool.ts"
+    },
+    {
+      "name": "StudentOfJS/mcp-figma-to-react",
+      "cloneUrl": "https://github.com/StudentOfJS/mcp-figma-to-react.git",
+      "subpath": null,
+      "sha": "f5f4a8e14e67d674a19b68712726853722d98002",
+      "entryRelativePath": "src/figma-react-tools.ts"
+    },
+    {
+      "name": "mschwarzmueller/demo-mcp-server-client-implementation",
+      "cloneUrl": "https://github.com/mschwarzmueller/demo-mcp-server-client-implementation.git",
+      "subpath": null,
+      "sha": "30cb1023ebf747dee1e2667f1d162c1044890df7",
+      "entryRelativePath": "server/server.ts"
+    },
+    {
+      "name": "pnizer/wweb-mcp",
+      "cloneUrl": "https://github.com/pnizer/wweb-mcp.git",
+      "subpath": null,
+      "sha": "35d2d36c2b14fac55a655971e2d6bc096f00cc65",
+      "entryRelativePath": "src/mcp-server.ts"
+    },
+    {
+      "name": "ahonn/mcp-server-gsc",
+      "cloneUrl": "https://github.com/ahonn/mcp-server-gsc.git",
+      "subpath": null,
+      "sha": "e671b155271b2b412a302cff1e72f6e14424a7ac",
+      "entryRelativePath": "src/server.ts"
+    },
+    {
+      "name": "alexatnordnet/mcp-google-custom-search-server",
+      "cloneUrl": "https://github.com/alexatnordnet/mcp-google-custom-search-server.git",
+      "subpath": null,
+      "sha": "27b8ba58daab905b88cbd580749ada8cc8f48f22",
+      "entryRelativePath": "src/index.ts"
+    },
+    {
+      "name": "xmannii/nobitex-mcp-server",
+      "cloneUrl": "https://github.com/xmannii/nobitex-mcp-server.git",
+      "subpath": null,
+      "sha": "bd8d253a1306ed7f09745befc05b0d5dc4550888",
+      "entryRelativePath": "tools/market.tools.ts"
+    },
+    {
+      "name": "duhlink/instagram-server-next-mcp",
+      "cloneUrl": "https://github.com/duhlink/instagram-server-next-mcp.git",
+      "subpath": null,
+      "sha": "49059fd1dc66f5eba8926f1846667821fed23ebc",
+      "entryRelativePath": "src/features/instagram/instagram.mcp.ts"
+    },
+    {
+      "name": "azer/react-analyzer-mcp",
+      "cloneUrl": "https://github.com/azer/react-analyzer-mcp.git",
+      "subpath": null,
+      "sha": "335f2a3585f265e2e88352b59b10d3b478d678b0",
+      "entryRelativePath": "src/index.ts"
+    },
+    {
+      "name": "containerelic/github-enterprise-mcp",
+      "cloneUrl": "https://github.com/containerelic/github-enterprise-mcp.git",
+      "subpath": null,
+      "sha": "86c87521d7aad097fef940b8201c6e6ca8088e44",
+      "entryRelativePath": "server/index.ts"
+    },
+    {
+      "name": "haxzie/sequel-mcp",
+      "cloneUrl": "https://github.com/haxzie/sequel-mcp.git",
+      "subpath": null,
+      "sha": "a0234dbfdb24297a27cf7e12365320a42af5ae5f",
+      "entryRelativePath": "commands/run.ts"
+    },
+    {
+      "name": "ddukbg/github-enterprise-mcp",
+      "cloneUrl": "https://github.com/ddukbg/github-enterprise-mcp.git",
+      "subpath": null,
+      "sha": "86c87521d7aad097fef940b8201c6e6ca8088e44",
+      "entryRelativePath": "server/index.ts"
+    },
+    {
+      "name": "ChristophEnglisch/keycloak-model-context-protocol",
+      "cloneUrl": "https://github.com/ChristophEnglisch/keycloak-model-context-protocol.git",
+      "subpath": null,
+      "sha": "2e8bc85b1dcc1fd2a2722f003d45e57e02a7d65b",
+      "entryRelativePath": "src/index.ts"
+    },
+    {
+      "name": "pwh-pwh/coin-mcp-server",
+      "cloneUrl": "https://github.com/pwh-pwh/coin-mcp-server.git",
+      "subpath": null,
+      "sha": "b0a70fbb02043a18de1d24813d2e8a6d8243d0c8",
+      "entryRelativePath": "main.ts"
+    },
+    {
+      "name": "jlucaso1/whatsapp-mcp-ts",
+      "cloneUrl": "https://github.com/jlucaso1/whatsapp-mcp-ts.git",
+      "subpath": null,
+      "sha": "ce9b144a2327d44f4288ee400503e2dc06c7d2d5",
+      "entryRelativePath": "src/mcp.ts"
+    },
+    {
+      "name": "crazyrabbitLTC/mcp-etherscan-server",
+      "cloneUrl": "https://github.com/crazyrabbitLTC/mcp-etherscan-server.git",
+      "subpath": null,
+      "sha": "73578d9274f93ecf714f70b73c7c9d58a6453491",
+      "entryRelativePath": "src/server.ts"
+    },
+    {
+      "name": "hideya/langchain-mcp-tools-ts",
+      "cloneUrl": "https://github.com/hideya/langchain-mcp-tools-ts.git",
+      "subpath": null,
+      "sha": "c703696d79d7c3dce8e4aede2e4fd577414d4cc0",
+      "entryRelativePath": "testfiles/streamable-http-auth-test-server.ts"
+    }
+  ]
+}

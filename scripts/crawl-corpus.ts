@@ -16,6 +16,10 @@
 const CORPUS_PATH = "./corpus.json";
 const MAX_SERVERS = 500;
 const MCPCORPUS_CLONE_URL = "https://github.com/Snakinya/MCPCorpus.git";
+// Pinned to the SHA of MCPCorpus@main as of 2026-05-05 (the snapshot the
+// committed corpus.json / corpus-results.json were generated against). The
+// upstream repo evolves; pin so reproductions hit the same dataset.
+const MCPCORPUS_PINNED_SHA = "295fe37cd972ea9aa1b48578b2d7bcc40a72ee12";
 const MCPCORPUS_DIR = "./real-servers/_mcpcorpus";
 const MCPCORPUS_DATA_FILE = `${MCPCORPUS_DIR}/Website/mcpso_servers_cleaned.json`;
 const MCP_SERVERS_REPO = "https://api.github.com/repos/modelcontextprotocol/servers";
@@ -179,18 +183,30 @@ async function fetchMcpServersSubdirs(): Promise<CorpusEntry[]> {
 // Part B: MCPCorpus
 // ---------------------------------------------------------------------------
 
-/** Clone or update the MCPCorpus dataset repo (sparse — we only need Website/). */
+/** Clone or update the MCPCorpus dataset repo (sparse — we only need Website/).
+ *  Pinned to MCPCORPUS_PINNED_SHA so reproductions hit the same snapshot the
+ *  committed corpus.json was generated against.
+ */
 async function ensureMcpCorpus(): Promise<boolean> {
-  // Check if already cloned
+  // Check if already cloned at the right SHA
   try {
     await Deno.stat(MCPCORPUS_DATA_FILE);
-    console.log("MCPCorpus already cloned; using cached copy.");
+    const headResult = await run(["git", "rev-parse", "HEAD"], MCPCORPUS_DIR);
+    const localSha = headResult.stdout.trim();
+    if (localSha === MCPCORPUS_PINNED_SHA) {
+      console.log(`MCPCorpus already cloned at pinned SHA ${MCPCORPUS_PINNED_SHA.slice(0, 12)}; using cached copy.`);
+      return true;
+    }
+    console.warn(
+      `  WARNING: MCPCorpus checkout at ${localSha.slice(0, 12)} != pinned ${MCPCORPUS_PINNED_SHA.slice(0, 12)}.`,
+    );
+    console.warn(`  Delete ${MCPCORPUS_DIR} to re-clone at the pinned SHA, or proceed with the existing checkout.`);
     return true;
   } catch {
     // Not cloned yet
   }
 
-  console.log("Cloning Snakinya/MCPCorpus (sparse — Website/ only)...");
+  console.log(`Cloning Snakinya/MCPCorpus@${MCPCORPUS_PINNED_SHA.slice(0, 12)} (sparse — Website/ only)...`);
   await Deno.mkdir(MCPCORPUS_DIR, { recursive: true });
 
   // Init + sparse checkout to get only Website/mcpso_servers_cleaned.json
@@ -227,24 +243,30 @@ async function ensureMcpCorpus(): Promise<boolean> {
     return false;
   }
 
-  console.log("  Fetching (depth=1)...");
+  console.log(`  Fetching pinned SHA (depth=1)...`);
   const fetchResult = await run(
-    ["git", "fetch", "--depth=1", "origin", "main"],
+    ["git", "fetch", "--depth=1", "origin", MCPCORPUS_PINNED_SHA],
     MCPCORPUS_DIR,
   );
   if (!fetchResult.success) {
-    // Try master branch
-    const fetchResult2 = await run(
-      ["git", "fetch", "--depth=1", "origin", "master"],
-      MCPCORPUS_DIR,
-    );
-    if (!fetchResult2.success) {
-      console.warn(`  WARNING: git fetch failed: ${fetchResult2.stderr.slice(0, 200)}`);
-      return false;
+    console.warn(`  WARNING: git fetch of pinned SHA failed: ${fetchResult.stderr.slice(0, 200)}`);
+    console.warn(`  Falling back to fetching default branch...`);
+    const fallback = await run(["git", "fetch", "--depth=1", "origin", "main"], MCPCORPUS_DIR);
+    if (!fallback.success) {
+      const fallback2 = await run(["git", "fetch", "--depth=1", "origin", "master"], MCPCORPUS_DIR);
+      if (!fallback2.success) {
+        console.warn(`  WARNING: git fetch failed: ${fallback2.stderr.slice(0, 200)}`);
+        return false;
+      }
     }
     await run(["git", "checkout", "FETCH_HEAD"], MCPCORPUS_DIR);
+    console.warn(`  WARNING: checked out FETCH_HEAD instead of pinned SHA — results may diverge from the committed corpus.`);
   } else {
-    await run(["git", "checkout", "FETCH_HEAD"], MCPCORPUS_DIR);
+    const checkoutResult = await run(["git", "checkout", MCPCORPUS_PINNED_SHA], MCPCORPUS_DIR);
+    if (!checkoutResult.success) {
+      console.warn(`  WARNING: git checkout of pinned SHA failed: ${checkoutResult.stderr.slice(0, 200)}`);
+      await run(["git", "checkout", "FETCH_HEAD"], MCPCORPUS_DIR);
+    }
   }
 
   // Verify the data file is there

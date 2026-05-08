@@ -17,6 +17,7 @@ import type { Verdict } from "../src/types.ts";
 
 const CORPUS_PATH = "./corpus.json";
 const RESULTS_PATH = "./corpus-results.json";
+const FROZEN_PATH = "./corpus-frozen.json";
 const REAL_SERVERS_DIR = "./real-servers";
 const WALL_TIME_LIMIT_MS = 30 * 60 * 1000; // 30 minutes
 
@@ -52,6 +53,25 @@ interface CorpusEntry {
   subpath: string | null;
   stars: number | null;
   source: string;
+  /** Set in --from-frozen mode: pinned commit SHA from corpus-frozen.json. */
+  frozenSha?: string;
+  /** Set in --from-frozen mode: entry-file path relative to clone root. */
+  frozenEntryRelativePath?: string;
+}
+
+interface FrozenEntry {
+  name: string;
+  cloneUrl: string;
+  subpath: string | null;
+  sha: string;
+  entryRelativePath: string;
+}
+
+interface FrozenFile {
+  generated: string;
+  pinnedAgainstResultsRanAt: string;
+  totalCount: number;
+  servers: FrozenEntry[];
 }
 
 // ---------------------------------------------------------------------------
@@ -96,13 +116,65 @@ async function cloneRepo(
   cloneUrl: string,
   subpath: string | null,
   destDir: string,
+  pinnedSha?: string,
 ): Promise<{ success: boolean; error?: string }> {
   try {
     await Deno.stat(destDir);
-    // Already exists — idempotent skip
+    // Already exists — idempotent skip. (In frozen mode the caller is
+    // responsible for verifying the existing clone matches pinnedSha.)
     return { success: true };
   } catch {
     // Directory does not exist — proceed with clone
+  }
+
+  if (pinnedSha) {
+    // Frozen mode: init + fetch the exact SHA so the analysis is deterministic.
+    await Deno.mkdir(destDir, { recursive: true });
+    const initResult = await run(["git", "init"], destDir);
+    if (!initResult.success) {
+      return { success: false, error: `git init failed: ${initResult.stderr.slice(0, 300)}` };
+    }
+    const remoteResult = await run(["git", "remote", "add", "origin", cloneUrl], destDir);
+    if (!remoteResult.success) {
+      return {
+        success: false,
+        error: `git remote add failed: ${remoteResult.stderr.slice(0, 300)}`,
+      };
+    }
+    if (subpath) {
+      const sparseInit = await run(["git", "sparse-checkout", "init", "--cone"], destDir);
+      if (!sparseInit.success) {
+        return {
+          success: false,
+          error: `sparse-checkout init failed: ${sparseInit.stderr.slice(0, 300)}`,
+        };
+      }
+      const sparseSet = await run(["git", "sparse-checkout", "set", subpath], destDir);
+      if (!sparseSet.success) {
+        return {
+          success: false,
+          error: `sparse-checkout set failed: ${sparseSet.stderr.slice(0, 300)}`,
+        };
+      }
+    }
+    const fetchResult = await run(
+      ["git", "fetch", "--depth=1", "--filter=blob:none", "origin", pinnedSha],
+      destDir,
+    );
+    if (!fetchResult.success) {
+      return {
+        success: false,
+        error: `git fetch of pinned SHA failed: ${fetchResult.stderr.slice(0, 300)}`,
+      };
+    }
+    const checkoutResult = await run(["git", "checkout", pinnedSha], destDir);
+    if (!checkoutResult.success) {
+      return {
+        success: false,
+        error: `git checkout of pinned SHA failed: ${checkoutResult.stderr.slice(0, 300)}`,
+      };
+    }
+    return { success: true };
   }
 
   if (subpath) {
@@ -230,14 +302,21 @@ async function analyseEntry(
 ): Promise<ServerResult> {
   const cloneDir = `${REAL_SERVERS_DIR}/${flatName(entry.cloneUrl)}`;
 
-  // 1. Clone
-  const cloneRes = await cloneRepo(entry.cloneUrl, entry.subpath, cloneDir);
+  // 1. Clone (at pinned SHA when running --from-frozen)
+  const cloneRes = await cloneRepo(entry.cloneUrl, entry.subpath, cloneDir, entry.frozenSha);
   if (!cloneRes.success) {
     return { name: entry.name, outcome: "CLONE_FAILED", error: cloneRes.error };
   }
 
-  // 2. Find entry file
-  const entryFile = await findEntryFile(cloneDir, entry.subpath);
+  // 2. Find entry file. In frozen mode the relative path is recorded; trust it
+  // unless the file is actually missing.
+  let entryFile: string | null;
+  if (entry.frozenEntryRelativePath) {
+    const candidate = `${cloneDir}/${entry.frozenEntryRelativePath}`;
+    entryFile = (await exists(candidate)) ? candidate : await findEntryFile(cloneDir, entry.subpath);
+  } else {
+    entryFile = await findEntryFile(cloneDir, entry.subpath);
+  }
   if (!entryFile) {
     return {
       name: entry.name,
@@ -296,17 +375,44 @@ async function analyseEntry(
 async function main() {
   const startTime = Date.now();
 
-  // Parse flags: --force / --rerun re-analyses every server even if already in results
+  // Parse flags
   const force = Deno.args.includes("--force") || Deno.args.includes("--rerun");
+  const fromFrozen = Deno.args.includes("--from-frozen");
 
-  // Read corpus
+  // Read corpus, or in frozen mode, read corpus-frozen.json and rehydrate.
   let corpus: { totalCount: number; servers: CorpusEntry[] };
-  try {
-    corpus = JSON.parse(await Deno.readTextFile(CORPUS_PATH));
-  } catch (e) {
-    console.error(`Failed to read ${CORPUS_PATH}: ${e}`);
-    console.error("Run: deno run --allow-net --allow-write scripts/crawl-corpus.ts");
-    Deno.exit(1);
+  if (fromFrozen) {
+    let frozen: FrozenFile;
+    try {
+      frozen = JSON.parse(await Deno.readTextFile(FROZEN_PATH));
+    } catch (e) {
+      console.error(`Failed to read ${FROZEN_PATH}: ${e}`);
+      console.error("Run: deno run --allow-read --allow-write --allow-run scripts/freeze-corpus.ts");
+      Deno.exit(1);
+    }
+    console.log(
+      `--from-frozen: replaying ${frozen.totalCount} entries pinned against ${frozen.pinnedAgainstResultsRanAt}`,
+    );
+    corpus = {
+      totalCount: frozen.totalCount,
+      servers: frozen.servers.map((f) => ({
+        name: f.name,
+        cloneUrl: f.cloneUrl,
+        subpath: f.subpath,
+        stars: null,
+        source: "frozen",
+        frozenSha: f.sha,
+        frozenEntryRelativePath: f.entryRelativePath,
+      })),
+    };
+  } else {
+    try {
+      corpus = JSON.parse(await Deno.readTextFile(CORPUS_PATH));
+    } catch (e) {
+      console.error(`Failed to read ${CORPUS_PATH}: ${e}`);
+      console.error("Run: deno run --allow-net --allow-write scripts/crawl-corpus.ts");
+      Deno.exit(1);
+    }
   }
 
   // Load existing results (for idempotency; skipped when --force)

@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches: [main, "feat/**"]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    name: Run test suite
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Deno
+        uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.1.4
+
+      - name: Cache deps
+        run: deno cache tests/*_test.ts src/runPipeline.ts
+
+      - name: Run tests
+        run: deno task test
+
+  docker:
+    name: Build Docker image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build image and run tests inside it
+        run: |
+          docker build -t sound-permissions:ci .
+          docker run --rm sound-permissions:ci
