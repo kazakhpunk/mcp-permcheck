@@ -21,3 +21,15 @@ jobs:
 
       - name: Run tests
         run: deno task test
+
+  docker:
+    name: Build Docker image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build image and run tests inside it
+        run: |
+          docker build -t sound-permissions:ci .
+          docker run --rm sound-permissions:ci

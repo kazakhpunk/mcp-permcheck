@@ -12,7 +12,8 @@
 # network access to GitHub and the Snakinya/MCPCorpus dataset. Re-run it from
 # inside the container if needed.
 
-FROM denoland/deno:2.1.4
+# Pinned to match the Deno version that generated deno.lock (lockfile v5).
+FROM denoland/deno:2.7.14
 
 WORKDIR /work
 
