@@ -442,16 +442,65 @@ deno task test
 
 Expected: `ok | 97 passed | 0 failed`.
 
-### Run the test suite in a Docker container
+### Reproduce the results in a Docker container
 
-A `Dockerfile` is provided so the unit-test results are reproducible from a clean machine without installing Deno locally:
+The `Dockerfile` produces a hermetic environment containing Deno + the project source. The unit-test results are reproducible from a clean machine without installing Deno locally.
+
+**Prerequisites:** Docker (Docker Desktop on macOS/Windows, or `docker` engine on Linux). Verify with `docker version`.
+
+**1 — Get the source**
+
+```bash
+git clone https://github.com/kazakhpunk/mcp-permcheck.git
+cd mcp-permcheck
+```
+
+**2 — Build the image**
 
 ```bash
 docker build -t sound-permissions .
+```
+
+This pulls `denoland/deno:2.7.14`, copies the project source, and produces an image of about 250 MB. First build takes 30–60 s; subsequent rebuilds are cached.
+
+**3 — Run the test suite**
+
+```bash
 docker run --rm sound-permissions
 ```
 
-Expected: `ok | 97 passed | 0 failed`. Both the native test suite and a Docker build-and-run are exercised on every push by `.github/workflows/ci.yml`.
+Expected output (last line):
+
+```
+ok | 97 passed | 0 failed (3s)
+```
+
+That single command reproduces every unit-test verdict from the paper — the four-stage pipeline (description parser, call graph, reachability, containment), all eight modules, and the end-to-end demos against `compliant.ts`, `obvious.ts`, `subtle.ts`, `subtle-multifile.ts`, and the env-variable fixtures.
+
+**4 — Run the analyser on your own TypeScript file**
+
+Mount the file into the container and override the default command:
+
+```bash
+docker run --rm -v "$PWD/your-server.ts:/work/your-server.ts" sound-permissions \
+  deno run --allow-read --allow-env -e '
+    import { runPipeline } from "./src/runPipeline.ts";
+    import { format } from "./src/report.ts";
+    for (const v of await runPipeline("/work/your-server.ts")) console.log(format(v));
+  '
+```
+
+**5 — (Optional) Replay the byte-deterministic corpus run inside the container**
+
+```bash
+docker run --rm -it sound-permissions \
+  deno run --allow-read --allow-write --allow-net --allow-run --allow-env \
+    scripts/batch-analyze.ts --from-frozen
+```
+
+This re-clones each of the 84 successfully-analysed servers at its pinned commit SHA from `corpus-frozen.json` and re-runs the pipeline. Requires network access to GitHub.
+
+**Continuous verification.** Both the native test suite and the Docker build-and-run jobs are exercised on every push by `.github/workflows/ci.yml`; see the Actions tab on GitHub for the latest verdict.
 
 ### Open the walkthrough notebook
 
