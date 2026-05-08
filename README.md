@@ -451,7 +451,7 @@ docker build -t sound-permissions .
 docker run --rm sound-permissions
 ```
 
-Expected: `ok | 97 passed | 0 failed`. The same image is built and exercised on every push by `.github/workflows/ci.yml`.
+Expected: `ok | 97 passed | 0 failed`. The native test suite is also run on every push by `.github/workflows/ci.yml`.
 
 ### Open the walkthrough notebook
 
