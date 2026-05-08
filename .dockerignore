@@ -1,0 +1,14 @@
+.git
+.gitignore
+.DS_Store
+.vscode
+.docs
+.ipynb_checkpoints
+node_modules
+real-servers
+paper
+paper.zip
+*.pdf
+*.log
+Dockerfile
+.dockerignore

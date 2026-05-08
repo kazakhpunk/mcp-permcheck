@@ -442,6 +442,17 @@ deno task test
 
 Expected: `ok | 97 passed | 0 failed`.
 
+### Run the test suite in a Docker container
+
+A `Dockerfile` is provided so the unit-test results are reproducible from a clean machine without installing Deno locally:
+
+```bash
+docker build -t sound-permissions .
+docker run --rm sound-permissions
+```
+
+Expected: `ok | 97 passed | 0 failed`. The same image is built and exercised on every push by `.github/workflows/ci.yml`.
+
 ### Open the walkthrough notebook
 
 Install the Deno Jupyter kernel (one-time):
@@ -536,8 +547,9 @@ The MCPDiFF paper analysed ~10,240 servers but did not publish its dataset. We u
 
 Batch infrastructure under `scripts/`:
 
-- `scripts/crawl-corpus.ts` — pulls the TS subset of MCPCorpus (capped at 500 servers) plus the official `modelcontextprotocol/servers` reference set.
-- `scripts/batch-analyze.ts` — sparse-clones each, runs the pipeline, aggregates verdicts.
+- `scripts/crawl-corpus.ts` — pulls the TS subset of MCPCorpus (capped at 500 servers) plus the official `modelcontextprotocol/servers` reference set. **MCPCorpus is pinned to commit `295fe37c` (the snapshot the committed `corpus.json` was generated against)** so the crawl is deterministic.
+- `scripts/batch-analyze.ts` — sparse-clones each, runs the pipeline, aggregates verdicts. Supports `--from-frozen` for byte-deterministic replay (see below).
+- `scripts/freeze-corpus.ts` — captures the per-server commit SHA + entry-file path of every SUCCESS entry into `corpus-frozen.json`.
 - `scripts/summarize.ts` — reads results, emits `CORPUS_RESULTS.md`.
 
 Run all three sequentially:
@@ -549,6 +561,23 @@ deno run --allow-read --allow-write scripts/summarize.ts
 ```
 
 Results from the most recent run are committed at `corpus-results.json` and `CORPUS_RESULTS.md`.
+
+### Byte-deterministic corpus replay
+
+The 84 successfully-analysed servers from the May 5 run are pinned in `corpus-frozen.json`, which records each server's clone URL, commit SHA, and entry-file path. To re-clone every analysed server at its exact pinned SHA and re-run the pipeline:
+
+```bash
+deno run --allow-read --allow-write --allow-net --allow-run --allow-env \
+  scripts/batch-analyze.ts --from-frozen
+```
+
+This produces inputs byte-identical to the original run — the only failure mode is upstream repos being deleted/force-pushed past their pinned SHA. Vendoring the full 9 GB of source is not feasible in git; pinning SHAs is the standard scientific-reproducibility compromise.
+
+To regenerate `corpus-frozen.json` from your local clones (after re-running `batch-analyze.ts` fresh):
+
+```bash
+deno run --allow-read --allow-write --allow-run scripts/freeze-corpus.ts
+```
 
 ### Most recent run — N=500 from MCPCorpus
 
@@ -608,3 +637,9 @@ The analyser is sound on the language fragment it supports. It is *not* a genera
 8. **Broader corpus coverage.** Reproducing the prior 10,240-server study at scale requires the Python adapter and is on the v1 roadmap.
 
 Each limitation is structural, not arbitrary — fixing any one is a bounded engineering task that does not require redesigning the rest of the pipeline.
+
+---
+
+## License
+
+[MIT](LICENSE).
