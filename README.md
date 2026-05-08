@@ -639,7 +639,12 @@ The analyser is sound on the language fragment it supports. It is *not* a genera
 Each limitation is structural, not arbitrary — fixing any one is a bounded engineering task that does not require redesigning the rest of the pipeline.
 
 ---
+## Contributors
+- Nursultan Sagyntay
+- Muhammad Shahzaib Hassan
+- Shaf Khalid
 
+---
 ## License
 
 [MIT](LICENSE).
